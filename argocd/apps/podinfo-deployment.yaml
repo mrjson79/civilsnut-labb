@@ -1,0 +1,73 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: podinfo
+  namespace: argocd
+spec:
+  project: default
+  source:
+    chart: podinfo
+    repoURL: https://stefanprodan.github.io/podinfo
+    targetRevision: 6.9.0
+    helm:
+      values: |
+        ui:
+          color: "#34577c"
+          message: "Whats up nerds?!"
+        replicaCount: 1
+        service:
+          type: ClusterIP
+        ingress:
+          enabled: true
+          className: nginx
+          annotations:
+            nginx.ingress.kubernetes.io/ssl-redirect: "false"
+          hosts:
+            - host: podinfo.civilsnut.se
+              paths:
+                - path: /
+                  pathType: Prefix
+        extraManifests:
+          - |
+            apiVersion: v1
+            kind: PersistentVolumeClaim
+            metadata:
+              name: podinfo-storage
+              namespace: podinfo
+            spec:
+              accessModes:
+                - ReadWriteOnce
+              storageClassName: longhorn
+              resources:
+                requests:
+                  storage: 1Gi
+        extraVolumes:
+          - name: data-storage
+            persistentVolumeClaim:
+              claimName: podinfo-storage
+        extraVolumeMounts:
+          - name: data-storage
+            mountPath: /data
+            readOnly: false
+        extraEnvs:
+          - name: STORAGE_PVC_NAME
+            value: "podinfo-storage"
+          - name: STORAGE_CLASS
+            value: "longhorn"
+          - name: STORAGE_SIZE
+            value: "1Gi"
+          - name: STORAGE_MOUNT_PATH
+            value: "/data"
+          - name: STORAGE_ACCESS_MODE
+            value: "ReadWriteOnce"
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: podinfo
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true

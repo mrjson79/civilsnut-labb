@@ -26,8 +26,6 @@ spec:
             - host: podinfo.civilsnut.se
               paths:
                 - path: /
-                  pathType: Prefix
-
   destination:
     server: https://kubernetes.default.svc
     namespace: podinfo

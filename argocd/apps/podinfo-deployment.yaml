@@ -26,41 +26,6 @@ spec:
             - host: podinfo.civilsnut.se
               paths:
                 - path: /
-                  pathType: Prefix
-        extraManifests:
-          - |
-            apiVersion: v1
-            kind: PersistentVolumeClaim
-            metadata:
-              name: podinfo-storage
-              namespace: podinfo
-            spec:
-              accessModes:
-                - ReadWriteOnce
-              storageClassName: longhorn
-              resources:
-                requests:
-                  storage: 1Gi
-        extraVolumes:
-          - name: data-storage
-            persistentVolumeClaim:
-              claimName: podinfo-storage
-        extraVolumeMounts:
-          - name: data-storage
-            mountPath: /data
-            readOnly: false
-        extraEnvs:
-          - name: STORAGE_PVC_NAME
-            value: "podinfo-storage"
-          - name: STORAGE_CLASS
-            value: "longhorn"
-          - name: STORAGE_SIZE
-            value: "1Gi"
-          - name: STORAGE_MOUNT_PATH
-            value: "/data"
-          - name: STORAGE_ACCESS_MODE
-            value: "ReadWriteOnce"
-
   destination:
     server: https://kubernetes.default.svc
     namespace: podinfo

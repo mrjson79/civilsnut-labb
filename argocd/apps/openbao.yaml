@@ -66,6 +66,7 @@ spec:
         ui:
           enabled: true
           serviceType: "ClusterIP"
+
         injector:
           enabled: false
   destination:

@@ -5,12 +5,12 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    chart: openbao
-    repoURL: https://openbao.github.io/openbao-helm
-    targetRevision: 0.13.2
-    helm:
-      values: |
+  sources:
+    - chart: openbao
+      repoURL: https://openbao.github.io/openbao-helm
+      targetRevision: 0.13.2
+      helm:
+        values: |
         server:
           ha:
             enabled: true
@@ -53,21 +53,16 @@ spec:
             accessMode: ReadWriteOnce
           nodeSelector:
             has-disk: "yes"
-          ingress:
-            enabled: true
-            ingressClassName: nginx
-            annotations:
-              nginx.ingress.kubernetes.io/ssl-redirect: "false"
-            hosts:
-              - host: openbao.civilsnut.se
-                paths:
-                  - path: "/"
-                    pathType: ImplementationSpecific
         ui:
           enabled: true
           serviceType: "ClusterIP"
+        ingress:
+          enabled: false
         injector:
           enabled: false
+    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
+      targetRevision: HEAD
+      path: argocd/manifests/openbao-ingress
   destination:
     server: https://kubernetes.default.svc
     namespace: openbao

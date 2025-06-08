@@ -53,19 +53,20 @@ spec:
             accessMode: ReadWriteOnce
           nodeSelector:
             has-disk: "yes"
+          ingress:
+            enabled: true
+            ingressClassName: nginx
+            annotations:
+              nginx.ingress.kubernetes.io/ssl-redirect: "false"
+            hosts:
+              - host: openbao.civilsnut.se
+                paths:
+                  - path: /
+                    pathType: Prefix
         ui:
           enabled: true
           serviceType: "ClusterIP"
-        ingress:
-          enabled: true
-          className: nginx
-          annotations:
-            nginx.ingress.kubernetes.io/ssl-redirect: "false"
-          hosts:
-            - host: openbao.civilsnut.se
-              paths:
-                - path: /
-                  pathType: Prefix
+
         injector:
           enabled: false
   destination:

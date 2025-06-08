@@ -8,7 +8,7 @@ spec:
   source:
     chart: openbao
     repoURL: https://openbao.github.io/openbao-helm
-    targetRevision: 0.4.0
+    targetRevision: 0.13.2
     helm:
       values: |
         server:

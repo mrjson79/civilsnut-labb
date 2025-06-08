@@ -61,8 +61,8 @@ spec:
             hosts:
               - host: openbao.civilsnut.se
                 paths:
-                  - path: /
-                    pathType: Prefix
+                  - path: "/"
+                    pathType: ImplementationSpecific
         ui:
           enabled: true
           serviceType: "ClusterIP"

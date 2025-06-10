@@ -40,7 +40,7 @@ spec:
             storageClassName: longhorn
             size: 10Gi
             accessModes:
-              - ReadWriteOnce
+              - ReadWriteMany
           ingress:
             enabled: true
             ingressClassName: nginx

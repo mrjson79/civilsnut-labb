@@ -1,0 +1,130 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    # cert-manager Helm chart
+    - chart: cert-manager
+      repoURL: https://charts.jetstack.io
+      targetRevision: v1.16.2
+      helm:
+        values: |
+          installCRDs: true
+          
+          replicaCount: 1
+          
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 512Mi
+              cpu: 200m
+          
+          nodeSelector:
+            virt: "yes"
+          
+          webhook:
+            replicaCount: 1
+            resources:
+              requests:
+                memory: 128Mi
+                cpu: 50m
+              limits:
+                memory: 256Mi
+                cpu: 100m
+            nodeSelector:
+              virt: "yes"
+          
+          cainjector:
+            replicaCount: 1
+            resources:
+              requests:
+                memory: 256Mi
+                cpu: 100m
+              limits:
+                memory: 512Mi
+                cpu: 200m
+            nodeSelector:
+              virt: "yes"
+          
+          startupapicheck:
+            enabled: true
+            resources:
+              requests:
+                memory: 64Mi
+                cpu: 50m
+              limits:
+                memory: 128Mi
+                cpu: 100m
+            nodeSelector:
+              virt: "yes"
+          
+          prometheus:
+            enabled: true
+            servicemonitor:
+              enabled: true
+              prometheusInstance: default
+          
+          global:
+            leaderElection:
+              namespace: cert-manager
+            
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          
+          containerSecurityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+    
+    # Local cert-manager configuration manifests
+    - repoURL: https://github.com/mrjson79/civilsnut-labb
+      targetRevision: HEAD
+      path: omni/argocd/apps/cert-manager/manifests
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    managedNamespaceMetadata:
+      labels:
+        pod-security.kubernetes.io/enforce: restricted
+        pod-security.kubernetes.io/audit: restricted
+        pod-security.kubernetes.io/warn: restricted
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+  ignoreDifferences:
+    - group: admissionregistration.k8s.io
+      kind: ValidatingAdmissionWebhook
+      jsonPointers:
+        - /webhooks/0/failurePolicy
+    - group: admissionregistration.k8s.io  
+      kind: MutatingAdmissionWebhook
+      jsonPointers:
+        - /webhooks/0/failurePolicy
+    - group: cert-manager.io
+      kind: Certificate
+      jsonPointers:
+        - /status

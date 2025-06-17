@@ -1,0 +1,21 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: civilsnut-se-wildcard
+  namespace: cert-manager
+  labels:
+    app: cert-manager
+spec:
+  secretName: civilsnut-se-wildcard-tls
+  issuerRef:
+    name: letsencrypt-cloudflare
+    kind: ClusterIssuer
+    group: cert-manager.io
+  dnsNames:
+  - "civilsnut.se"
+  - "*.civilsnut.se"
+  usages:
+  - digital signature
+  - key encipherment
+  duration: 2160h # 90 days
+  renewBefore: 360h # 15 days before expiry

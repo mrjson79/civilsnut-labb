@@ -119,7 +119,6 @@ spec:
       kind: ValidatingAdmissionWebhook
       jsonPointers:
         - /webhooks/0/failurePolicy
-
     - group: admissionregistration.k8s.io
 
       kind: MutatingAdmissionWebhook

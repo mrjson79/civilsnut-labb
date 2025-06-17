@@ -1,0 +1,98 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-of-apps
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  sources:
+    # Core ArgoCD Application
+    #- repoURL: https://github.com/mrjson79/civilsnut-labb.git
+    #  targetRevision: HEAD
+    #  path: argocd/apps
+    #  directory:
+    #    include: "argocd.yaml"
+
+    # Cert-Manager Application
+    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
+      targetRevision: HEAD
+      path: argocd/apps
+      directory:
+        include: "cert-manager.yaml"
+
+    # Cloudflare Secret Application
+    #- repoURL: https://github.com/mrjson79/civilsnut-labb.git
+    #  targetRevision: HEAD
+    #  path: argocd/apps
+    #  directory:
+    #    include: "cloudflare-secret.yaml
+
+    # Ingress Nginx Application
+    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
+      targetRevision: HEAD
+      path: argocd/apps
+      directory:
+        include: "ingress-nginx.yaml"
+
+    # Longhorn Application
+    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
+      targetRevision: HEAD
+      path: argocd/apps/longhorn
+      directory:
+        include: "longhorn.yaml"
+
+    # OpenBao Application
+    #- repoURL: https://github.com/mrjson79/civilsnut-labb.git
+    #  targetRevision: HEAD
+    ##  path: argocd/apps
+    #  directory:
+    #    include: "openbao.yaml"
+
+    # Podinfo Deployment Application
+    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
+      targetRevision: HEAD
+      path: argocd/apps
+      directory:
+        include: "podinfo-deployment.yaml"
+
+    # Kube-Prometheus Stack Application
+    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
+      targetRevision: HEAD
+      path: argocd/apps/kube-prometheus
+      directory:
+        include: "kube-prometheus-stack.yaml"
+
+    # KubeVirt Application
+    #- repoURL: https://github.com/mrjson79/civilsnut-labb.git
+    #  targetRevision: HEAD
+    #  path: argocd/apps/kube-virt
+    #  directory:
+    #    include: "kubevirt.yaml"
+
+    # Home Assistant Application
+    #- repoURL: https://github.com/mrjson79/civilsnut-labb.git
+    #  targetRevision: HEAD
+    #  path: argocd/apps/home-assistant
+    #  directory:
+    #    include: "home-assistant.yaml"
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

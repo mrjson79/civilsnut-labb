@@ -67,14 +67,17 @@ spec:
           fi
           
           echo "Certificate is valid. Copying to target namespace..."
-          
-          # Copy the secret
-          kubectl get secret "${SECRET_NAME}" -n "${SOURCE_NAMESPACE}" -o yaml | \
-            sed "s/namespace: ${SOURCE_NAMESPACE}/namespace: ${TARGET_NAMESPACE}/" | \
-            sed '/resourceVersion:/d' | \
-            sed '/uid:/d' | \
-            sed '/creationTimestamp:/d' | \
-            sed '/annotations:/,+2d' | \
+
+          # Copy the secret using a more robust approach
+          kubectl get secret "${SECRET_NAME}" -n "${SOURCE_NAMESPACE}" -o json | \
+            jq --arg ns "${TARGET_NAMESPACE}" '
+              .metadata.namespace = $ns |
+              del(.metadata.resourceVersion) |
+              del(.metadata.uid) |
+              del(.metadata.creationTimestamp) |
+              del(.metadata.annotations."argocd.argoproj.io/tracking-id") |
+              del(.metadata.selfLink)
+            ' | \
             kubectl apply -f -
           
           if [ $? -ne 0 ]; then

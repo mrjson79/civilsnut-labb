@@ -29,11 +29,10 @@ spec:
               limits:
                 memory: 512Mi
                 cpu: 200m
-    
     # Local manifests for certificate management
     - repoURL: https://github.com/mrjson79/civilsnut-labb
       targetRevision: HEAD
-      path: argo/apps/ingress-nginx/manifests
+      path: argocd/apps/ingress-nginx/manifests
   destination:
     server: https://kubernetes.default.svc
     namespace: ingress-nginx

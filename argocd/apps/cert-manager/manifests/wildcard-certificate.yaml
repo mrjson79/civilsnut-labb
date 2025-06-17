@@ -8,7 +8,7 @@ metadata:
 spec:
   secretName: civilsnut-se-wildcard-tls
   issuerRef:
-    name: letsencrypt-cloudflare-staging
+    name: letsencrypt-cloudflare
     kind: ClusterIssuer
     group: cert-manager.io
   dnsNames:

@@ -92,7 +92,6 @@ spec:
     - repoURL: https://github.com/mrjson79/civilsnut-labb
       targetRevision: HEAD
       path: argocd/apps/cert-manager/manifests
-
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
@@ -120,7 +119,9 @@ spec:
       kind: ValidatingAdmissionWebhook
       jsonPointers:
         - /webhooks/0/failurePolicy
+
     - group: admissionregistration.k8s.io
+
       kind: MutatingAdmissionWebhook
       jsonPointers:
         - /webhooks/0/failurePolicy

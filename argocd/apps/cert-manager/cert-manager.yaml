@@ -14,7 +14,9 @@ spec:
         values: |
           installCRDs: true
 
+
           replicaCount: 1
+
 
           resources:
             requests:
@@ -93,6 +95,7 @@ spec:
       targetRevision: HEAD
       path: argocd/apps/cert-manager/manifests
 
+
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
@@ -120,7 +123,7 @@ spec:
       kind: ValidatingAdmissionWebhook
       jsonPointers:
         - /webhooks/0/failurePolicy
-    - group: admissionregistration.k8s.io
+    - group: admissionregistration.k8s.io  
       kind: MutatingAdmissionWebhook
       jsonPointers:
         - /webhooks/0/failurePolicy
@@ -128,3 +131,4 @@ spec:
       kind: Certificate
       jsonPointers:
         - /status
+

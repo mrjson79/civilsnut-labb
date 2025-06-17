@@ -14,7 +14,6 @@ spec:
         values: |
           installCRDs: true
 
-
           replicaCount: 1
 
           resources:
@@ -93,8 +92,6 @@ spec:
     - repoURL: https://github.com/mrjson79/civilsnut-labb
       targetRevision: HEAD
       path: argocd/apps/cert-manager/manifests
-
-
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
@@ -132,4 +129,3 @@ spec:
       kind: Certificate
       jsonPointers:
         - /status
-

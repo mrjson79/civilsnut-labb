@@ -29,7 +29,6 @@ spec:
               limits:
                 memory: 512Mi
                 cpu: 200m
-
     # Local manifests for certificate management
     - repoURL: https://github.com/mrjson79/civilsnut-labb
       targetRevision: HEAD

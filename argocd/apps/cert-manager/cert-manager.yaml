@@ -13,9 +13,11 @@ spec:
       helm:
         values: |
           installCRDs: true
-          
+
+
           replicaCount: 1
-          
+
+
           resources:
             requests:
               memory: 256Mi
@@ -23,10 +25,10 @@ spec:
             limits:
               memory: 512Mi
               cpu: 200m
-          
+
           nodeSelector:
             virt: "yes"
-          
+
           webhook:
             replicaCount: 1
             resources:
@@ -38,7 +40,7 @@ spec:
                 cpu: 100m
             nodeSelector:
               virt: "yes"
-          
+
           cainjector:
             replicaCount: 1
             resources:
@@ -50,7 +52,7 @@ spec:
                 cpu: 200m
             nodeSelector:
               virt: "yes"
-          
+
           startupapicheck:
             enabled: true
             resources:
@@ -62,22 +64,22 @@ spec:
                 cpu: 100m
             nodeSelector:
               virt: "yes"
-          
+
           prometheus:
             enabled: true
             servicemonitor:
               enabled: true
               prometheusInstance: default
-          
+
           global:
             leaderElection:
               namespace: cert-manager
-            
+
           securityContext:
             runAsNonRoot: true
             seccompProfile:
               type: RuntimeDefault
-          
+
           containerSecurityContext:
             allowPrivilegeEscalation: false
             capabilities:
@@ -87,11 +89,12 @@ spec:
             runAsNonRoot: true
             seccompProfile:
               type: RuntimeDefault
-    
+
     # Local cert-manager configuration manifests
     - repoURL: https://github.com/mrjson79/civilsnut-labb
       targetRevision: HEAD
-      path: omni/argocd/apps/cert-manager/manifests
+      path: argocd/apps/cert-manager/manifests
+
 
   destination:
     server: https://kubernetes.default.svc
@@ -128,3 +131,4 @@ spec:
       kind: Certificate
       jsonPointers:
         - /status
+

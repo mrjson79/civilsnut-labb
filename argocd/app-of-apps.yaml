@@ -21,6 +21,7 @@ spec:
       path: argocd/apps
       directory:
         include: "cert-manager.yaml"
+        recurse: false
 
     # Cloudflare Secret Application
     #- repoURL: https://github.com/mrjson79/civilsnut-labb.git
@@ -32,7 +33,7 @@ spec:
     # Ingress Nginx Application
     - repoURL: https://github.com/mrjson79/civilsnut-labb.git
       targetRevision: HEAD
-      path: argocd/apps
+      path: argocd/apps/ingress-nginx
       directory:
         include: "ingress-nginx.yaml"
 

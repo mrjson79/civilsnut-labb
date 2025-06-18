@@ -18,7 +18,7 @@ spec:
     # Cert-Manager Application
     - repoURL: https://github.com/mrjson79/civilsnut-labb.git
       targetRevision: HEAD
-      path: argocd/apps
+      path: argocd/apps/cert-manager
       directory:
         include: "cert-manager.yaml"
         recurse: false

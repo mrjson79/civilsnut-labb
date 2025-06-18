@@ -92,7 +92,6 @@ spec:
     - repoURL: https://github.com/mrjson79/civilsnut-labb
       targetRevision: HEAD
       path: argocd/apps/cert-manager/manifests
-
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager

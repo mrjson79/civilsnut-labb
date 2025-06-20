@@ -6,7 +6,7 @@ metadata:
   labels:
     app: home-assistant
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: home-assistant
   ports:
@@ -14,4 +14,3 @@ spec:
       protocol: TCP
       port: 8123
       targetPort: 8123
-  externalTrafficPolicy: Local

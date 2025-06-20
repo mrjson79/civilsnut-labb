@@ -18,6 +18,8 @@ spec:
     spec:
       nodeSelector:
         virt: "yes"
+      securityContext:
+        fsGroup: 0
       containers:
         - name: home-assistant
           image: ghcr.io/home-assistant/home-assistant:2024.12.5
@@ -58,7 +60,6 @@ spec:
           securityContext:
             runAsUser: 0
             runAsGroup: 0
-            fsGroup: 0
       volumes:
         - name: config
           persistentVolumeClaim:

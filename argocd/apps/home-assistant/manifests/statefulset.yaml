@@ -38,6 +38,24 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /config
+            - name: ha-config
+              mountPath: /config/configuration.yaml
+              subPath: configuration.yaml
+            - name: ha-config
+              mountPath: /config/secrets.yaml
+              subPath: secrets.yaml
+            - name: ha-config
+              mountPath: /config/automations.yaml
+              subPath: automations.yaml
+            - name: ha-config
+              mountPath: /config/scripts.yaml
+              subPath: scripts.yaml
+            - name: ha-config
+              mountPath: /config/scenes.yaml
+              subPath: scenes.yaml
+            - name: ha-config
+              mountPath: /config/groups.yaml
+              subPath: groups.yaml
           env:
             - name: TZ
               value: "UTC"
@@ -64,4 +82,7 @@ spec:
         - name: config
           persistentVolumeClaim:
             claimName: home-assistant-pvc
+        - name: ha-config
+          configMap:
+            name: home-assistant-config
       restartPolicy: Always

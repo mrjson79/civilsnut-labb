@@ -11,6 +11,10 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/proxy-set-headers: "home-assistant/home-assistant-headers"
+    nginx.ingress.kubernetes.io/websocket-services: "home-assistant"
+    nginx.ingress.kubernetes.io/upstream-hash-by: "$connection_upgrade"
 spec:
   ingressClassName: nginx
   tls:

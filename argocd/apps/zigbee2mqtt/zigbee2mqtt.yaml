@@ -1,0 +1,92 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: zigbee2mqtt
+  namespace: argocd
+spec:
+  project: default
+  source:
+    chart: zigbee2mqtt
+    repoURL: https://charts.zigbee2mqtt.io
+    targetRevision: 2.4.0
+    helm:
+      values: |
+        service:
+          type: ClusterIP
+          port: 8080
+
+        statefulset:
+          storage:
+            enabled: true
+            size: 1Gi
+            storageClassName: longhorn
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 512Mi
+              cpu: 500m
+          nodeSelector:
+            has-disk: "yes"
+          securityContext:
+            privileged: true
+            capabilities:
+              add: ["SYS_ADMIN"]
+
+
+        zigbee2mqtt:
+          timezone: Europe/Stockholm
+          homeassistant:
+            enabled: true
+            discovery_topic: "homeassistant"
+            status_topic: "hass/status"
+          permit_join: false
+          mqtt:
+            server: "mqtt://localhost:1883"
+
+          frontend:
+            enabled: true
+            port: 8080
+            host: ""
+          advanced:
+            channel: 11
+            log_level: info
+            cache_state: true
+            last_seen: "ISO_8601"
+            transmit_power: 5
+
+        ingress:
+          enabled: true
+          ingressClassName: nginx
+          annotations:
+            nginx.ingress.kubernetes.io/ssl-redirect: "true"
+            nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+            nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+            nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+            nginx.ingress.kubernetes.io/websocket-services: "zigbee2mqtt"
+          hosts:
+            - host: zigbee2mqtt.civilsnut.se
+              paths:
+                - path: /
+                  pathType: Prefix
+                - path: /api
+                  pathType: Prefix
+          tls:
+            - secretName: civilsnut-se-wildcard-tls
+              hosts:
+                - zigbee2mqtt.civilsnut.se
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: zigbee2mqtt
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels:
+        pod-security.kubernetes.io/enforce: privileged

@@ -20,32 +20,7 @@ spec:
         virt: "yes"
       securityContext:
         fsGroup: 0
-      initContainers:
-        - name: setup-config
-          image: busybox:1.36
-          command:
-            - /bin/sh
-            - -c
-            - |
-              echo "Setting up Home Assistant configuration..."
-              
-              # Create configuration.yaml if it doesn't exist
-              if [ ! -f /config/configuration.yaml ]; then
-                cat > /config/configuration.yaml << 'EOF'
-              # Loads default set of integrations. Do not remove.
-              default_config:
-
-              # Load frontend themes from the themes folder
-              frontend:
-                themes: !include_dir_merge_named themes
-
-              automation: !include automations.yaml
-              script: !include scripts.yaml
-              scene: !include scenes.yaml
-
-              # HTTP Configuration for reverse proxy
-              http:
-                external_url: https
+      containers:
         - name: home-assistant
           image: ghcr.io/home-assistant/home-assistant:2024.12.5
           imagePullPolicy: IfNotPresent

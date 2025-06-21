@@ -10,25 +10,9 @@ data:
     # Loads default set of integrations. Do not remove.
     default_config:
 
-    # Load frontend themes from the themes folder
-    frontend:
-      themes: !include_dir_merge_named themes
-
-    automation: !include automations.yaml
-    script: !include scripts.yaml
-    scene: !include scenes.yaml
-
     # HTTP Configuration for reverse proxy
     http:
-      # External URL that Home Assistant is accessible from
-      external_url: https://ha.civilsnut.se
-      # Internal URL for local access
-      internal_url: http://localhost:8123
-      # Server host (0.0.0.0 to listen on all interfaces)
-      server_host: 0.0.0.0
-      # Server port
-      server_port: 8123
-      # Trusted proxies - allow nginx ingress
+      # Trust reverse proxies (nginx ingress)
       trusted_proxies:
         - 10.0.0.0/8
         - 172.16.0.0/12
@@ -37,114 +21,23 @@ data:
         - ::1
       # Use X-Forwarded-For header for client IP
       use_x_forwarded_for: true
-      # IP ban configuration
-      ip_ban_enabled: true
-      login_attempts_threshold: 5
+      # Server configuration
+      server_host: 0.0.0.0
+      server_port: 8123
 
-    # Logger configuration
-    logger:
-      default: info
-      logs:
-        homeassistant.core: info
-        homeassistant.components.http: debug
-
-    # Recorder configuration
-    recorder:
-      # Purge old data after 10 days
-      purge_keep_days: 10
-      # Commit interval
-      commit_interval: 1
-      # Include/exclude entities
-      include:
-        domains:
-          - sensor
-          - switch
-          - light
-          - climate
-          - device_tracker
-          - person
-          - automation
-          - script
-          - scene
-      exclude:
-        entities:
-          - sun.sun
-        domains:
-          - updater
-        entity_globs:
-          - sensor.*_battery_level
-
-    # History configuration
-    history:
-      # Keep history for 7 days
-      purge_keep_days: 7
-      include:
-        domains:
-          - sensor
-          - switch
-          - light
-          - climate
-          - device_tracker
-          - person
-
-    # Energy configuration
-    energy:
-
-    # My Home Assistant integration
-    my:
-
-    # Text to speech
-    tts:
-      - platform: google_translate
-
-    # System health
-    system_health:
-
-    # Mobile app support
-    mobile_app:
-
-    # Cloud integration (optional)
-    # cloud:
-
-    # Person tracking
-    person:
-
-    # Zone configuration
-    zone:
-      - name: Home
-        latitude: !secret home_latitude
-        longitude: !secret home_longitude
-        radius: 100
-        icon: mdi:home
-
-    # Sun integration
-    sun:
-
-    # Group configuration
-    group: !include groups.yaml
-
-  secrets.yaml: |
-    # Use this file to store secrets like API keys and passwords
-    # Example:
-    # api_key: your_secret_api_key_here
-    # db_url: postgresql://user:password@localhost/database
-    
-    # Home coordinates (replace with your actual coordinates)
-    home_latitude: 59.3293
-    home_longitude: 18.0686
+    # Basic configuration files (will be managed by UI)
+    automation: !include automations.yaml
+    script: !include scripts.yaml  
+    scene: !include scenes.yaml
 
   automations.yaml: |
-    # Automations will be added here by the UI
+    # Automations will be created via the UI
     []
 
   scripts.yaml: |
-    # Scripts will be added here by the UI
+    # Scripts will be created via the UI
     {}
 
   scenes.yaml: |
-    # Scenes will be added here by the UI
+    # Scenes will be created via the UI
     []
-
-  groups.yaml: |
-    # Groups will be added here by the UI
-    {}

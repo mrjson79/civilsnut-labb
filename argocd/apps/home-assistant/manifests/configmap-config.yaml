@@ -9,7 +9,7 @@ data:
   configuration.yaml: |
     # Loads default set of integrations. Do not remove.
     default_config:
-
+    
     # HTTP Configuration for reverse proxy
     http:
       # Trust reverse proxies (nginx ingress)
@@ -21,6 +21,7 @@ data:
         - ::1
       # Use X-Forwarded-For header for client IP
       use_x_forwarded_for: true
+      
       # Server configuration
       server_host: 0.0.0.0
       server_port: 8123

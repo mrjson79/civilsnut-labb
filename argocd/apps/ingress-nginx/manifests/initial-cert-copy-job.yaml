@@ -67,7 +67,6 @@ spec:
           fi
           
           echo "Certificate is valid. Copying to target namespace..."
-          
           # Copy the secret using a more robust approach
           kubectl get secret "${SECRET_NAME}" -n "${SOURCE_NAMESPACE}" -o json | \
             jq --arg ns "${TARGET_NAMESPACE}" '

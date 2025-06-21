@@ -15,10 +15,6 @@ spec:
       name: mqtt
       targetPort: 1883
       protocol: TCP
-    - port: 8883
-      name: mqtts
-      targetPort: 8883
-      protocol: TCP
 ---
 apiVersion: v1
 kind: Service

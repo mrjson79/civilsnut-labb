@@ -49,8 +49,6 @@ spec:
             - name: mosquitto-password
               mountPath: /mosquitto/config/password.txt
               subPath: password.txt
-            - name: certs
-              mountPath: /mosquitto/certs/
       volumes:
         - name: mosquitto-persistent-storage
           persistentVolumeClaim:
@@ -61,6 +59,3 @@ spec:
         - name: mosquitto-password
           configMap:
             name: mosquitto-password
-        - name: certs
-          secret:
-            secretName: civilsnut-se-wildcard-tls

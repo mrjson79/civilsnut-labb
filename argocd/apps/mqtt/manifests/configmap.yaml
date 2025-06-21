@@ -18,12 +18,7 @@ data:
     listener 1883 0.0.0.0
     protocol mqtt
     
-    # MQTTS listener
-    listener 8883 0.0.0.0
-    protocol mqtt
-    cafile /etc/ssl/certs/ca-certificates.crt
-    keyfile /mosquitto/certs/tls.key
-    certfile /mosquitto/certs/tls.crt
+
     
     # WebSocket listener
     listener 9001 0.0.0.0

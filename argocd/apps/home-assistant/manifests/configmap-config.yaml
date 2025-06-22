@@ -26,14 +26,6 @@ data:
       server_host: 0.0.0.0
       server_port: 8123
 
-    # MQTT Configuration for Zigbee2MQTT integration
-    mqtt:
-      broker: mosquitto.mosquitto.svc.cluster.local
-      port: 1883
-      username: admin
-      password: mystrongmqttpassword
-      discovery: true
-      discovery_prefix: homeassistant
 
     # Basic configuration files (will be managed by UI)
     automation: !include automations.yaml

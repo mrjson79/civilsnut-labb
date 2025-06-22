@@ -27,7 +27,6 @@ data:
       server_port: 8123
 
 
-
     # Basic configuration files (will be managed by UI)
     automation: !include automations.yaml
     script: !include scripts.yaml  

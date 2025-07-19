@@ -20,7 +20,7 @@ spec:
         certificateRefs:
           - kind: Secret
             name: civilsnut-se-wildcard-tls
-            namespace: ingress-nginx
+            namespace: cert-manager
       allowedRoutes:
         namespaces:
           from: All

@@ -42,19 +42,7 @@ spec:
             accessModes:
               - ReadWriteMany
           ingress:
-            enabled: true
-            ingressClassName: nginx
-            annotations:
-              nginx.ingress.kubernetes.io/ssl-redirect: "true"
-              nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-            hosts:
-              - grafana.civilsnut.se
-            path: /
-            pathType: Prefix
-            tls:
-              - secretName: civilsnut-se-wildcard-tls
-                hosts:
-                  - grafana.civilsnut.se
+            enabled: false
           resources:
             requests:
               memory: 256Mi

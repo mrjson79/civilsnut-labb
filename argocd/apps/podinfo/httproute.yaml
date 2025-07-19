@@ -9,7 +9,7 @@ spec:
     - podinfo.civilsnut.se
   parentRefs:
     - name: shared-gateway
-      namespace: shared-gateway
+      namespace: gateway-system
   rules:
     - backendRefs:
         - name: podinfo

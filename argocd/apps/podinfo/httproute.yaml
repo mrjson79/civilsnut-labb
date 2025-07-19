@@ -6,16 +6,17 @@ metadata:
   namespace: podinfo
 spec:
   hostnames:
-  - podinfo.civilsnut.se
+    - podinfo.civilsnut.se
   parentRefs:
-  - name: podinfo
+    - name: shared-gateway
+      namespace: shared-gateway
   rules:
-  - backendRefs:
-    - name: podinfo
-      port: 9898
-    matches:
-    - path:
-        type: PathPrefix
-        value: /
+    - backendRefs:
+        - name: podinfo
+          port: 9898
+      matches:
+        - path:
+            type: PathPrefix
+            value: /
 status:
   parents: []

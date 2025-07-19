@@ -9,13 +9,13 @@ metadata:
     app.kubernetes.io/component: demo
     apps.kubernetes.io/managed-by: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "0
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   from:
-  - group: gateway.networking.k8s.io
-    kind: HTTPRoute
-    namespace: podinfo
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: podinfo
   to:
-  - group: "gateway.networking.k8s.io"
-    kind: Gateway
-    name: shared-gateway
+    - group: "gateway.networking.k8s.io"
+      kind: Gateway
+      name: shared-gateway

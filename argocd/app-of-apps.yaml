@@ -44,6 +44,7 @@ spec:
       directory:
         include: "longhorn.yaml"
 
+
     # Shared Gateway Application
     - repoURL: https://github.com/mrjson79/civilsnut-labb.git
       targetRevision: HEAD

@@ -44,6 +44,13 @@ spec:
       directory:
         include: "longhorn.yaml"
 
+    # Shared Gateway Application
+    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
+      targetRevision: HEAD
+      path: argocd/apps/shared-gateway
+      directory:
+        include: "shared-gateway.yaml"
+
     # Podinfo Deployment Application
     - repoURL: https://github.com/mrjson79/civilsnut-labb.git
       targetRevision: HEAD

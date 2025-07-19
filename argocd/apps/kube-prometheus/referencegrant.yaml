@@ -1,0 +1,15 @@
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: kube-prometheus-cert-access
+  namespace: ingress-nginx
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      namespace: monitoring
+  to:
+    - group: ""
+      kind: Secret
+      name: civilsnut-se-wildcard-tls

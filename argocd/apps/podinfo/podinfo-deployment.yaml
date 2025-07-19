@@ -18,20 +18,7 @@ spec:
         service:
           type: ClusterIP
         ingress:
-          enabled: true
-          className: nginx
-          annotations:
-            nginx.ingress.kubernetes.io/ssl-redirect: "true"
-            nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-          hosts:
-            - host: podinfo.civilsnut.se
-              paths:
-                - path: /
-                  pathType: Prefix
-          tls:
-            - secretName: civilsnut-se-wildcard-tls
-              hosts:
-                - podinfo.civilsnut.se
+          enabled: false
   destination:
     server: https://kubernetes.default.svc
     namespace: podinfo

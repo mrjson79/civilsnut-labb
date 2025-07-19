@@ -44,19 +44,12 @@ spec:
       directory:
         include: "longhorn.yaml"
 
-    # OpenBao Application
-    #- repoURL: https://github.com/mrjson79/civilsnut-labb.git
-    #  targetRevision: HEAD
-    ##  path: argocd/apps
-    #  directory:
-    #    include: "openbao.yaml"
-
     # Podinfo Deployment Application
     - repoURL: https://github.com/mrjson79/civilsnut-labb.git
       targetRevision: HEAD
-      path: argocd/apps
+      path: argocd/apps/podinfo
       directory:
-        include: "podinfo-deployment.yaml"
+        include: "{podinfo-deployment.yaml,gateway.yaml,httproute.yaml,referencegrant.yaml}"
 
     # Kube-Prometheus Stack Application
     - repoURL: https://github.com/mrjson79/civilsnut-labb.git

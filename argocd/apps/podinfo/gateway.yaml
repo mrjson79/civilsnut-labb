@@ -1,0 +1,26 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: podinfo
+  namespace: podinfo
+  annotations: {}
+spec:
+  gatewayClassName: cilium
+  listeners:
+    - hostname: podinfo.civilsnut.se
+      name: podinfo-civilsnut-se-http
+      port: 80
+      protocol: HTTP
+    - hostname: podinfo.civilsnut.se
+      name: podinfo-civilsnut-se-https
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: civilsnut-se-wildcard-tls
+            namespace: ingress-nginx
+      allowedRoutes:
+        namespaces:
+          from: All

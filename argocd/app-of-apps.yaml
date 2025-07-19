@@ -56,7 +56,7 @@ spec:
       targetRevision: HEAD
       path: argocd/apps/kube-prometheus
       directory:
-        include: "kube-prometheus-stack.yaml"
+        include: "{kube-prometheus-stack.yaml,gateway.yaml,httproute.yaml,referencegrant.yaml}"
 
     # KubeVirt Application
     #- repoURL: https://github.com/mrjson79/civilsnut-labb.git

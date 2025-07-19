@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: podinfo
+  labels:
+    name: podinfo
+    app.kubernetes.io/name: podinfo
+    app.kubernetes.io/component: demo
+    gateway.networking.k8s.io/allowed: "true"
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"

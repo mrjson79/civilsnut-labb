@@ -8,7 +8,8 @@ spec:
   hostnames:
     - grafana.civilsnut.se
   parentRefs:
-    - name: kube-prometheus
+    - name: shared-gateway
+      namespace: gateway-system
   rules:
     - backendRefs:
         - name: kube-prometheus-stack-grafana
@@ -17,4 +18,3 @@ spec:
         - path:
             type: PathPrefix
             value: /
-

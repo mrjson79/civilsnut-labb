@@ -32,11 +32,11 @@ spec:
     #    include: "cloudflare-secret.yaml
 
     # Ingress Nginx Application
-    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
-      targetRevision: HEAD
-      path: argocd/apps/ingress-nginx
-      directory:
-        include: "ingress-nginx.yaml"
+    #- repoURL: https://github.com/mrjson79/civilsnut-labb.git
+    #  targetRevision: HEAD
+    #  path: argocd/apps/ingress-nginx
+    #  directory:
+    #    include: "ingress-nginx.yaml"
 
     # Longhorn Application
     - repoURL: https://github.com/mrjson79/civilsnut-labb.git

@@ -1,0 +1,159 @@
+nameOverride: argocd
+fullnameOverride: ""
+namespaceOverride: ""
+kubeVersionOverride: ""
+apiVersionOverrides: {}
+createAggregateRoles: false
+createClusterRoles: true
+
+openshift:
+  enabled: false
+
+crds:
+  install: true
+  keep: true
+  annotations: {}
+  additionalLabels: {}
+
+global:
+  domain: argocd.civilsnut.se
+  runtimeClassName: ""
+  additionalLabels: {}
+  revisionHistoryLimit: 3
+  image:
+    repository: quay.io/argoproj/argocd
+    tag: ""
+    imagePullPolicy: IfNotPresent
+  imagePullSecrets: []
+  logging:
+    format: text
+    level: info
+  statefulsetAnnotations: {}
+  deploymentAnnotations: {}
+  podAnnotations: {}
+  podLabels: {}
+  addPrometheusAnnotations: false
+  securityContext: {}
+  hostAliases: []
+
+configs:
+  cm:
+    create: true
+  params:
+    create: true
+    server.insecure: true
+    server.disable.auth: false
+  rbac:
+    create: true
+  ssh:
+    create: true
+  tls:
+    annotations: {}
+  repositories: {}
+
+extraObjects: []
+
+controller:
+  name: application-controller
+  resources: {}
+
+dex:
+  enabled: true
+  name: dex-server
+  podAnnotations: {}
+  podLabels: {}
+
+redis:
+  enabled: true
+  name: redis
+  metrics:
+    enabled: false
+
+redis-ha:
+  enabled: false
+
+redisSecretInit:
+  enabled: true
+  name: redis-secret-init
+
+server:
+  name: server
+  extensions:
+    enabled: false
+  readinessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 10
+  certificateSecret:
+    enabled: false
+    annotations: {}
+  service:
+    annotations: {}
+    labels: {}
+    type: ClusterIP
+    servicePortHttp: 80
+    servicePortHttps: 443
+    servicePortHttpName: http
+    servicePortHttpsName: https
+    loadBalancerClass: ""
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    externalIPs: []
+    externalTrafficPolicy: Cluster
+    sessionAffinity: None
+  metrics:
+    enabled: false
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    hosts:
+      - host: argocd.civilsnut.se
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: civilsnut-se-wildcard-tls
+        hosts:
+          - argocd.civilsnut.se
+  ingressGrpc:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    hosts:
+      - host: argocd.civilsnut.se
+        paths:
+          - path: /grpc
+            pathType: Prefix
+    tls:
+      - secretName: civilsnut-se-wildcard-tls
+        hosts:
+          - argocd.civilsnut.se
+
+repoServer:
+  name: repo-server
+  initContainers: []
+  volumeMounts: []
+  certificateSecret:
+    enabled: false
+
+applicationSet:
+  name: applicationset-controller
+  serviceAccount:
+    create: true
+    name: argocd-applicationset-controller
+  certificate:
+    enabled: false
+
+notifications:
+  enabled: true
+  metrics:
+    enabled: false
+    port: 9001
+  templates: {}
+  triggers: {}

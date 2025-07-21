@@ -8,12 +8,13 @@ metadata:
 spec:
   project: default
   sources:
-    # Core ArgoCD Application
-    #- repoURL: https://github.com/mrjson79/civilsnut-labb.git
-    #  targetRevision: HEAD
-    #  path: argocd/apps
-    #  directory:
-    #    include: "argocd.yaml"
+    #  ArgoCD Application
+    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
+      targetRevision: HEAD
+      path: argocd/apps/argocd
+      directory:
+        include: "{argocd-self.yaml}"
+        recurse: false
 
     # Cert-Manager Application
     - repoURL: https://github.com/mrjson79/civilsnut-labb.git

@@ -39,3 +39,12 @@ spec:
           selector:
             matchLabels:
               gateway.networking.k8s.io/allowed: "true"
+    - name: mqtt-tcp
+      port: 1883
+      protocol: TCP
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              gateway.networking.k8s.io/allowed: "true"

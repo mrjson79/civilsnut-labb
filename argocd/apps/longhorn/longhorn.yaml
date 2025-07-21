@@ -31,20 +31,6 @@ spec:
             jobEnabled: false
           defaultSettings:
             defaultDataPath: /var/mnt/storage
-          ingress:
-            enabled: false
-            ingressClassName: nginx
-            host: longhorn.civilsnut.se
-            path: /
-            tls: true
-            tlsSecret: civilsnut-se-wildcard-tls
-            annotations:
-              nginx.ingress.kubernetes.io/proxy-body-size: 10000m
-              nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
-              nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
-              nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
-              nginx.ingress.kubernetes.io/ssl-redirect: "true"
-              nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   destination:
     server: https://kubernetes.default.svc
     namespace: longhorn-system

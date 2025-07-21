@@ -105,36 +105,6 @@ server:
     enabled: false
   ingress:
     enabled: false
-    ingressClassName: nginx
-    annotations:
-      nginx.ingress.kubernetes.io/ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-    hosts:
-      - host: argocd.civilsnut.se
-        paths:
-          - path: /
-            pathType: Prefix
-    tls:
-      - secretName: civilsnut-se-wildcard-tls
-        hosts:
-          - argocd.civilsnut.se
-  ingressGrpc:
-    enabled: false
-    ingressClassName: nginx
-    annotations:
-      nginx.ingress.kubernetes.io/ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
-    hosts:
-      - host: argocd.civilsnut.se
-        paths:
-          - path: /grpc
-            pathType: Prefix
-    tls:
-      - secretName: civilsnut-se-wildcard-tls
-        hosts:
-          - argocd.civilsnut.se
 
 repoServer:
   name: repo-server

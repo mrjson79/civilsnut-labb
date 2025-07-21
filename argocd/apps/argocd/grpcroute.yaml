@@ -11,9 +11,14 @@ spec:
   hostnames:
     - argocd.civilsnut.se
   parentRefs:
-    - name: shared-gateway
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: shared-gateway
       namespace: gateway-system
   rules:
     - backendRefs:
-        - name: argocd-server
+        - group: ''
+          kind: Service
+          name: argocd-server
           port: 80
+          weight: 1

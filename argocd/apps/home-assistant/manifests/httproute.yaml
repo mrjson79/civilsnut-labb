@@ -8,12 +8,17 @@ spec:
   hostnames:
     - ha.civilsnut.se
   parentRefs:
-    - name: shared-gateway
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: shared-gateway
       namespace: gateway-system
   rules:
     - backendRefs:
-        - name: home-assistant
+        - group: ""
+          kind: Service
+          name: home-assistant
           port: 8123
+          weight: 1
       matches:
         - path:
             type: PathPrefix

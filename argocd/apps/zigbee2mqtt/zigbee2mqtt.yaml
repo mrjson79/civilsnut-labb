@@ -62,25 +62,6 @@ spec:
 
         ingress:
           enabled: false
-          ingressClassName: nginx
-          annotations:
-            nginx.ingress.kubernetes.io/ssl-redirect: "true"
-            nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-            nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-            nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-            nginx.ingress.kubernetes.io/websocket-services: "zigbee2mqtt"
-          hosts:
-            - host: zigbee2mqtt.civilsnut.se
-              paths:
-                - path: /
-                  pathType: Prefix
-                - path: /api
-                  pathType: Prefix
-          tls:
-            - secretName: civilsnut-se-wildcard-tls
-              hosts:
-                - zigbee2mqtt.civilsnut.se
-
   destination:
     server: https://kubernetes.default.svc
     namespace: zigbee2mqtt

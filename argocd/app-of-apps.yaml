@@ -73,11 +73,18 @@ spec:
     #    include: "kubevirt.yaml"
 
     # Home Assistant Application
-    #- repoURL: https://github.com/mrjson79/civilsnut-labb.git
-    #  targetRevision: HEAD
-    #  path: argocd/apps/home-assistant
-    #  directory:
-    #    include: "home-assistant.yaml"
+    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
+      targetRevision: HEAD
+      path: argocd/apps/home-assistant
+      directory:
+        include: "home-assistant.yaml"
+
+    # zigbee2mqtt Application
+    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
+      targetRevision: HEAD
+      path: argocd/apps/zigbee2mqtt
+      directory:
+        include: "{zigbee2mqtt.yaml,httproute.yaml,namespace.yaml,referencegrant.yaml}"
 
   destination:
     server: https://kubernetes.default.svc

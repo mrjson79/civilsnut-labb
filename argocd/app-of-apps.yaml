@@ -42,7 +42,7 @@ spec:
       targetRevision: HEAD
       path: argocd/apps/longhorn
       directory:
-        include: "longhorn.yaml"
+        include: "{longhorn.yaml,httproute.yaml,referencegrant.yaml}"
 
     # Shared Gateway Application
     - repoURL: https://github.com/mrjson79/civilsnut-labb.git

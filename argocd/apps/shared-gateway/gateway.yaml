@@ -19,6 +19,9 @@ spec:
       port: 80
       protocol: HTTP
       allowedRoutes:
+        kinds:
+          - kind: HTTPRoute
+          - kind: GRPCRoute
         namespaces:
           from: Selector
           selector:
@@ -34,6 +37,9 @@ spec:
             name: civilsnut-se-wildcard-tls
             namespace: cert-manager
       allowedRoutes:
+        kinds:
+          - kind: HTTPRoute
+          - kind: GRPCRoute
         namespaces:
           from: Selector
           selector:

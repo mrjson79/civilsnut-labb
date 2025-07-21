@@ -43,6 +43,7 @@ configs:
     create: true
     server.insecure: true
     server.disable.auth: false
+    server.grpc.web: true
   rbac:
     create: true
   ssh:
@@ -103,7 +104,7 @@ server:
   metrics:
     enabled: false
   ingress:
-    enabled: true
+    enabled: false
     ingressClassName: nginx
     annotations:
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -119,7 +120,7 @@ server:
         hosts:
           - argocd.civilsnut.se
   ingressGrpc:
-    enabled: true
+    enabled: false
     ingressClassName: nginx
     annotations:
       nginx.ingress.kubernetes.io/ssl-redirect: "true"

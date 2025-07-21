@@ -72,3 +72,11 @@ spec:
       jsonPointers:
         - /data/app.kubernetes.io/instance
       name: argocd-cm
+    - group: argoproj.io
+      kind: Application
+      jsonPointers:
+        - /spec/sources/2/directory/jsonnet
+        - /spec/syncPolicy/automated/prune
+        - /spec/syncPolicy/automated/selfHeal
+        - /spec/syncPolicy/automated/allowEmpty
+        - /spec/syncPolicy/retry

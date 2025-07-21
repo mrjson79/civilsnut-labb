@@ -12,6 +12,11 @@ spec:
     managedNamespaceMetadata:
       labels:
         pod-security.kubernetes.io/enforce: privileged
+        app.kubernetes.io/name: longhorn
+        app.kubernetes.io/component: storage
+        gateway.networking.k8s.io/allowed: "true"
+      annotations:
+        argocd.argoproj.io/sync-wave: "-1"
   project: default
   sources:
     - chart: longhorn
@@ -27,7 +32,7 @@ spec:
           defaultSettings:
             defaultDataPath: /var/mnt/storage
           ingress:
-            enabled: true
+            enabled: false
             ingressClassName: nginx
             host: longhorn.civilsnut.se
             path: /

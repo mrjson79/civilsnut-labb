@@ -12,8 +12,8 @@ spec:
       namespace: gateway-system
   rules:
     - backendRefs:
-      - name: home-assistant
-        port: 8123
+        - name: home-assistant
+          port: 8123
       matches:
         - path:
             type: PathPrefix

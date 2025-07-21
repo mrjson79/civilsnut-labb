@@ -56,14 +56,14 @@ spec:
       targetRevision: HEAD
       path: argocd/apps/podinfo
       directory:
-        include: "{namespace.yaml,podinfo-deployment.yaml,gateway.yaml,httproute.yaml,referencegrant.yaml}"
+        include: "{namespace.yaml,podinfo-deployment.yaml,httproute.yaml}"
 
     # Kube-Prometheus Stack Application
     - repoURL: https://github.com/mrjson79/civilsnut-labb.git
       targetRevision: HEAD
       path: argocd/apps/kube-prometheus
       directory:
-        include: "{kube-prometheus-stack.yaml,gateway.yaml,httproute.yaml,referencegrant.yaml}"
+        include: "{kube-prometheus-stack.yaml,httproute.yaml,referencegrant.yaml,namespace.yaml}"
 
     # KubeVirt Application
     #- repoURL: https://github.com/mrjson79/civilsnut-labb.git

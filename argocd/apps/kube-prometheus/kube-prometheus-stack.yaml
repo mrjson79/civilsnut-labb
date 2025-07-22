@@ -13,6 +13,34 @@ spec:
       values: |
         prometheus:
           prometheusSpec:
+            serviceMonitorSelector:
+              matchLabels:
+                release: kube-prometheus-stack
+            ruleSelector:
+              matchLabels:
+                release: kube-prometheus-stack
+            additionalScrapeConfigs:
+              - job_name: 'cilium-agent-additional'
+                kubernetes_sd_configs:
+                  - role: pod
+                    namespaces:
+                      names:
+                        - kube-system
+                relabel_configs:
+                  - source_labels: [__meta_kubernetes_pod_label_k8s_app]
+                    action: keep
+                    regex: cilium
+                  - source_labels: [__address__]
+                    action: replace
+                    regex: '(.+):(.+)'
+                    target_label: __address__
+                    replacement: '${1}:9965'
+                scrape_interval: 30s
+                scrape_timeout: 10s
+            walCompression: true
+            enableRemoteWriteReceiver: false
+            queryLogFile: /tmp/prometheus-query.log
+            enableAdminAPI: false
             storageSpec:
               volumeClaimTemplate:
                 spec:
@@ -25,11 +53,15 @@ spec:
             retentionSize: 10GB
             resources:
               requests:
-                memory: 1Gi
-                cpu: 500m
-              limits:
                 memory: 2Gi
                 cpu: 1000m
+              limits:
+                memory: 4Gi
+                cpu: 2000m
+            query:
+              maxConcurrency: 20
+              maxSamples: 50000000
+              timeout: 2m
             nodeSelector:
               has-disk: "yes"
 
@@ -84,6 +116,19 @@ spec:
               k8s-views-pods:
                 url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-pods.json
                 token: ''
+              # Cilium Dashboards
+              cilium-overview:
+                url: https://raw.githubusercontent.com/cilium/cilium/main/examples/kubernetes/addons/prometheus/files/grafana-dashboards/cilium-overview.json
+                token: ''
+              cilium-operator:
+                url: https://raw.githubusercontent.com/cilium/cilium/main/examples/kubernetes/addons/prometheus/files/grafana-dashboards/cilium-operator.json
+                token: ''
+              cilium-hubble:
+                url: https://raw.githubusercontent.com/cilium/cilium/main/examples/kubernetes/addons/prometheus/files/grafana-dashboards/hubble.json
+                token: ''
+              cilium-l7-http:
+                url: https://raw.githubusercontent.com/cilium/cilium/main/examples/kubernetes/addons/prometheus/files/grafana-dashboards/cilium-l7-http.json
+                token: ''
 
         alertmanager:
           alertmanagerSpec:
@@ -107,9 +152,41 @@ spec:
 
         nodeExporter:
           enabled: true
+          resources:
+            requests:
+              memory: 64Mi
+              cpu: 50m
+            limits:
+              memory: 128Mi
+              cpu: 200m
 
         kubeStateMetrics:
           enabled: true
+          metricLabelsAllowlist:
+            - "gateways=[*]"
+            - "httproutes=[*]"
+            - "grpcroutes=[*]"
+            - "tcproutes=[*]"
+            - "tlsroutes=[*]"
+            - "udproutes=[*]"
+          extraArgs:
+            - --custom-resource-state-config-file=/etc/customresourcestate/gateway-api-crs.yaml
+            - --metric-allowlist=kube_gateway.*,kube_httproute.*,kube_grpcroute.*,kube_tcproute.*,kube_tlsroute.*,kube_udproute.*,kube_gatewayclass.*
+          volumeMounts:
+            - name: gateway-api-crs-config
+              mountPath: /etc/customresourcestate
+              readOnly: true
+          volumes:
+            - name: gateway-api-crs-config
+              configMap:
+                name: gateway-api-crs-config
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 512Mi
+              cpu: 500m
 
         defaultRules:
           create: true
@@ -143,6 +220,23 @@ spec:
           nodeSelector:
             has-disk: "yes"
 
+        prometheusOperator:
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 512Mi
+              cpu: 500m
+          prometheusConfigReloader:
+            resources:
+              requests:
+                memory: 64Mi
+                cpu: 50m
+              limits:
+                memory: 128Mi
+                cpu: 200m
+
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
@@ -158,6 +252,7 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+      - Replace=true
     retry:
       limit: 5
       backoff:

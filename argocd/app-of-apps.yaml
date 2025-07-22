@@ -66,6 +66,13 @@ spec:
       directory:
         include: "{kube-prometheus-stack.yaml,httproute.yaml,referencegrant.yaml,namespace.yaml}"
 
+    # Cilium Service Monitors Application
+    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
+      targetRevision: HEAD
+      path: argocd/apps/kube-prometheus
+      directory:
+        include: "service-monitors-app.yaml"
+
     # KubeVirt Application
     #- repoURL: https://github.com/mrjson79/civilsnut-labb.git
     #  targetRevision: HEAD

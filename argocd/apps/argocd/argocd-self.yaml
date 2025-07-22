@@ -31,8 +31,8 @@ spec:
       targetRevision: HEAD
       path: argocd/apps/argocd
       directory:
-        include: "{grpcroute.yaml,httproute.yaml,namespace.yaml,referencegrant.yaml}"
-        recurse: false
+        include: "{grpcroute.yaml,httproute.yaml,namespace.yaml,referencegrant.yaml,manifests/*.yaml}"
+        recurse: true
 
   destination:
     server: https://kubernetes.default.svc

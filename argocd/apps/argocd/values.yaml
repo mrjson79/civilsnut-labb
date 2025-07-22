@@ -32,7 +32,7 @@ global:
   deploymentAnnotations: {}
   podAnnotations: {}
   podLabels: {}
-  addPrometheusAnnotations: false
+  addPrometheusAnnotations: true
   securityContext: {}
   hostAliases: []
 
@@ -57,6 +57,8 @@ extraObjects: []
 controller:
   name: application-controller
   resources: {}
+  metrics:
+    enabled: true
 
 dex:
   enabled: true
@@ -68,7 +70,7 @@ redis:
   enabled: true
   name: redis
   metrics:
-    enabled: false
+    enabled: true
 
 redis-ha:
   enabled: false
@@ -102,7 +104,7 @@ server:
     externalTrafficPolicy: Cluster
     sessionAffinity: None
   metrics:
-    enabled: false
+    enabled: true
   ingress:
     enabled: false
 
@@ -110,6 +112,8 @@ repoServer:
   name: repo-server
   initContainers: []
   volumeMounts: []
+  metrics:
+    enabled: true
   certificateSecret:
     enabled: false
 
@@ -120,19 +124,21 @@ applicationSet:
     name: argocd-applicationset-controller
   certificate:
     enabled: false
+  metrics:
+    enabled: true
 
 metrics:
   serviceMonitor:
     enabled: true
     namespace: monitoring
     labels:
-      release: prometheus
+      release: kube-prometheus-stack
     interval: 30s
     scrapeTimeout: 10s
 notifications:
   enabled: true
   metrics:
-    enabled: false
+    enabled: true
     port: 9001
   templates: {}
   triggers: {}

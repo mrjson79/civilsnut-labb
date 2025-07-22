@@ -93,7 +93,7 @@ spec:
           args:
             - serve
             - --listen-address=0.0.0.0:4245
-            - --dial-timeout=5s
+
             - --retry-timeout=30s
             - --sort-buffer-len-max=262144
             - --sort-buffer-drain-timeout=1s
@@ -110,13 +110,13 @@ spec:
           readinessProbe:
             httpGet:
               path: /healthz
-              port: 4245
+              port: 4222
             initialDelaySeconds: 3
             periodSeconds: 3
           livenessProbe:
             httpGet:
               path: /healthz
-              port: 4245
+              port: 4222
             initialDelaySeconds: 3
             periodSeconds: 30
           volumeMounts:
@@ -131,9 +131,8 @@ spec:
               cpu: 1000m
               memory: 1024Mi
           securityContext:
-            runAsNonRoot: true
-            runAsUser: 65532
-            runAsGroup: 65532
+            runAsUser: 0
+            runAsGroup: 0
           env:
             - name: HUBBLE_SERVER
               value: "unix:///var/run/cilium/hubble.sock"

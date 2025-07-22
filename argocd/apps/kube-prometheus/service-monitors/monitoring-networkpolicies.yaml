@@ -11,39 +11,39 @@ spec:
     matchLabels:
       app.kubernetes.io/name: prometheus
   policyTypes:
-  - Egress
+    - Egress
   egress:
-  # Allow Prometheus to scrape metrics from all namespaces
-  - to: []
-    ports:
-    - protocol: TCP
-      port: 9965  # Cilium agent metrics
-    - protocol: TCP
-      port: 9963  # Cilium operator metrics
-    - protocol: TCP
-      port: 9966  # Hubble Relay metrics
-    - protocol: TCP
-      port: 8080  # Gateway API controller metrics
-    - protocol: TCP
-      port: 8443  # Gateway API webhook metrics
-    - protocol: TCP
-      port: 9090  # Prometheus federation
-    - protocol: TCP
-      port: 10254 # Ingress controller metrics
-  # Allow DNS resolution
-  - to: []
-    ports:
-    - protocol: UDP
-      port: 53
-    - protocol: TCP
-      port: 53
-  # Allow access to Kubernetes API
-  - to: []
-    ports:
-    - protocol: TCP
-      port: 443
-    - protocol: TCP
-      port: 6443
+    # Allow Prometheus to scrape metrics from all namespaces
+    - to: []
+      ports:
+        - protocol: TCP
+          port: 9965 # Cilium agent metrics
+        - protocol: TCP
+          port: 9963 # Cilium operator metrics
+        - protocol: TCP
+          port: 9966 # Hubble Relay metrics
+        - protocol: TCP
+          port: 8080 # Gateway API controller metrics
+        - protocol: TCP
+          port: 8443 # Gateway API webhook metrics
+        - protocol: TCP
+          port: 9090 # Prometheus federation
+        - protocol: TCP
+          port: 10254 # Ingress controller metrics
+    # Allow DNS resolution
+    - to: []
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    # Allow access to Kubernetes API
+    - to: []
+      ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 6443
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -58,27 +58,42 @@ spec:
     matchLabels:
       app.kubernetes.io/name: grafana
   policyTypes:
-  - Egress
+    - Ingress
+    - Egress
+  ingress:
+    # Allow health checks from kubelet (any source since kubelet runs on host network)
+    - from: []
+      ports:
+        - protocol: TCP
+          port: 3000
+    # Allow access from Prometheus for metrics scraping if needed
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+      ports:
+        - protocol: TCP
+          port: 3000
   egress:
-  # Allow Grafana to access Prometheus
-  - to:
-    - podSelector:
-        matchLabels:
-          app.kubernetes.io/name: prometheus
-  # Allow DNS resolution
-  - to: []
-    ports:
-    - protocol: UDP
-      port: 53
-    - protocol: TCP
-      port: 53
-  # Allow access to external datasources if needed
-  - to: []
-    ports:
-    - protocol: TCP
-      port: 443
-    - protocol: TCP
-      port: 80
+    # Allow Grafana to access Prometheus
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+    # Allow DNS resolution
+    - to: []
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    # Allow access to external datasources if needed
+    - to: []
+      ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 80
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -93,52 +108,52 @@ spec:
     matchLabels:
       app.kubernetes.io/name: alertmanager
   policyTypes:
-  - Ingress
-  - Egress
+    - Ingress
+    - Egress
   ingress:
-  # Allow Prometheus to send alerts
-  - from:
-    - podSelector:
-        matchLabels:
-          app.kubernetes.io/name: prometheus
-    ports:
-    - protocol: TCP
-      port: 9093
-  # Allow AlertManager clustering
-  - from:
-    - podSelector:
-        matchLabels:
-          app.kubernetes.io/name: alertmanager
-    ports:
-    - protocol: TCP
-      port: 9094
+    # Allow Prometheus to send alerts
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+      ports:
+        - protocol: TCP
+          port: 9093
+    # Allow AlertManager clustering
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: alertmanager
+      ports:
+        - protocol: TCP
+          port: 9094
   egress:
-  # Allow AlertManager to send notifications
-  - to: []
-    ports:
-    - protocol: TCP
-      port: 443
-    - protocol: TCP
-      port: 587  # SMTP TLS
-    - protocol: TCP
-      port: 25   # SMTP
-    - protocol: TCP
-      port: 465  # SMTP SSL
-  # Allow DNS resolution
-  - to: []
-    ports:
-    - protocol: UDP
-      port: 53
-    - protocol: TCP
-      port: 53
-  # Allow AlertManager clustering
-  - to:
-    - podSelector:
-        matchLabels:
-          app.kubernetes.io/name: alertmanager
-    ports:
-    - protocol: TCP
-      port: 9094
+    # Allow AlertManager to send notifications
+    - to: []
+      ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 587 # SMTP TLS
+        - protocol: TCP
+          port: 25 # SMTP
+        - protocol: TCP
+          port: 465 # SMTP SSL
+    # Allow DNS resolution
+    - to: []
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    # Allow AlertManager clustering
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: alertmanager
+      ports:
+        - protocol: TCP
+          port: 9094
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -152,24 +167,24 @@ spec:
     matchLabels:
       k8s-app: cilium
   policyTypes:
-  - Ingress
+    - Ingress
   ingress:
-  # Allow Prometheus to scrape Cilium agent metrics
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: monitoring
-    - podSelector:
-        matchLabels:
-          app.kubernetes.io/name: prometheus
-    ports:
-    - protocol: TCP
-      port: 9965
-  # Allow health checks
-  - from: []
-    ports:
-    - protocol: TCP
-      port: 9876
+    # Allow Prometheus to scrape Cilium agent metrics
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: monitoring
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+      ports:
+        - protocol: TCP
+          port: 9965
+    # Allow health checks
+    - from: []
+      ports:
+        - protocol: TCP
+          port: 9876
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -184,24 +199,24 @@ spec:
       io.cilium/app: operator
       name: cilium-operator
   policyTypes:
-  - Ingress
+    - Ingress
   ingress:
-  # Allow Prometheus to scrape Cilium operator metrics
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: monitoring
-    - podSelector:
-        matchLabels:
-          app.kubernetes.io/name: prometheus
-    ports:
-    - protocol: TCP
-      port: 9963
-  # Allow health checks
-  - from: []
-    ports:
-    - protocol: TCP
-      port: 9234
+    # Allow Prometheus to scrape Cilium operator metrics
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: monitoring
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+      ports:
+        - protocol: TCP
+          port: 9963
+    # Allow health checks
+    - from: []
+      ports:
+        - protocol: TCP
+          port: 9234
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -215,41 +230,41 @@ spec:
     matchLabels:
       k8s-app: hubble-relay
   policyTypes:
-  - Ingress
-  - Egress
+    - Ingress
+    - Egress
   ingress:
-  # Allow Prometheus to scrape Hubble Relay metrics
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: monitoring
-    - podSelector:
-        matchLabels:
-          app.kubernetes.io/name: prometheus
-    ports:
-    - protocol: TCP
-      port: 9966
-  # Allow external access for Hubble UI/CLI
-  - from: []
-    ports:
-    - protocol: TCP
-      port: 4245
+    # Allow Prometheus to scrape Hubble Relay metrics
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: monitoring
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+      ports:
+        - protocol: TCP
+          port: 9966
+    # Allow external access for Hubble UI/CLI
+    - from: []
+      ports:
+        - protocol: TCP
+          port: 4245
   egress:
-  # Allow Hubble Relay to connect to Cilium agents
-  - to:
-    - podSelector:
-        matchLabels:
-          k8s-app: cilium
-    ports:
-    - protocol: TCP
-      port: 4244
-  # Allow DNS resolution
-  - to: []
-    ports:
-    - protocol: UDP
-      port: 53
-    - protocol: TCP
-      port: 53
+    # Allow Hubble Relay to connect to Cilium agents
+    - to:
+        - podSelector:
+            matchLabels:
+              k8s-app: cilium
+      ports:
+        - protocol: TCP
+          port: 4244
+    # Allow DNS resolution
+    - to: []
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -264,32 +279,32 @@ spec:
     matchLabels:
       app.kubernetes.io/name: kube-state-metrics
   policyTypes:
-  - Ingress
-  - Egress
+    - Ingress
+    - Egress
   ingress:
-  # Allow Prometheus to scrape kube-state-metrics
-  - from:
-    - podSelector:
-        matchLabels:
-          app.kubernetes.io/name: prometheus
-    ports:
-    - protocol: TCP
-      port: 8080
+    # Allow Prometheus to scrape kube-state-metrics
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+      ports:
+        - protocol: TCP
+          port: 8080
   egress:
-  # Allow kube-state-metrics to access Kubernetes API
-  - to: []
-    ports:
-    - protocol: TCP
-      port: 443
-    - protocol: TCP
-      port: 6443
-  # Allow DNS resolution
-  - to: []
-    ports:
-    - protocol: UDP
-      port: 53
-    - protocol: TCP
-      port: 53
+    # Allow kube-state-metrics to access Kubernetes API
+    - to: []
+      ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 6443
+    # Allow DNS resolution
+    - to: []
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -304,16 +319,16 @@ spec:
     matchLabels:
       app.kubernetes.io/name: node-exporter
   policyTypes:
-  - Ingress
+    - Ingress
   ingress:
-  # Allow Prometheus to scrape node-exporter
-  - from:
-    - podSelector:
-        matchLabels:
-          app.kubernetes.io/name: prometheus
-    ports:
-    - protocol: TCP
-      port: 9100
+    # Allow Prometheus to scrape node-exporter
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+      ports:
+        - protocol: TCP
+          port: 9100
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -328,13 +343,13 @@ spec:
     matchLabels:
       app: kube-prometheus-stack-operator
   policyTypes:
-  - Ingress
+    - Ingress
   ingress:
-  # Allow Kubernetes API server to call admission webhooks
-  - from: []
-    ports:
-    - protocol: TCP
-      port: 10250
+    # Allow Kubernetes API server to call admission webhooks
+    - from: []
+      ports:
+        - protocol: TCP
+          port: 10250
 ---
 # Network policy to ensure monitoring namespace is labeled
 apiVersion: v1
@@ -358,18 +373,18 @@ spec:
     matchLabels:
       app.kubernetes.io/name: gateway-api
   policyTypes:
-  - Ingress
+    - Ingress
   ingress:
-  # Allow Prometheus to scrape Gateway API controller metrics
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: monitoring
-    - podSelector:
-        matchLabels:
-          app.kubernetes.io/name: prometheus
-    ports:
-    - protocol: TCP
-      port: 8080
-    - protocol: TCP
-      port: 8443
+    # Allow Prometheus to scrape Gateway API controller metrics
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: monitoring
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+      ports:
+        - protocol: TCP
+          port: 8080
+        - protocol: TCP
+          port: 8443

@@ -39,7 +39,6 @@ spec:
                 scrape_timeout: 10s
             walCompression: true
             enableRemoteWriteReceiver: false
-            queryLogFile: /tmp/prometheus-query.log
             enableAdminAPI: false
             storageSpec:
               volumeClaimTemplate:

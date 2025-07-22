@@ -108,15 +108,13 @@ spec:
               containerPort: 9966
               protocol: TCP
           readinessProbe:
-            httpGet:
-              path: /healthz
-              port: 4222
+            tcpSocket:
+              port: 4245
             initialDelaySeconds: 3
             periodSeconds: 3
           livenessProbe:
-            httpGet:
-              path: /healthz
-              port: 4222
+            tcpSocket:
+              port: 4245
             initialDelaySeconds: 3
             periodSeconds: 30
           volumeMounts:

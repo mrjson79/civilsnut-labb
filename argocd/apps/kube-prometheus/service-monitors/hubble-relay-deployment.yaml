@@ -15,31 +15,31 @@ metadata:
     app.kubernetes.io/name: hubble-relay
     app.kubernetes.io/part-of: cilium
 rules:
-- apiGroups:
-  - ""
-  resources:
-  - pods
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - ""
-  resources:
-  - services
-  - endpoints
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - ""
-  resources:
-  - namespaces
-  verbs:
-  - get
-  - list
-  - watch
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - services
+      - endpoints
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - namespaces
+    verbs:
+      - get
+      - list
+      - watch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -53,42 +53,10 @@ roleRef:
   kind: ClusterRole
   name: hubble-relay
 subjects:
-- kind: ServiceAccount
-  name: hubble-relay
-  namespace: kube-system
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: hubble-relay-config
-  namespace: kube-system
-  labels:
-    app.kubernetes.io/name: hubble-relay
-    app.kubernetes.io/part-of: cilium
-data:
-  config.yaml: |
-    server:
-      address: 0.0.0.0:4245
-      insecure: true
-    hubble:
-      insecure: true
-      dial-timeout: 5s
-      retry-timeout: 30s
-      sort-buffer-len-max: 262144
-      sort-buffer-drain-timeout: 1s
-    cluster:
-      name: default
-      tls:
-        insecure: true
-    metrics:
-      enabled:
-      - dns:query;ignoreAAAA
-      - drop
-      - tcp
-      - flow
-      - icmp
-      - http
-      address: 0.0.0.0:9966
+  - kind: ServiceAccount
+    name: hubble-relay
+    namespace: kube-system
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -117,57 +85,59 @@ spec:
     spec:
       serviceAccountName: hubble-relay
       containers:
-      - name: hubble-relay
-        image: quay.io/cilium/hubble-relay:v1.14.5
-        imagePullPolicy: IfNotPresent
-        command:
-        - hubble-relay
-        args:
-        - serve
-        - --config=/etc/hubble-relay/config.yaml
-        - --hubble-socket-path=/var/run/cilium/hubble.sock
-        - --cluster-name=default
-        - --insecure
-        ports:
-        - name: grpc
-          containerPort: 4245
-          protocol: TCP
-        - name: prometheus
-          containerPort: 9966
-          protocol: TCP
-        readinessProbe:
-          httpGet:
-            path: /healthz
-            port: 4245
-          initialDelaySeconds: 3
-          periodSeconds: 3
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 4245
-          initialDelaySeconds: 3
-          periodSeconds: 30
-        volumeMounts:
-        - name: config
-          mountPath: /etc/hubble-relay
-          readOnly: true
-        - name: hubble-sock-dir
-          mountPath: /var/run/cilium
-          readOnly: true
-        resources:
-          requests:
-            cpu: 100m
-            memory: 64Mi
-          limits:
-            cpu: 1000m
-            memory: 1024Mi
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 65532
-          runAsGroup: 65532
-        env:
-        - name: HUBBLE_SERVER
-          value: "unix:///var/run/cilium/hubble.sock"
+        - name: hubble-relay
+          image: quay.io/cilium/hubble-relay:v1.14.5
+          imagePullPolicy: IfNotPresent
+          command:
+            - hubble-relay
+          args:
+            - serve
+            - --listen-address=0.0.0.0:4245
+            - --hubble-socket-path=/var/run/cilium/hubble.sock
+            - --cluster-name=default
+            - --insecure
+            - --dial-timeout=5s
+            - --retry-timeout=30s
+            - --sort-buffer-len-max=262144
+            - --sort-buffer-drain-timeout=1s
+            - --metrics-listen-address=0.0.0.0:9966
+          ports:
+            - name: grpc
+              containerPort: 4245
+              protocol: TCP
+            - name: prometheus
+              containerPort: 9966
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 4245
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 4245
+            initialDelaySeconds: 3
+            periodSeconds: 30
+          volumeMounts:
+            - name: hubble-sock-dir
+              mountPath: /var/run/cilium
+              readOnly: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+          env:
+            - name: HUBBLE_SERVER
+              value: "unix:///var/run/cilium/hubble.sock"
       restartPolicy: Always
       priorityClassName: system-cluster-critical
       nodeSelector:
@@ -175,20 +145,17 @@ spec:
       affinity:
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchLabels:
-                k8s-app: cilium
-            topologyKey: kubernetes.io/hostname
+            - labelSelector:
+                matchLabels:
+                  k8s-app: cilium
+              topologyKey: kubernetes.io/hostname
       tolerations:
-      - operator: Exists
+        - operator: Exists
       volumes:
-      - name: config
-        configMap:
-          name: hubble-relay-config
-      - name: hubble-sock-dir
-        hostPath:
-          path: /var/run/cilium
-          type: Directory
+        - name: hubble-sock-dir
+          hostPath:
+            path: /var/run/cilium
+            type: Directory
 ---
 apiVersion: v1
 kind: Service
@@ -207,11 +174,11 @@ spec:
   selector:
     k8s-app: hubble-relay
   ports:
-  - name: grpc
-    port: 80
-    protocol: TCP
-    targetPort: grpc
-  - name: prometheus
-    port: 9966
-    protocol: TCP
-    targetPort: prometheus
+    - name: grpc
+      port: 80
+      protocol: TCP
+      targetPort: grpc
+    - name: prometheus
+      port: 9966
+      protocol: TCP
+      targetPort: prometheus

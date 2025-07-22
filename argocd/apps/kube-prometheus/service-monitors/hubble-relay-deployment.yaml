@@ -86,21 +86,20 @@ spec:
       serviceAccountName: hubble-relay
       containers:
         - name: hubble-relay
-          image: quay.io/cilium/hubble-relay:v1.14.5
+          image: quay.io/cilium/hubble-relay:v1.17.5
           imagePullPolicy: IfNotPresent
           command:
             - hubble-relay
           args:
             - serve
             - --listen-address=0.0.0.0:4245
-            - --hubble-socket-path=/var/run/cilium/hubble.sock
-            - --cluster-name=default
-            - --insecure
             - --dial-timeout=5s
             - --retry-timeout=30s
             - --sort-buffer-len-max=262144
             - --sort-buffer-drain-timeout=1s
             - --metrics-listen-address=0.0.0.0:9966
+            - --cluster-name=default
+            - --disable-server-tls
           ports:
             - name: grpc
               containerPort: 4245
@@ -138,6 +137,8 @@ spec:
           env:
             - name: HUBBLE_SERVER
               value: "unix:///var/run/cilium/hubble.sock"
+            - name: HUBBLE_SOCKET_PATH
+              value: "/var/run/cilium/hubble.sock"
       restartPolicy: Always
       priorityClassName: system-cluster-critical
       nodeSelector:

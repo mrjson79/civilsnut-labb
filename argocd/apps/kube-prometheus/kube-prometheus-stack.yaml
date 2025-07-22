@@ -84,6 +84,8 @@ spec:
               cpu: 200m
           nodeSelector:
             has-disk: "yes"
+          downloadDashboards:
+            enabled: false
           dashboardProviders:
             dashboardproviders.yaml:
               apiVersion: 1
@@ -118,16 +120,16 @@ spec:
                 token: ''
               # Cilium Dashboards
               cilium-overview:
-                url: https://raw.githubusercontent.com/cilium/cilium/main/examples/kubernetes/addons/prometheus/files/grafana-dashboards/cilium-overview.json
+                url: https://raw.githubusercontent.com/cilium/cilium/main/examples/kubernetes/addons/prometheus/files/grafana-dashboards/cilium-dashboard.json
                 token: ''
               cilium-operator:
-                url: https://raw.githubusercontent.com/cilium/cilium/main/examples/kubernetes/addons/prometheus/files/grafana-dashboards/cilium-operator.json
+                url: https://raw.githubusercontent.com/cilium/cilium/main/examples/kubernetes/addons/prometheus/files/grafana-dashboards/cilium-operator-dashboard.json
                 token: ''
               cilium-hubble:
-                url: https://raw.githubusercontent.com/cilium/cilium/main/examples/kubernetes/addons/prometheus/files/grafana-dashboards/hubble.json
+                url: https://raw.githubusercontent.com/cilium/cilium/main/examples/kubernetes/addons/prometheus/files/grafana-dashboards/hubble-dashboard.json
                 token: ''
               cilium-l7-http:
-                url: https://raw.githubusercontent.com/cilium/cilium/main/examples/kubernetes/addons/prometheus/files/grafana-dashboards/cilium-l7-http.json
+                url: https://raw.githubusercontent.com/cilium/cilium/main/examples/kubernetes/addons/prometheus/files/grafana-dashboards/hubble-l7-http-metrics-by-workload.json
                 token: ''
 
         alertmanager:

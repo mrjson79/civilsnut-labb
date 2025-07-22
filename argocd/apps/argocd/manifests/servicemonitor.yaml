@@ -1,27 +1,6 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: argocd
-  namespace: monitoring
-  labels:
-    app: argocd
-    release: kube-prometheus-stack
-spec:
-  selector:
-    matchLabels:
-      app.kubernetes.io/part-of: argocd
-  namespaceSelector:
-    matchNames:
-    - argocd
-  endpoints:
-  - port: metrics
-    interval: 30s
-    path: /metrics
-    honorLabels: true
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
   name: argocd-server
   namespace: monitoring
   labels:
@@ -31,15 +10,16 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: server
+      app.kubernetes.io/name: argocd-server-metrics
       app.kubernetes.io/part-of: argocd
   namespaceSelector:
     matchNames:
-    - argocd
+      - argocd
   endpoints:
-  - port: metrics
-    interval: 30s
-    path: /metrics
-    honorLabels: true
+    - port: http-metrics
+      interval: 30s
+      path: /metrics
+      honorLabels: true
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -53,15 +33,16 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: application-controller
+      app.kubernetes.io/name: argocd-metrics
       app.kubernetes.io/part-of: argocd
   namespaceSelector:
     matchNames:
-    - argocd
+      - argocd
   endpoints:
-  - port: metrics
-    interval: 30s
-    path: /metrics
-    honorLabels: true
+    - port: http-metrics
+      interval: 30s
+      path: /metrics
+      honorLabels: true
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -75,15 +56,16 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: repo-server
+      app.kubernetes.io/name: argocd-repo-server-metrics
       app.kubernetes.io/part-of: argocd
   namespaceSelector:
     matchNames:
-    - argocd
+      - argocd
   endpoints:
-  - port: metrics
-    interval: 30s
-    path: /metrics
-    honorLabels: true
+    - port: http-metrics
+      interval: 30s
+      path: /metrics
+      honorLabels: true
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -97,15 +79,16 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: applicationset-controller
+      app.kubernetes.io/name: argocd-metrics
       app.kubernetes.io/part-of: argocd
   namespaceSelector:
     matchNames:
-    - argocd
+      - argocd
   endpoints:
-  - port: metrics
-    interval: 30s
-    path: /metrics
-    honorLabels: true
+    - port: http-metrics
+      interval: 30s
+      path: /metrics
+      honorLabels: true
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -119,15 +102,16 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: notifications-controller
+      app.kubernetes.io/name: argocd-metrics
       app.kubernetes.io/part-of: argocd
   namespaceSelector:
     matchNames:
-    - argocd
+      - argocd
   endpoints:
-  - port: metrics
-    interval: 30s
-    path: /metrics
-    honorLabels: true
+    - port: http-metrics
+      interval: 30s
+      path: /metrics
+      honorLabels: true
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -141,12 +125,13 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: redis
+      app.kubernetes.io/name: argocd-redis
       app.kubernetes.io/part-of: argocd
   namespaceSelector:
     matchNames:
-    - argocd
+      - argocd
   endpoints:
-  - port: metrics
-    interval: 30s
-    path: /metrics
-    honorLabels: true
+    - port: http-metrics
+      interval: 30s
+      path: /metrics
+      honorLabels: true

@@ -10,8 +10,6 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: server
-      app.kubernetes.io/name: argocd-server-metrics
-      app.kubernetes.io/part-of: argocd
   namespaceSelector:
     matchNames:
       - argocd
@@ -33,8 +31,6 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: application-controller
-      app.kubernetes.io/name: argocd-metrics
-      app.kubernetes.io/part-of: argocd
   namespaceSelector:
     matchNames:
       - argocd
@@ -56,8 +52,6 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: repo-server
-      app.kubernetes.io/name: argocd-repo-server-metrics
-      app.kubernetes.io/part-of: argocd
   namespaceSelector:
     matchNames:
       - argocd
@@ -79,8 +73,6 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: applicationset-controller
-      app.kubernetes.io/name: argocd-metrics
-      app.kubernetes.io/part-of: argocd
   namespaceSelector:
     matchNames:
       - argocd
@@ -102,8 +94,6 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: notifications-controller
-      app.kubernetes.io/name: argocd-metrics
-      app.kubernetes.io/part-of: argocd
   namespaceSelector:
     matchNames:
       - argocd
@@ -125,8 +115,6 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: redis
-      app.kubernetes.io/name: argocd-redis
-      app.kubernetes.io/part-of: argocd
   namespaceSelector:
     matchNames:
       - argocd

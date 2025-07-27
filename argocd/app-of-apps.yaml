@@ -73,6 +73,13 @@ spec:
       directory:
         include: "service-monitors-app.yaml"
 
+    # Cilium Hubble UI Application
+    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
+      targetRevision: HEAD
+      path: argocd/apps/cilium/manifests
+      directory:
+        include: "hubble-ui-httproute.yaml"
+
     # KubeVirt Application
     #- repoURL: https://github.com/mrjson79/civilsnut-labb.git
     #  targetRevision: HEAD

@@ -1,15 +1,7 @@
 api:
   adminAccount:
-    passwordHash:
-      valueFrom:
-        secretKeyRef:
-          name: kargo-admin-secret
-          key: password-hash
-    tokenSigningKey:
-      valueFrom:
-        secretKeyRef:
-          name: kargo-admin-secret
-          key: token-signing-key
+    passwordHash: "$2y$10$VfO7ZT.ma3AEFrbSBLrZcuUd3mkslZAm0PryY1NbYz2S0NeXTg0jm"
+    tokenSigningKey: "dlCpSBtr1RS3DAsOnvTfz3d0i1vM4CGhXkeCRM8Rri4="
 
 controller:
   resources:

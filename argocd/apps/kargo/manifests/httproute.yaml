@@ -10,6 +10,7 @@ metadata:
     app.kubernetes.io/managed-by: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
+    cilium.io/backend-protocol: "https"
 spec:
   hostnames:
     - kargo.civilsnut.se
@@ -26,6 +27,7 @@ spec:
             value: /
       backendRefs:
         - group: ""
-          name: kargo-api
-          port: 443
+          kind: Service
+          name: kargo-ui
+          port: 8080
           weight: 1

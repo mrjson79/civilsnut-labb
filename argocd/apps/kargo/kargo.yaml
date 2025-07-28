@@ -15,6 +15,14 @@ spec:
     targetRevision: 1.6.1
     helm:
       values: |
+        api:
+          adminAccount:
+            passwordHash:
+              valueFrom:
+                secretKeyRef:
+                  name: kargo-admin-secret
+                  key: password-hash
+
         controller:
           resources:
             limits:

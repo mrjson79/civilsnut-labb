@@ -120,6 +120,13 @@ spec:
       directory:
         include: "{external-secrets-manifests.yaml}"
 
+    # Kargo application
+    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
+      targetRevision: HEAD
+      path: argocd/apps/kargo
+      directory:
+        include: "{kargo.yaml}"
+
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

@@ -108,6 +108,13 @@ spec:
       directory:
         include: "{1password-connect.yaml}"
 
+    # External Secrets Application
+    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
+      targetRevision: HEAD
+      path: argocd/apps/external-secrets
+      directory:
+        include: "{external-secrets.yaml}"
+
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

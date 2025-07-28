@@ -47,6 +47,9 @@ spec:
               type: RuntimeDefault
 
         api:
+          adminAccount:
+            passwordHash: "$$2y$10$mTI2CxwnWH5gN2XNHpfX0uS9em2nKmZgyy63TE3CjBSLInMJ/w7uK"
+
           resources:
             limits:
               cpu: 200m

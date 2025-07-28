@@ -7,5 +7,6 @@ metadata:
     app.kubernetes.io/name: kargo-system
     app.kubernetes.io/component: namespace
     app.kubernetes.io/managed-by: argocd
+    gateway.networking.k8s.io/allowed: "true"
   annotations:
     argocd.argoproj.io/sync-wave: "-1"

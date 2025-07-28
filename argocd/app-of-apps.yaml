@@ -114,6 +114,11 @@ spec:
       path: argocd/apps/external-secrets
       directory:
         include: "{external-secrets.yaml}"
+    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
+      targetRevision: HEAD
+      path: argocd/apps/external-secrets
+      directory:
+        include: "{external-secrets-manifests.yaml}"
 
   destination:
     server: https://kubernetes.default.svc

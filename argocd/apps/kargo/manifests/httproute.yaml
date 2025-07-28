@@ -14,7 +14,9 @@ spec:
   hostnames:
     - kargo.civilsnut.se
   parentRefs:
-    - name: shared-gateway
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: shared-gateway
       namespace: gateway-system
       sectionName: https
   rules:
@@ -23,6 +25,7 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: kargo-api
+        - group: ""
+          name: kargo-api
           port: 443
-          weight: 100
+          weight: 1

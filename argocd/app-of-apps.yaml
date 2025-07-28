@@ -126,11 +126,6 @@ spec:
       path: argocd/apps/kargo
       directory:
         include: "{kargo.yaml}"
-    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
-      targetRevision: HEAD
-      path: argocd/apps/kargo
-      directory:
-        include: "{kargo-manifests.yaml}"
 
   destination:
     server: https://kubernetes.default.svc

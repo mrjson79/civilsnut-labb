@@ -28,6 +28,6 @@ spec:
       backendRefs:
         - group: ""
           kind: Service
-          name: kargo-ui
+          name: kargo-api
           port: 8080
           weight: 1

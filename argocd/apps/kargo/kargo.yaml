@@ -9,114 +9,17 @@ metadata:
     app.kubernetes.io/managed-by: argocd
 spec:
   project: default
-  source:
-    chart: kargo
-    repoURL: ghcr.io/akuity/kargo-charts
-    targetRevision: 1.6.1
-    helm:
-      values: |
-        api:
-          adminAccount:
-            passwordHash:
-              valueFrom:
-                secretKeyRef:
-                  name: kargo-admin-secret
-                  key: password-hash
-
-        controller:
-          resources:
-            limits:
-              cpu: 500m
-              memory: 512Mi
-            requests:
-              cpu: 100m
-              memory: 128Mi
-
-          nodeSelector:
-            has-disk: "yes"
-
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-              - ALL
-            readOnlyRootFilesystem: true
-            runAsNonRoot: true
-            runAsUser: 65534
-            seccompProfile:
-              type: RuntimeDefault
-
-        api:
-          adminAccount:
-            passwordHash: "$$2y$10$mTI2CxwnWH5gN2XNHpfX0uS9em2nKmZgyy63TE3CjBSLInMJ/w7uK"
-
-          resources:
-            limits:
-              cpu: 200m
-              memory: 256Mi
-            requests:
-              cpu: 50m
-              memory: 64Mi
-
-          nodeSelector:
-            has-disk: "yes"
-
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-              - ALL
-            readOnlyRootFilesystem: true
-            runAsNonRoot: true
-            runAsUser: 65534
-            seccompProfile:
-              type: RuntimeDefault
-
-        webhooks:
-          resources:
-            limits:
-              cpu: 200m
-              memory: 256Mi
-            requests:
-              cpu: 50m
-              memory: 64Mi
-
-          nodeSelector:
-            has-disk: "yes"
-
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-              - ALL
-            readOnlyRootFilesystem: true
-            runAsNonRoot: true
-            runAsUser: 65534
-            seccompProfile:
-              type: RuntimeDefault
-
-        managementController:
-          resources:
-            limits:
-              cpu: 200m
-              memory: 256Mi
-            requests:
-              cpu: 50m
-              memory: 64Mi
-
-          nodeSelector:
-            has-disk: "yes"
-
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-              - ALL
-            readOnlyRootFilesystem: true
-            runAsNonRoot: true
-            runAsUser: 65534
-            seccompProfile:
-              type: RuntimeDefault
+  sources:
+    - chart: kargo
+      repoURL: oci://ghcr.io/akuity/kargo-charts
+      targetRevision: 1.6.1
+      helm:
+        valueFiles:
+          - $values/argocd/apps/kargo/manifests/values.yaml
+    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
+      targetRevision: HEAD
+      path: argocd/apps/kargo/manifests
+      ref: values
 
   destination:
     server: https://kubernetes.default.svc

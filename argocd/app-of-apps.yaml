@@ -114,6 +114,7 @@ spec:
       path: argocd/apps/external-secrets
       directory:
         include: "{external-secrets.yaml}"
+        recursive: true
 
   destination:
     server: https://kubernetes.default.svc

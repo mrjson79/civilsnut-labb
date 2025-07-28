@@ -93,3 +93,6 @@ managementController:
     runAsUser: 65534
     seccompProfile:
       type: RuntimeDefault
+
+rollouts:
+  integrationEnabled: true

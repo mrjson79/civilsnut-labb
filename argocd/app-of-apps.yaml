@@ -101,6 +101,13 @@ spec:
       directory:
         include: "{zigbee2mqtt.yaml,httproute.yaml,namespace.yaml,referencegrant.yaml}"
 
+    # 1Password Connect Application
+    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
+      targetRevision: HEAD
+      path: argocd/apps/1password-connect
+      directory:
+        include: "{1password-connect.yaml}"
+
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

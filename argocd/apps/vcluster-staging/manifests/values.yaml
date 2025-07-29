@@ -1,3 +1,0 @@
-# Empty values file - using chart defaults for vcluster 0.19.5
-# This ensures we don't violate the chart schema
-{}

@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vcluster-staging
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: vcluster-staging
+    app.kubernetes.io/component: vcluster
+    app.kubernetes.io/managed-by: argocd
+spec:
+  project: default
+  sources:
+    - chart: vcluster
+      repoURL: https://charts.loft.sh
+      targetRevision: 0.19.5
+      helm:
+        valueFiles:
+          - $values/argocd/apps/vcluster-staging/manifests/values.yaml
+    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
+      targetRevision: HEAD
+      path: argocd/apps/vcluster-staging/manifests
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: staging
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

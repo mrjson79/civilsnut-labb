@@ -1,0 +1,182 @@
+# vcluster configuration for staging environment
+vcluster:
+  image: rancher/k3s:v1.29.0-k3s1
+
+# Resource configuration for staging
+resources:
+  limits:
+    cpu: 2
+    memory: 4Gi
+  requests:
+    cpu: 1
+    memory: 2Gi
+
+# Storage configuration
+storage:
+  persistence: true
+  size: 20Gi
+  storageClass: longhorn
+
+# Networking configuration
+networking:
+  advanced: true
+  resolveDNS: true
+
+# Enable CoreDNS for proper DNS resolution
+coredns:
+  enabled: true
+  replicas: 1
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
+# RBAC configuration
+rbac:
+  clusterRole:
+    create: true
+  role:
+    create: true
+
+# Service configuration
+service:
+  type: ClusterIP
+
+# Security context
+securityContext:
+  runAsUser: 0
+  runAsNonRoot: false
+
+# Ingress configuration (disabled for now)
+ingress:
+  enabled: false
+
+# Enable metrics
+metrics:
+  proxy:
+    enabled: true
+
+# Node configuration for k3s
+vclusterConf: |
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: vcluster-config
+  data:
+    config.yaml: |
+      export-kubeconfig:
+        context: staging
+        server: https://staging.staging.svc.cluster.local:443
+      sync:
+        services:
+          enabled: true
+        configmaps:
+          enabled: true
+        secrets:
+          enabled: true
+        endpoints:
+          enabled: true
+        pods:
+          enabled: true
+        events:
+          enabled: true
+        persistentvolumeclaims:
+          enabled: true
+        ingresses:
+          enabled: true
+        nodes:
+          enabled: false
+        persistentvolumes:
+          enabled: false
+
+# Sync configuration
+sync:
+  services:
+    enabled: true
+  configmaps:
+    enabled: true
+  secrets:
+    enabled: true
+  endpoints:
+    enabled: true
+  pods:
+    enabled: true
+  events:
+    enabled: true
+  persistentvolumeclaims:
+    enabled: true
+  ingresses:
+    enabled: true
+  networkpolicies:
+    enabled: false
+  volumesnapshots:
+    enabled: false
+  poddisruptionbudgets:
+    enabled: false
+  serviceaccounts:
+    enabled: true
+
+# Multi-namespace mode
+multiNamespaceMode:
+  enabled: false
+
+# Enable plugin system
+plugin: {}
+
+# Disable telemetry
+telemetry:
+  disabled: true
+
+# Pro features (if using vcluster pro)
+pro: false
+
+# Init container resources
+init:
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
+# Additional environment variables
+env: []
+
+# Node selector for scheduling
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity rules
+affinity: {}
+
+# Pod annotations
+podAnnotations:
+  kargo.akuity.io/stage: staging
+
+# Service account
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+# Priority class
+priorityClassName: ""
+
+# Pod security context
+podSecurityContext:
+  runAsUser: 0
+  runAsGroup: 0
+  runAsNonRoot: false
+  fsGroup: 0
+
+# Labels to add to all resources
+commonLabels:
+  environment: staging
+  managed-by: argocd
+  kargo.akuity.io/stage: staging

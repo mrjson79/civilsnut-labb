@@ -127,6 +127,27 @@ spec:
       directory:
         include: "{kargo.yaml}"
 
+    # vcluster Staging Application
+    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
+      targetRevision: HEAD
+      path: argocd/apps/vcluster-staging
+      directory:
+        include: "vcluster-staging.yaml"
+
+    # Podinfo Staging Application (vcluster)
+    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
+      targetRevision: HEAD
+      path: argocd/apps/podinfo-staging
+      directory:
+        include: "podinfo-staging.yaml"
+
+    # Podinfo Production Application
+    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
+      targetRevision: HEAD
+      path: argocd/apps/podinfo-production
+      directory:
+        include: "podinfo-production.yaml"
+
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

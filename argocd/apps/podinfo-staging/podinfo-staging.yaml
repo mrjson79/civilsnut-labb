@@ -1,0 +1,61 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: podinfo-staging
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: podinfo-staging
+    app.kubernetes.io/component: web-application
+    app.kubernetes.io/environment: staging
+    app.kubernetes.io/managed-by: argocd
+    kargo.akuity.io/stage: staging
+    kargo.akuity.io/project: podinfo
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"
+    kargo.akuity.io/authorized-stage: staging
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/mrjson79/civilsnut-labb.git
+    targetRevision: HEAD
+    path: gitops-pipeline/environments/staging
+  destination:
+    # This will be the vcluster API server endpoint
+    server: https://staging.staging.svc.cluster.local:443
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      - RespectIgnoreDifferences=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+  # Health check configuration
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas
+    - group: v1
+      kind: ConfigMap
+      name: podinfo-config
+      jsonPointers:
+        - /data
+  # Sync waves for proper ordering
+  info:
+    - name: Environment
+      value: Staging
+    - name: Cluster
+      value: vcluster-staging
+    - name: Stage
+      value: staging
+    - name: Managed By
+      value: Kargo GitOps Pipeline

@@ -1,0 +1,115 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: podinfo
+  namespace: kargo-system
+  labels:
+    app.kubernetes.io/name: podinfo
+    app.kubernetes.io/component: kargo-warehouse
+    app.kubernetes.io/managed-by: argocd
+    kargo.akuity.io/project: podinfo
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  # Git repository subscription
+  subscriptions:
+    - git:
+        repoURL: https://github.com/mrjson79/civilsnut-labb.git
+        branch: main
+        path: gitops-pipeline/base
+        includePaths:
+          - "*.yaml"
+          - "*.yml"
+        excludePaths:
+          - ".git/**"
+          - "README.md"
+        pullRequestIntegration:
+          github:
+            owner: mrjson79
+            repo: civilsnut-labb
+            accessTokenSecret:
+              name: github-token
+              key: token
+              optional: true
+
+    # Container image subscription for podinfo
+    - image:
+        repoURL: ghcr.io/stefanprodan/podinfo
+        semverConstraint: ">=6.0.0"
+        platform: linux/amd64
+        discoveryLimit: 10
+        allowTags: "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        ignoreTagsRegex: ".*-(alpha|beta|rc).*"
+
+    # Alternative registry for podinfo (docker.io)
+    - image:
+        repoURL: docker.io/stefanprodan/podinfo
+        semverConstraint: ">=6.0.0"
+        platform: linux/amd64
+        discoveryLimit: 10
+        allowTags: "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        ignoreTagsRegex: ".*-(alpha|beta|rc).*"
+
+  # Frequency of checks
+  interval: 5m
+
+  # Retention policy for artifacts
+  retentionPolicy:
+    maxArtifacts: 50
+
+  # Health checks
+  health:
+    git:
+      enabled: true
+      timeout: 30s
+    image:
+      enabled: true
+      timeout: 30s
+
+  # Webhook configuration for faster updates
+  webhooks:
+    - name: git-webhook
+      url: https://webhook.example.com/kargo/podinfo
+      secret:
+        name: webhook-secret
+        key: token
+        optional: true
+
+  # Notification configuration
+  notifications:
+    - name: slack-notifications
+      webhook:
+        url: https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
+        template: |
+          New artifact available in podinfo warehouse:
+          {{ range .Artifacts }}
+          - {{ .Type }}: {{ .RepoURL }}@{{ .Tag }}
+          {{ end }}
+        secret:
+          name: slack-webhook
+          key: url
+          optional: true
+
+  # Security configuration
+  security:
+    signatureVerification:
+      enabled: false
+      keySecret:
+        name: cosign-public-key
+        key: cosign.pub
+        optional: true
+
+  # Resource limits
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  # Labels to propagate to created artifacts
+  artifactLabels:
+    warehouse: podinfo
+    project: podinfo
+    managed-by: kargo

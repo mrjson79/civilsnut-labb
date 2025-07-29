@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: staging
+  labels:
+    name: staging
+    environment: staging
+    managed-by: argocd
+    kargo.akuity.io/stage: staging
+    app.kubernetes.io/name: staging
+    app.kubernetes.io/component: namespace
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+    kargo.akuity.io/authorized-stage: staging
+spec: {}

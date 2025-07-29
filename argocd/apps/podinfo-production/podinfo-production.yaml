@@ -1,0 +1,65 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: podinfo-production
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: podinfo-production
+    app.kubernetes.io/component: web-application
+    app.kubernetes.io/environment: production
+    app.kubernetes.io/managed-by: argocd
+    kargo.akuity.io/stage: production
+    kargo.akuity.io/project: podinfo
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+    kargo.akuity.io/authorized-stage: production
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/mrjson79/civilsnut-labb.git
+    targetRevision: HEAD
+    path: gitops-pipeline/environments/production
+  destination:
+    # Main cluster
+    server: https://kubernetes.default.svc
+    namespace: podinfo-production
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      - RespectIgnoreDifferences=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+  # Health check configuration
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas
+    - group: v1
+      kind: ConfigMap
+      name: podinfo-config
+      jsonPointers:
+        - /data
+  # Additional production-specific health checks
+  revisionHistoryLimit: 10
+  # Sync waves for proper ordering
+  info:
+    - name: Environment
+      value: Production
+    - name: Cluster
+      value: main
+    - name: Stage
+      value: production
+    - name: Managed By
+      value: Kargo GitOps Pipeline
+    - name: Criticality
+      value: High

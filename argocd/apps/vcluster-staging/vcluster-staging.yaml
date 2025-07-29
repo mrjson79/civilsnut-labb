@@ -12,23 +12,10 @@ spec:
   source:
     chart: vcluster
     repoURL: https://charts.loft.sh
-    targetRevision: 0.19.5
+    targetRevision: 0.26.0
     helm:
       values: |
-        image: loftsh/vcluster:0.19.5
-        vclusterImage: rancher/k3s:v1.28.6-k3s2
-        syncerImage: loftsh/vcluster:0.19.5
-
-        storage:
-          size: 20Gi
-
-        resources:
-          limits:
-            cpu: 2
-            memory: 4Gi
-          requests:
-            cpu: 1
-            memory: 2Gi
+        {}
   destination:
     server: https://kubernetes.default.svc
     namespace: staging

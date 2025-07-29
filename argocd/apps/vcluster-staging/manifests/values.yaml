@@ -1,15 +1,41 @@
 # vcluster configuration for staging environment
+# Compatible with vcluster chart 0.19.5
+
+# Syncer configuration
+syncer:
+  image: loftsh/vcluster:0.19.5
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+  env: []
+
+# Virtual cluster configuration
 vcluster:
   image: rancher/k3s:v1.29.0-k3s1
-
-# Resource configuration for staging
-resources:
-  limits:
-    cpu: 2
-    memory: 4Gi
-  requests:
-    cpu: 1
-    memory: 2Gi
+  command:
+    - /bin/k3s
+  baseArgs:
+    - server
+    - --write-kubeconfig=/data/k3s-config/kube-config.yaml
+    - --data-dir=/data
+    - --disable=traefik,servicelb,metrics-server,local-storage
+    - --disable-network-policy
+    - --disable-agent
+    - --disable-scheduler
+    - --disable-cloud-controller
+    - --flannel-backend=none
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 4Gi
+    requests:
+      cpu: 1000m
+      memory: 2Gi
+  env: []
 
 # Storage configuration
 storage:
@@ -17,15 +43,15 @@ storage:
   size: 20Gi
   storageClass: longhorn
 
-# Networking configuration
-networking:
-  advanced: true
-  resolveDNS: true
+# Service configuration
+service:
+  type: ClusterIP
 
-# Enable CoreDNS for proper DNS resolution
+# CoreDNS configuration
 coredns:
   enabled: true
   replicas: 1
+  image: rancher/mirrored-coredns-coredns:1.10.1
   resources:
     limits:
       cpu: 100m
@@ -34,82 +60,45 @@ coredns:
       cpu: 50m
       memory: 64Mi
 
-# RBAC configuration
-rbac:
-  clusterRole:
-    create: true
-  role:
-    create: true
-
-# Service configuration
-service:
-  type: ClusterIP
-
-# Security context
-securityContext:
-  runAsUser: 0
-  runAsNonRoot: false
-
-# Ingress configuration (disabled for now)
-ingress:
-  enabled: false
-
-# Enable metrics
-metrics:
-  proxy:
-    enabled: true
-
-# Node configuration for k3s
-vclusterConf: |
-  apiVersion: v1
-  kind: ConfigMap
-  metadata:
-    name: vcluster-config
-  data:
-    config.yaml: |
-      export-kubeconfig:
-        context: staging
-        server: https://staging.staging.svc.cluster.local:443
-      sync:
-        services:
-          enabled: true
-        configmaps:
-          enabled: true
-        secrets:
-          enabled: true
-        endpoints:
-          enabled: true
-        pods:
-          enabled: true
-        events:
-          enabled: true
-        persistentvolumeclaims:
-          enabled: true
-        ingresses:
-          enabled: true
-        nodes:
-          enabled: false
-        persistentvolumes:
-          enabled: false
-
-# Sync configuration
+# Resource sync configuration
 sync:
   services:
     enabled: true
   configmaps:
     enabled: true
+    all: false
   secrets:
     enabled: true
+    all: false
   endpoints:
     enabled: true
   pods:
     enabled: true
+    ephemeralContainers: false
+    status: true
   events:
     enabled: true
   persistentvolumeclaims:
     enabled: true
   ingresses:
     enabled: true
+  ingressclasses:
+    enabled: false
+  fake-nodes:
+    enabled: true
+  fake-persistentvolumes:
+    enabled: true
+  nodes:
+    enabled: false
+    syncBackChanges: false
+  persistentvolumes:
+    enabled: false
+  storageclasses:
+    enabled: false
+  hoststorageclasses:
+    enabled: false
+  priorityclasses:
+    enabled: false
   networkpolicies:
     enabled: false
   volumesnapshots:
@@ -119,45 +108,12 @@ sync:
   serviceaccounts:
     enabled: true
 
-# Multi-namespace mode
-multiNamespaceMode:
-  enabled: false
-
-# Enable plugin system
-plugin: {}
-
-# Disable telemetry
-telemetry:
-  disabled: true
-
-# Pro features (if using vcluster pro)
-pro: false
-
-# Init container resources
-init:
-  resources:
-    limits:
-      cpu: 100m
-      memory: 128Mi
-    requests:
-      cpu: 50m
-      memory: 64Mi
-
-# Additional environment variables
-env: []
-
-# Node selector for scheduling
-nodeSelector: {}
-
-# Tolerations
-tolerations: []
-
-# Affinity rules
-affinity: {}
-
-# Pod annotations
-podAnnotations:
-  kargo.akuity.io/stage: staging
+# RBAC configuration
+rbac:
+  clusterRole:
+    create: true
+  role:
+    create: true
 
 # Service account
 serviceAccount:
@@ -165,8 +121,14 @@ serviceAccount:
   name: ""
   annotations: {}
 
-# Priority class
-priorityClassName: ""
+# Security context
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: false
+  runAsNonRoot: false
 
 # Pod security context
 podSecurityContext:
@@ -175,8 +137,59 @@ podSecurityContext:
   runAsNonRoot: false
   fsGroup: 0
 
-# Labels to add to all resources
+# Disable telemetry
+telemetry:
+  disabled: true
+
+# Ingress configuration
+ingress:
+  enabled: false
+
+# Isolation settings
+isolation:
+  enabled: false
+
+# Multinamespace mode
+multiNamespaceMode:
+  enabled: false
+
+# Node selector
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity
+affinity: {}
+
+# Pod annotations
+podAnnotations:
+  kargo.akuity.io/stage: staging
+  environment: staging
+
+# Common labels
 commonLabels:
   environment: staging
   managed-by: argocd
   kargo.akuity.io/stage: staging
+
+# Priority class
+priorityClassName: ""
+
+# Plugin configuration
+plugin: {}
+
+# Pro features
+pro: false
+
+# Init manifests
+init:
+  manifests: ""
+
+# Proxy settings
+proxy:
+  metricsServer:
+    nodes:
+      enabled: false
+    pods:
+      enabled: false

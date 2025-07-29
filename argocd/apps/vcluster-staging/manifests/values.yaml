@@ -1,195 +1,28 @@
-# vcluster configuration for staging environment
-# Compatible with vcluster chart 0.19.5
+# Minimal vcluster values.yaml for version 0.19.5
+# Only includes supported configuration options
 
-# Syncer configuration
-syncer:
-  image: loftsh/vcluster:0.19.5
-  resources:
-    limits:
-      cpu: 1000m
-      memory: 2Gi
-    requests:
-      cpu: 200m
-      memory: 256Mi
-  env: []
-
-# Virtual cluster configuration
-vcluster:
-  image: rancher/k3s:v1.29.0-k3s1
-  command:
-    - /bin/k3s
-  baseArgs:
-    - server
-    - --write-kubeconfig=/data/k3s-config/kube-config.yaml
-    - --data-dir=/data
-    - --disable=traefik,servicelb,metrics-server,local-storage
-    - --disable-network-policy
-    - --disable-agent
-    - --disable-scheduler
-    - --disable-cloud-controller
-    - --flannel-backend=none
-  resources:
-    limits:
-      cpu: 2000m
-      memory: 4Gi
-    requests:
-      cpu: 1000m
-      memory: 2Gi
-  env: []
-
-# Storage configuration
+# Enable storage persistence
 storage:
-  persistence: true
   size: 20Gi
-  storageClass: longhorn
 
-# Service configuration
-service:
-  type: ClusterIP
-
-# CoreDNS configuration
-coredns:
-  enabled: true
-  replicas: 1
-  image: rancher/mirrored-coredns-coredns:1.10.1
-  resources:
-    limits:
-      cpu: 100m
-      memory: 128Mi
-    requests:
-      cpu: 50m
-      memory: 64Mi
-
-# Resource sync configuration
+# Configure resource sync
 sync:
+  persistentvolumeclaims:
+    enabled: true
   services:
     enabled: true
   configmaps:
     enabled: true
-    all: false
   secrets:
-    enabled: true
-    all: false
-  endpoints:
-    enabled: true
-  pods:
-    enabled: true
-    ephemeralContainers: false
-    status: true
-  events:
-    enabled: true
-  persistentvolumeclaims:
     enabled: true
   ingresses:
     enabled: true
-  ingressclasses:
-    enabled: false
-  fake-nodes:
-    enabled: true
-  fake-persistentvolumes:
-    enabled: true
-  nodes:
-    enabled: false
-    syncBackChanges: false
-  persistentvolumes:
-    enabled: false
-  storageclasses:
-    enabled: false
-  hoststorageclasses:
-    enabled: false
-  priorityclasses:
-    enabled: false
-  networkpolicies:
-    enabled: false
-  volumesnapshots:
-    enabled: false
-  poddisruptionbudgets:
-    enabled: false
-  serviceaccounts:
-    enabled: true
-
-# RBAC configuration
-rbac:
-  clusterRole:
-    create: true
-  role:
-    create: true
-
-# Service account
-serviceAccount:
-  create: true
-  name: ""
-  annotations: {}
-
-# Security context
-securityContext:
-  allowPrivilegeEscalation: false
-  capabilities:
-    drop:
-      - ALL
-  readOnlyRootFilesystem: false
-  runAsNonRoot: false
-
-# Pod security context
-podSecurityContext:
-  runAsUser: 0
-  runAsGroup: 0
-  runAsNonRoot: false
-  fsGroup: 0
 
 # Disable telemetry
 telemetry:
   disabled: true
 
-# Ingress configuration
-ingress:
-  enabled: false
-
-# Isolation settings
-isolation:
-  enabled: false
-
-# Multinamespace mode
-multiNamespaceMode:
-  enabled: false
-
-# Node selector
-nodeSelector: {}
-
-# Tolerations
-tolerations: []
-
-# Affinity
-affinity: {}
-
-# Pod annotations
-podAnnotations:
-  kargo.akuity.io/stage: staging
-  environment: staging
-
-# Common labels
-commonLabels:
-  environment: staging
-  managed-by: argocd
-  kargo.akuity.io/stage: staging
-
-# Priority class
-priorityClassName: ""
-
-# Plugin configuration
-plugin: {}
-
-# Pro features
-pro: false
-
-# Init manifests
-init:
-  manifests: ""
-
-# Proxy settings
-proxy:
-  metricsServer:
-    nodes:
-      enabled: false
-    pods:
-      enabled: false
+# RBAC configuration
+rbac:
+  clusterRole:
+    create: true

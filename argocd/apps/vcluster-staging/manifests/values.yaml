@@ -1,28 +1,3 @@
-# Minimal vcluster values.yaml for version 0.19.5
-# Only includes supported configuration options
-
-# Enable storage persistence
-storage:
-  size: 20Gi
-
-# Configure resource sync
-sync:
-  persistentvolumeclaims:
-    enabled: true
-  services:
-    enabled: true
-  configmaps:
-    enabled: true
-  secrets:
-    enabled: true
-  ingresses:
-    enabled: true
-
-# Disable telemetry
-telemetry:
-  disabled: true
-
-# RBAC configuration
-rbac:
-  clusterRole:
-    create: true
+# Empty values file - using chart defaults for vcluster 0.19.5
+# This ensures we don't violate the chart schema
+{}

@@ -23,12 +23,3 @@ controlPlane:
         value: /etc/ssl/certs/vcluster/tls.crt
       - name: VCLUSTER_TLS_KEY_FILE
         value: /etc/ssl/certs/vcluster/tls.key
-
-# Allow cross-namespace secret access
-sync:
-  fromHost:
-    secrets:
-      enabled: true
-      mappings:
-        byName:
-          "cert-manager/civilsnut-se-wildcard-tls": "staging/civilsnut-se-wildcard-tls"

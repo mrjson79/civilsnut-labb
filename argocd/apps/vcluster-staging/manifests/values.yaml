@@ -1,4 +1,4 @@
-# vCluster 0.26.0 configuration with LoadBalancer service
+# vCluster 0.26.0 configuration with LoadBalancer service and wildcard certificate
 controlPlane:
   service:
     enabled: true
@@ -7,3 +7,28 @@ controlPlane:
   proxy:
     extraSANs:
       - vcluster-staging.civilsnut.se
+  statefulSet:
+    persistence:
+      addVolumes:
+        - name: wildcard-cert
+          secret:
+            secretName: civilsnut-se-wildcard-tls
+            defaultMode: 0644
+      addVolumeMounts:
+        - name: wildcard-cert
+          mountPath: /etc/ssl/certs/vcluster
+          readOnly: true
+    env:
+      - name: VCLUSTER_TLS_CERT_FILE
+        value: /etc/ssl/certs/vcluster/tls.crt
+      - name: VCLUSTER_TLS_KEY_FILE
+        value: /etc/ssl/certs/vcluster/tls.key
+
+# Allow cross-namespace secret access
+sync:
+  fromHost:
+    secrets:
+      enabled: true
+      mappings:
+        byName:
+          "cert-manager/civilsnut-se-wildcard-tls": "staging/civilsnut-se-wildcard-tls"

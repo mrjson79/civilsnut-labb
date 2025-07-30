@@ -4,3 +4,5 @@ controlPlane:
     enabled: true
     spec:
       type: LoadBalancer
+  certificatesSANs:
+    - vcluster-staging.civilsnut.se

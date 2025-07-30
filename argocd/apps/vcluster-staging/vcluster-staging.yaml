@@ -15,7 +15,8 @@ spec:
     targetRevision: 0.26.0
     helm:
       values: |
-        {}
+        service:
+          type: LoadBalancer
   destination:
     server: https://kubernetes.default.svc
     namespace: staging

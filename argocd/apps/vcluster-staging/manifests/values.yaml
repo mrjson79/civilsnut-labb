@@ -4,5 +4,6 @@ controlPlane:
     enabled: true
     spec:
       type: LoadBalancer
-  certificatesSANs:
-    - vcluster-staging.civilsnut.se
+  proxy:
+    extraSANs:
+      - vcluster-staging.civilsnut.se

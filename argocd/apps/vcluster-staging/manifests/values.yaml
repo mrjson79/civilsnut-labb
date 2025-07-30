@@ -2,4 +2,4 @@
 service:
   enabled: true
   spec:
-    type: ClusterIP
+    type: LoadBalancer

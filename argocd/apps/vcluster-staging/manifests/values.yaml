@@ -1,2 +1,5 @@
 # Empty values file for vcluster - using chart defaults
-{}
+service:
+  enabled: true
+  spec:
+    type: ClusterIP

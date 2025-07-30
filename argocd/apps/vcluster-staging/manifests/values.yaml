@@ -1,5 +1,6 @@
-# Empty values file for vcluster - using chart defaults
-service:
-  enabled: true
-  spec:
-    type: LoadBalancer
+# vCluster 0.26.0 configuration with LoadBalancer service
+controlPlane:
+  service:
+    enabled: true
+    spec:
+      type: LoadBalancer

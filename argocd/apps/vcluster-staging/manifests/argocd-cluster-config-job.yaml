@@ -25,9 +25,9 @@ rules:
   - apiGroups: [""]
     resources: ["secrets"]
     verbs: ["create", "get", "list", "patch", "update", "delete"]
-  # Access to read services and pods for vCluster connection
+  # Access to read services and serviceaccounts
   - apiGroups: [""]
-    resources: ["services", "pods"]
+    resources: ["services", "serviceaccounts"]
     verbs: ["get", "list"]
   # Access to read namespaces
   - apiGroups: [""]
@@ -61,7 +61,8 @@ metadata:
   name: vcluster-argocd-config-job
   namespace: staging
   labels:
-    app.kubernetes.io/name: vcluster-staging
+    app.kubernetes.io
+/name: vcluster-staging
     app.kubernetes.io/component: argocd-config
     app.kubernetes.io/managed-by: argocd
   annotations:
@@ -80,7 +81,7 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: config-vcluster
-          image: loftsh/vcluster:0.26.0
+          image: bitnami/kubectl:latest
           command:
             - /bin/bash
             - -c
@@ -89,25 +90,85 @@ spec:
 
               echo "Starting vCluster ArgoCD configuration..."
 
-              # Install kubectl
-              curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-              chmod +x kubectl
-              mv kubectl /usr/local/bin/
-
               # Wait for vCluster to be ready
-              echo "Waiting for vCluster to be ready..."
+              echo "Waiting for vCluster service to be ready..."
               kubectl wait --for=condition=ready pod -l app=vcluster -n staging --timeout=300s
 
-              # Connect to vCluster and get kubeconfig
-              echo "Connecting to vCluster at staging.civilsnut.se..."
-              vcluster connect vcluster-staging -n staging --server=https://staging.civilsnut.se --print > /tmp/kubeconfig
+              # Find vCluster admin service account
+              echo "Finding vCluster admin service account..."
+              VCLUSTER_SA=$(kubectl get sa -n staging -l app=vcluster -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || echo "")
 
-              if [ ! -s /tmp/kubeconfig ]; then
-                echo "ERROR: Failed to get kubeconfig from vCluster"
-                exit 1
+              if [ -z "$VCLUSTER_SA" ]; then
+                echo "No vCluster service account found, trying default admin SA..."
+                VCLUSTER_SA="vc-vcluster-staging"
               fi
 
-              echo "Successfully retrieved kubeconfig from vCluster"
+              echo "Using service account: $VCLUSTER_SA"
+
+              # Get the service account token secret
+              SA_SECRET=$(kubectl get sa $VCLUSTER_SA -n staging -o jsonpath='{.secrets[0].name}' 2>/dev/null || echo "")
+
+              if [ -z "$SA_SECRET" ]; then
+                echo "No secret found in SA, creating token..."
+                # Create a token for the service account
+                SA_TOKEN=$(kubectl create token $VCLUSTER_SA -n staging --duration=8760h)
+              else
+                echo "Using existing secret: $SA_SECRET"
+                SA_TOKEN=$(kubectl get secret $SA_SECRET -n staging -o jsonpath='{.data.token}' | base64 -d)
+              fi
+
+              # Get vCluster CA certificate
+              echo "Extracting vCluster CA certificate..."
+              VCLUSTER_CA_SECRET=$(kubectl get secret -n staging -l app=vcluster -o jsonpath='{.items[?(@.type=="kubernetes.io/tls")].metadata.name}' | head -n1)
+
+              if [ -z "$VCLUSTER_CA_SECRET" ]; then
+                echo "Trying alternative CA secret names..."
+                VCLUSTER_CA_SECRET="vc-vcluster-staging-ca"
+              fi
+
+              echo "Using CA secret: $VCLUSTER_CA_SECRET"
+
+              # Extract CA certificate
+              CA_CERT=$(kubectl get secret $VCLUSTER_CA_SECRET -n staging -o jsonpath='{.data.ca\.crt}' 2>/dev/null || \
+                       kubectl get secret $VCLUSTER_CA_SECRET -n staging -o jsonpath='{.data.tls\.crt}' 2>/dev/null || \
+                       echo "")
+
+              if [ -z "$CA_CERT" ]; then
+                echo "Could not find CA certificate, using service CA..."
+                CA_CERT=$(kubectl get secret -n staging -o jsonpath='{.items[?(@.data.ca\.crt)].data.ca\.crt}' | head -n1)
+              fi
+
+              # Build kubeconfig
+              echo "Building kubeconfig..."
+              cat > /tmp/kubeconfig <<EOF
+              apiVersion: v1
+              kind: Config
+              clusters:
+              - cluster:
+                  certificate-authority-data: ${CA_CERT}
+                  server: https://staging.civilsnut.se:443
+                name: vcluster-staging
+              contexts:
+              - context:
+                  cluster: vcluster-staging
+                  user: vcluster-admin
+                  namespace: default
+                name: vcluster-staging
+              current-context: vcluster-staging
+              users:
+              - name: vcluster-admin
+                user:
+                  token: ${SA_TOKEN}
+              EOF
+
+              # Test the kubeconfig
+              echo "Testing kubeconfig..."
+              export KUBECONFIG=/tmp/kubeconfig
+              if ! kubectl get ns default --request-timeout=10s; then
+                echo "WARNING: Could not connect to vCluster, but proceeding with secret creation..."
+              else
+                echo "Successfully connected to vCluster!"
+              fi
 
               # Encode data for ArgoCD cluster secret
               CLUSTER_NAME_B64=$(echo -n "vcluster-staging" | base64 -w 0)

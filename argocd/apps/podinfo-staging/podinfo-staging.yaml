@@ -21,7 +21,7 @@ spec:
     path: gitops-pipeline/environments/staging
   destination:
     # This will be the vcluster API server endpoint
-    server: https://192.168.4.13:443
+    server: https://192.168.4.13
     namespace: default
   syncPolicy:
     automated:

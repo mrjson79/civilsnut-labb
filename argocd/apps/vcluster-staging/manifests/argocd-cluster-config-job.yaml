@@ -70,10 +70,8 @@ metadata:
     app.kubernetes.io/managed-by: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "5"
-    argocd.argoproj.io/hook: PostSync
-    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
 spec:
-  ttlSecondsAfterFinished: 300
+  ttlSecondsAfterFinished: 3600
   template:
     metadata:
       labels:
@@ -153,7 +151,6 @@ spec:
               - cluster:
                   certificate-authority-data: ${CA_CERT}
                   server: https://vcluster-staging.staging.svc.cluster.local:443
-                  insecure-skip-tls-verify: true
                 name: vcluster-staging
               contexts:
               - context:
@@ -171,7 +168,7 @@ spec:
               # Test the kubeconfig
               echo "Testing kubeconfig against internal service..."
               export KUBECONFIG=/tmp/kubeconfig
-              if ! kubectl get ns default --request-timeout=10s --insecure-skip-tls-verify; then
+              if ! kubectl get ns default --request-timeout=10s; then
                 echo "WARNING: Could not connect to vCluster, but proceeding with secret creation..."
               else
                 echo "Successfully connected to vCluster!"
@@ -184,8 +181,8 @@ spec:
               kind: Config
               clusters:
               - cluster:
-                  certificate-authority-data: ${CA_CERT}
                   server: https://staging.civilsnut.se:443
+                  insecure-skip-tls-verify: true
                 name: vcluster-staging
               contexts:
               - context:

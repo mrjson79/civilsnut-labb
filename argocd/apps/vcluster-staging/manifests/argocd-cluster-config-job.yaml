@@ -25,9 +25,9 @@ rules:
   - apiGroups: [""]
     resources: ["secrets"]
     verbs: ["create", "get", "list", "patch", "update", "delete"]
-  # Access to read services and serviceaccounts
+  # Access to read services, serviceaccounts, and pods
   - apiGroups: [""]
-    resources: ["services", "serviceaccounts"]
+    resources: ["services", "serviceaccounts", "pods"]
     verbs: ["get", "list"]
   # Access to read namespaces
   - apiGroups: [""]

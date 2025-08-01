@@ -50,12 +50,3 @@ spec:
       jsonPointers:
         - /data
   # Sync waves for proper ordering
-  info:
-    - name: Environment
-      value: Staging
-    - name: Cluster
-      value: vcluster-staging
-    - name: Stage
-      value: staging
-    - name: Managed By
-      value: Kargo GitOps Pipeline

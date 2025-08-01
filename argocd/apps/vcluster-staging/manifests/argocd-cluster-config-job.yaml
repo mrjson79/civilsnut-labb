@@ -28,7 +28,11 @@ rules:
   # Access to read services, serviceaccounts, and pods
   - apiGroups: [""]
     resources: ["services", "serviceaccounts", "pods"]
-    verbs: ["get", "list"]
+    verbs: ["get", "list", "watch"]
+  # Access to create service account tokens
+  - apiGroups: [""]
+    resources: ["serviceaccounts/token"]
+    verbs: ["create"]
   # Access to read namespaces
   - apiGroups: [""]
     resources: ["namespaces"]

@@ -61,8 +61,7 @@ metadata:
   name: vcluster-argocd-config-job
   namespace: staging
   labels:
-    app.kubernetes.io
-/name: vcluster-staging
+    app.kubernetes.io/name: vcluster-staging
     app.kubernetes.io/component: argocd-config
     app.kubernetes.io/managed-by: argocd
   annotations:

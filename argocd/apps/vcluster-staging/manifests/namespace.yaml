@@ -9,6 +9,7 @@ metadata:
     kargo.akuity.io/stage: staging
     app.kubernetes.io/name: staging
     app.kubernetes.io/component: namespace
+    gateway.networking.k8s.io/allowed: "true"
   annotations:
     argocd.argoproj.io/sync-wave: "-1"
     kargo.akuity.io/authorized-stage: staging

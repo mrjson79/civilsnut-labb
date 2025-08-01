@@ -1,9 +1,32 @@
-# vCluster 0.26.0 configuration with LoadBalancer service
-controlPlane:
-  service:
-    enabled: true
-    spec:
-      type: LoadBalancer
-  proxy:
-    extraSANs:
-      - vcluster-staging.civilsnut.se
+# vCluster 0.26.0 configuration for staging.civilsnut.se
+service:
+  type: LoadBalancer
+
+# Add extra SANs to the vCluster certificate
+proxy:
+  extraSANs:
+    - staging.civilsnut.se
+    - vcluster-staging.civilsnut.se
+
+# Storage configuration
+storage:
+  size: 5Gi
+  storageClass: longhorn
+
+# Resource limits
+resources:
+  limits:
+    cpu: 1000m
+    memory: 2Gi
+  requests:
+    cpu: 100m
+    memory: 512Mi
+
+# RBAC
+rbac:
+  role:
+    extended: true
+
+# Disable telemetry
+telemetry:
+  disabled: true

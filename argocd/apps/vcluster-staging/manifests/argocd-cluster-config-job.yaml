@@ -185,7 +185,7 @@ spec:
                     "name": "vcluster-staging",
                     "cluster": {
                       "server": "https://staging.civilsnut.se:443",
-                      "insecure-skip-tls-verify": true
+                      "insecure-skip-tls-verify": false
                     }
                   }
                 ],
@@ -236,6 +236,7 @@ spec:
                 name: ${CLUSTER_NAME_B64}
                 server: ${SERVER_URL_B64}
                 config: ${KUBECONFIG_B64}
+                insecure: dHJ1ZQ==
               EOF
 
               echo "ArgoCD cluster secret created successfully!"

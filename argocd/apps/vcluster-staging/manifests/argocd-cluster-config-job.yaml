@@ -177,39 +177,39 @@ spec:
               # Build final kubeconfig for ArgoCD (using external endpoint) in JSON format
               echo "Building final kubeconfig in JSON format for ArgoCD..."
               cat > /tmp/argocd-kubeconfig <<EOF
-{
-  "apiVersion": "v1",
-  "kind": "Config",
-  "clusters": [
-    {
-      "name": "vcluster-staging",
-      "cluster": {
-        "server": "https://staging.civilsnut.se:443",
-        "insecure-skip-tls-verify": true
-      }
-    }
-  ],
-  "contexts": [
-    {
-      "name": "vcluster-staging",
-      "context": {
-        "cluster": "vcluster-staging",
-        "user": "vcluster-admin",
-        "namespace": "default"
-      }
-    }
-  ],
-  "current-context": "vcluster-staging",
-  "users": [
-    {
-      "name": "vcluster-admin",
-      "user": {
-        "token": "${SA_TOKEN}"
-      }
-    }
-  ]
-}
-EOF
+              {
+                "apiVersion": "v1",
+                "kind": "Config",
+                "clusters": [
+                  {
+                    "name": "vcluster-staging",
+                    "cluster": {
+                      "server": "https://staging.civilsnut.se:443",
+                      "insecure-skip-tls-verify": true
+                    }
+                  }
+                ],
+                "contexts": [
+                  {
+                    "name": "vcluster-staging",
+                    "context": {
+                      "cluster": "vcluster-staging",
+                      "user": "vcluster-admin",
+                      "namespace": "default"
+                    }
+                  }
+                ],
+                "current-context": "vcluster-staging",
+                "users": [
+                  {
+                    "name": "vcluster-admin",
+                    "user": {
+                      "token": "${SA_TOKEN}"
+                    }
+                  }
+                ]
+              }
+              EOF
 
               # Encode data for ArgoCD cluster secret
               CLUSTER_NAME_B64=$(echo -n "vcluster-staging" | base64 -w 0)

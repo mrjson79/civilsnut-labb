@@ -1,0 +1,143 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vcluster-argocd-config
+  namespace: staging
+  labels:
+    app.kubernetes.io/name: vcluster-staging
+    app.kubernetes.io/component: argocd-config
+    app.kubernetes.io/managed-by: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: vcluster-argocd-config
+  labels:
+    app.kubernetes.io/name: vcluster-staging
+    app.kubernetes.io/component: argocd-config
+    app.kubernetes.io/managed-by: argocd
+rules:
+  # Access to create/update secrets in argocd namespace
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create", "get", "list", "patch", "update", "delete"]
+  # Access to read services and pods for vCluster connection
+  - apiGroups: [""]
+    resources: ["services", "pods"]
+    verbs: ["get", "list"]
+  # Access to read namespaces
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["get", "list"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: vcluster-argocd-config
+  labels:
+    app.kubernetes.io/name: vcluster-staging
+    app.kubernetes.io/component: argocd-config
+    app.kubernetes.io/managed-by: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+subjects:
+  - kind: ServiceAccount
+    name: vcluster-argocd-config
+    namespace: staging
+roleRef:
+  kind: ClusterRole
+  name: vcluster-argocd-config
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vcluster-argocd-config-job
+  namespace: staging
+  labels:
+    app.kubernetes.io/name: vcluster-staging
+    app.kubernetes.io/component: argocd-config
+    app.kubernetes.io/managed-by: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: vcluster-staging
+        app.kubernetes.io/component: argocd-config
+    spec:
+      serviceAccountName: vcluster-argocd-config
+      restartPolicy: OnFailure
+      containers:
+        - name: config-vcluster
+          image: loftsh/vcluster:0.26.0
+          command:
+            - /bin/bash
+            - -c
+            - |
+              set -e
+
+              echo "Starting vCluster ArgoCD configuration..."
+
+              # Install kubectl
+              curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+              chmod +x kubectl
+              mv kubectl /usr/local/bin/
+
+              # Wait for vCluster to be ready
+              echo "Waiting for vCluster to be ready..."
+              kubectl wait --for=condition=ready pod -l app=vcluster -n staging --timeout=300s
+
+              # Connect to vCluster and get kubeconfig
+              echo "Connecting to vCluster at staging.civilsnut.se..."
+              vcluster connect vcluster-staging -n staging --server=https://staging.civilsnut.se --print > /tmp/kubeconfig
+
+              if [ ! -s /tmp/kubeconfig ]; then
+                echo "ERROR: Failed to get kubeconfig from vCluster"
+                exit 1
+              fi
+
+              echo "Successfully retrieved kubeconfig from vCluster"
+
+              # Encode data for ArgoCD cluster secret
+              CLUSTER_NAME_B64=$(echo -n "vcluster-staging" | base64 -w 0)
+              SERVER_URL_B64=$(echo -n "https://staging.civilsnut.se:443" | base64 -w 0)
+              KUBECONFIG_B64=$(cat /tmp/kubeconfig | base64 -w 0)
+
+              # Create ArgoCD cluster secret
+              echo "Creating ArgoCD cluster secret..."
+              cat <<EOF | kubectl apply -f -
+              apiVersion: v1
+              kind: Secret
+              metadata:
+                name: vcluster-staging-cluster
+                namespace: argocd
+                labels:
+                  argocd.argoproj.io/secret-type: cluster
+                  app.kubernetes.io/name: vcluster-staging
+                  app.kubernetes.io/component: argocd-cluster-secret
+                  app.kubernetes.io/managed-by: argocd
+                  environment: staging
+              type: Opaque
+              data:
+                name: ${CLUSTER_NAME_B64}
+                server: ${SERVER_URL_B64}
+                config: ${KUBECONFIG_B64}
+              EOF
+
+              echo "ArgoCD cluster secret created successfully!"
+
+              # Verify the secret
+              kubectl get secret vcluster-staging-cluster -n argocd -o yaml
+
+              echo "vCluster ArgoCD configuration completed successfully"

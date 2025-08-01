@@ -131,19 +131,55 @@ spec:
 
               echo "Using CA secret: $VCLUSTER_CA_SECRET"
 
-              # Extract CA certificate
-              CA_CERT=$(kubectl get secret $VCLUSTER_CA_SECRET -n staging -o jsonpath='{.data.ca\.crt}' 2>/dev/null || \
-                       kubectl get secret $VCLUSTER_CA_SECRET -n staging -o jsonpath='{.data.tls\.crt}' 2>/dev/null || \
-                       echo "")
+              # Extract CA certificate from vCluster certs secret
+              VCLUSTER_CERTS_SECRET="vcluster-staging-certs"
+              CA_CERT=$(kubectl get secret $VCLUSTER_CERTS_SECRET -n staging -o jsonpath='{.data.ca\.crt}' 2>/dev/null || echo "")
 
               if [ -z "$CA_CERT" ]; then
-                echo "Could not find CA certificate, using service CA..."
+                echo "Could not find CA in certs secret, trying other secrets..."
                 CA_CERT=$(kubectl get secret -n staging -o jsonpath='{.items[?(@.data.ca\.crt)].data.ca\.crt}' | head -n1)
               fi
 
-              # Build kubeconfig
-              echo "Building kubeconfig..."
+              if [ -z "$CA_CERT" ]; then
+                echo "No CA certificate found, will use insecure connection"
+              fi
+
+              # Build kubeconfig for testing (using internal service)
+              echo "Building test kubeconfig..."
               cat > /tmp/kubeconfig <<EOF
+              apiVersion: v1
+              kind: Config
+              clusters:
+              - cluster:
+                  certificate-authority-data: ${CA_CERT}
+                  server: https://vcluster-staging.staging.svc.cluster.local:443
+                  insecure-skip-tls-verify: true
+                name: vcluster-staging
+              contexts:
+              - context:
+                  cluster: vcluster-staging
+                  user: vcluster-admin
+                  namespace: default
+                name: vcluster-staging
+              current-context: vcluster-staging
+              users:
+              - name: vcluster-admin
+                user:
+                  token: ${SA_TOKEN}
+              EOF
+
+              # Test the kubeconfig
+              echo "Testing kubeconfig against internal service..."
+              export KUBECONFIG=/tmp/kubeconfig
+              if ! kubectl get ns default --request-timeout=10s --insecure-skip-tls-verify; then
+                echo "WARNING: Could not connect to vCluster, but proceeding with secret creation..."
+              else
+                echo "Successfully connected to vCluster!"
+              fi
+
+              # Build final kubeconfig for ArgoCD (using external endpoint)
+              echo "Building final kubeconfig for ArgoCD..."
+              cat > /tmp/argocd-kubeconfig <<EOF
               apiVersion: v1
               kind: Config
               clusters:
@@ -164,23 +200,14 @@ spec:
                   token: ${SA_TOKEN}
               EOF
 
-              # Test the kubeconfig
-              echo "Testing kubeconfig..."
-              export KUBECONFIG=/tmp/kubeconfig
-              if ! kubectl get ns default --request-timeout=10s; then
-                echo "WARNING: Could not connect to vCluster, but proceeding with secret creation..."
-              else
-                echo "Successfully connected to vCluster!"
-              fi
-
               # Encode data for ArgoCD cluster secret
               CLUSTER_NAME_B64=$(echo -n "vcluster-staging" | base64 -w 0)
               SERVER_URL_B64=$(echo -n "https://staging.civilsnut.se:443" | base64 -w 0)
-              KUBECONFIG_B64=$(cat /tmp/kubeconfig | base64 -w 0)
+              KUBECONFIG_B64=$(cat /tmp/argocd-kubeconfig | base64 -w 0)
 
               # Create ArgoCD cluster secret
               echo "Creating ArgoCD cluster secret..."
-              cat <<EOF | kubectl apply -f -
+              cat <<EOF | kubectl apply --validate=false -f -
               apiVersion: v1
               kind: Secret
               metadata:

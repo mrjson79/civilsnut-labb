@@ -10,9 +10,10 @@ resources:
   - ../../base
   - namespace.yaml
 
-commonLabels:
-  app.kubernetes.io/environment: production
-  app.kubernetes.io/managed-by: kargo
+labels:
+  - pairs:
+      app.kubernetes.io/environment: production
+      app.kubernetes.io/managed-by: kargo
 
 images:
   - name: ghcr.io/stefanprodan/podinfo
@@ -30,11 +31,9 @@ replicas:
   - name: podinfo
     count: 3
 
-patchesStrategicMerge:
-  - patches/ingress-production.yaml
-  - patches/deployment-production.yaml
-
-patchesJson6902:
+patches:
+  - path: patches/ingress-production.yaml
+  - path: patches/deployment-production.yaml
   - target:
       group: networking.k8s.io
       version: v1

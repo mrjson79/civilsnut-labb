@@ -29,6 +29,16 @@ data:
     # Shelly integration configuration - force HTTP polling to avoid CoAP timeouts
     shelly:
       discovery: false  # Disable auto-discovery to prevent CoAP conflicts
+      devices:
+        - host: 192.168.3.178
+          name: "Sovrum"
+          gen: 1
+          # Force HTTP polling only, disable CoAP
+          use_polling: true
+          polling_interval: 30
+      # Global settings to disable CoAP for all Shelly devices
+      coap_discovery: false
+      enable_coap: false
 
     # Basic configuration files (will be managed by UI)
     automation: !include automations.yaml

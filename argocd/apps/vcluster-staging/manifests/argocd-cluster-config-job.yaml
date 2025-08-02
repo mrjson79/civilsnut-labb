@@ -185,7 +185,7 @@ spec:
                     "name": "vcluster-staging",
                     "cluster": {
                       "server": "https://staging.civilsnut.se:443",
-                      "insecure-skip-tls-verify": false
+                      "insecure-skip-tls-verify": true
                     }
                   }
                 ],

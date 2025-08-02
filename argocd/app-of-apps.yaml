@@ -134,6 +134,13 @@ spec:
       directory:
         include: "vcluster-staging.yaml"
 
+    # vcluster Staging Cluster Secret Application
+    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
+      targetRevision: HEAD
+      path: argocd/apps/vcluster-staging
+      directory:
+        include: "vcluster-cluster-secret.yaml"
+
     # Podinfo Staging Application (vcluster)
     - repoURL: https://github.com/mrjson79/civilsnut-labb.git
       targetRevision: HEAD

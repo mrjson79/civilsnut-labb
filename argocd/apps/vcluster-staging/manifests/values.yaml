@@ -1,9 +1,9 @@
-# vCluster 0.26.0 configuration with LoadBalancer service
+# vCluster 0.26.0 configuration with ClusterIP service (using gateway routing)
 controlPlane:
   service:
     enabled: true
     spec:
-      type: LoadBalancer
+      type: ClusterIP
   proxy:
     extraSANs:
       - staging.civilsnut.se

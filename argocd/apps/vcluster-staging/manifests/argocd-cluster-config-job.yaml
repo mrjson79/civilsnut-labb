@@ -129,20 +129,20 @@ spec:
 
               echo "Using CA secret: $VCLUSTER_CA_SECRET"
 
-              # Extract CA certificate from vCluster certs secret
-              echo "Extracting CA certificate from vcluster-staging-certs..."
+              # Extract server CA certificate from vCluster certs secret
+              echo "Extracting server CA certificate from vcluster-staging-certs..."
               VCLUSTER_CERTS_SECRET="vcluster-staging-certs"
-              CA_CERT=$(kubectl get secret $VCLUSTER_CERTS_SECRET -n staging -o jsonpath='{.data.ca\.crt}' 2>/dev/null || echo "")
+              CA_CERT=$(kubectl get secret $VCLUSTER_CERTS_SECRET -n staging -o jsonpath='{.data.server-ca\.crt}' 2>/dev/null || echo "")
 
               if [ -z "$CA_CERT" ]; then
-                echo "ERROR: Could not find CA certificate in vcluster-staging-certs secret"
+                echo "ERROR: Could not find server CA certificate in vcluster-staging-certs secret"
                 exit 1
               fi
 
-              echo "Successfully extracted CA certificate"
+              echo "Successfully extracted server CA certificate"
 
               # Build kubeconfig for testing (using internal service)
-              echo "Building test kubeconfig with CA certificate..."
+              echo "Building test kubeconfig with server CA certificate..."
               cat > /tmp/kubeconfig <<EOF
               apiVersion: v1
               kind: Config

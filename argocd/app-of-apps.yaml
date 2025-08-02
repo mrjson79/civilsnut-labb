@@ -120,13 +120,6 @@ spec:
       directory:
         include: "{external-secrets-manifests.yaml}"
 
-    # Kargo application
-    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
-      targetRevision: HEAD
-      path: argocd/apps/kargo
-      directory:
-        include: "{kargo.yaml}"
-
     # vcluster Staging Application
     - repoURL: https://github.com/mrjson79/civilsnut-labb.git
       targetRevision: HEAD

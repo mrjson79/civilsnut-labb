@@ -7,3 +7,6 @@ controlPlane:
   proxy:
     extraSANs:
       - staging.civilsnut.se
+  scheduling:
+    nodeSelector:
+      has-disk: "yes"

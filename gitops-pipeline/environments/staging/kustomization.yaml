@@ -1,0 +1,53 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: podinfo-staging
+
+namespace: default
+
+resources:
+  - ../../base
+
+commonLabels:
+  app.kubernetes.io/environment: staging
+  app.kubernetes.io/managed-by: kargo
+
+images:
+  - name: ghcr.io/stefanprodan/podinfo
+    newTag: 6.9.0
+
+configMapGenerator:
+  - name: podinfo-config
+    behavior: merge
+    literals:
+      - PODINFO_UI_COLOR=#ff6b35
+      - PODINFO_UI_MESSAGE="🚀 Staging Environment - Testing New Features"
+      - PODINFO_BACKEND_URL=""
+
+replicas:
+  - name: podinfo
+    count: 1
+
+patchesStrategicMerge:
+  - patches/ingress-staging.yaml
+  - patches/deployment-staging.yaml
+
+patchesJson6902:
+  - target:
+      group: networking.k8s.io
+      version: v1
+      kind: Ingress
+      name: podinfo
+    patch: |-
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: podinfo.staging.civilsnut.se
+      - op: replace
+        path: /spec/rules/0/host
+        value: podinfo.staging.civilsnut.se
+
+generatorOptions:
+  disableNameSuffixHash: false
+  labels:
+    app.kubernetes.io/environment: staging

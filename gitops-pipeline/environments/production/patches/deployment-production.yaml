@@ -1,0 +1,122 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: podinfo
+  annotations:
+    kargo.akuity.io/environment: "production"
+    kargo.akuity.io/auto-promote: "false"
+    deployment.kubernetes.io/revision: "1"
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9797"
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      annotations:
+        kargo.akuity.io/environment: "production"
+        kargo.akuity.io/color: "#2e8b57"
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9797"
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                  - podinfo
+              topologyKey: kubernetes.io/hostname
+          - weight: 50
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                  - podinfo
+              topologyKey: topology.kubernetes.io/zone
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: podinfo
+            app.kubernetes.io/environment: production
+      containers:
+      - name: podinfo
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+          successThreshold: 1
+        startupProbe:
+          httpGet:
+            path: /readyz
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 3
+          timeoutSeconds: 2
+          failureThreshold: 30
+          successThreshold: 1
+        env:
+        - name: PODINFO_LEVEL
+          value: "info"
+        - name: PODINFO_CACHE_SERVER
+          value: "redis://redis.podinfo-production:6379"
+        - name: PODINFO_ENV
+          value: "production"
+        - name: PODINFO_LOG_LEVEL
+          value: "info"
+        - name: PODINFO_METRICS_ENABLED
+          value: "true"
+        - name: PODINFO_TRACING_ENABLED
+          value: "true"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 65534
+          seccompProfile:
+            type: RuntimeDefault
+      nodeSelector:
+        kubernetes.io/os: linux
+        node-role.kubernetes.io/worker: ""
+      tolerations:
+      - key: "node-role.kubernetes.io/worker"
+        operator: "Equal"
+        value: ""
+        effect: "NoSchedule"
+      priorityClassName: "high-priority"
+      terminationGracePeriodSeconds: 60

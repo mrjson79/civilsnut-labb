@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: podinfo-staging
+  labels:
+    name: podinfo-staging
+    app.kubernetes.io/name: podinfo-staging
+    app.kubernetes.io/component: namespace
+    app.kubernetes.io/environment: staging
+    app.kubernetes.io/managed-by: kargo
+    kargo.akuity.io/stage: staging
+  annotations:
+    kargo.akuity.io/color: "#ff6b35"
+    kargo.akuity.io/description: "Staging environment for testing new podinfo versions"

@@ -128,11 +128,11 @@ spec:
     #    include: "{kargo.yaml}"
 
     # vcluster Staging Application
-    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
-      targetRevision: HEAD
-      path: argocd/apps/vcluster-staging
-      directory:
-        include: "vcluster-staging.yaml"
+    #- repoURL: https://github.com/mrjson79/civilsnut-labb.git
+    #  targetRevision: HEAD
+    #  path: argocd/apps/vcluster-staging
+    #  directory:
+    #    include: "vcluster-staging.yaml"
 
     # Podinfo Staging Application (vcluster) - commented out, path doesn't exist
     #- repoURL: https://github.com/mrjson79/civilsnut-labb.git

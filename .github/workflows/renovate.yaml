@@ -40,26 +40,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get token
-        uses: tibdex/github-app-token@v2
-        id: get_token
-        with:
-          app_id: ${{ secrets.RENOVATE_APP_ID }}
-          private_key: ${{ secrets.RENOVATE_APP_PRIVATE_KEY }}
-
       - name: Self-hosted Renovate
         uses: renovatebot/github-action@v40.3.2
         env:
-          RENOVATE_TOKEN: ${{ steps.get_token.outputs.token }}
+          RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RENOVATE_GIT_AUTHOR: "Renovate Bot <renovate@civilsnut.com>"
-          # Enable Renovate to access private repositories if needed
-          RENOVATE_HOST_RULES: |
-            [
-              {
-                "matchHost": "github.com",
-                "token": "${{ steps.get_token.outputs.token }}"
-              }
-            ]
           # Kubernetes and Helm specific configuration
           RENOVATE_KUBERNETES_API: true
           RENOVATE_INCLUDE_FORKS: false
@@ -67,7 +52,7 @@ jobs:
           LOG_LEVEL: ${{ env.LOG_LEVEL }}
         with:
           configurationFile: renovate.json
-          token: ${{ steps.get_token.outputs.token }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Summary
         if: always()

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Test Renovate configuration for ingress-nginx only",
+  "extends": [
+    "config:base"
+  ],
+  "dryRun": true,
+  "logLevel": "debug",
+  "includeForks": false,
+  "gitAuthor": "Renovate Test <renovate@test.com>",
+  "branchPrefix": "renovate-test/",
+  "commitMessagePrefix": "test:",
+  "prTitle": "{{commitMessagePrefix}} {{commitMessageAction}} {{commitMessageTopic}} {{commitMessageExtra}}",
+  "labels": ["renovate-test", "ingress-nginx"],
+  "assignees": [],
+  "reviewers": [],
+  "schedule": ["at any time"],
+  "prConcurrentLimit": 1,
+  "prHourlyLimit": 1,
+  "packageRules": [
+    {
+      "description": "Only update ingress-nginx",
+      "matchPackageNames": ["ingress-nginx"],
+      "enabled": true
+    },
+    {
+      "description": "Disable everything else",
+      "matchPackageNames": ["*"],
+      "excludePackageNames": ["ingress-nginx"],
+      "enabled": false
+    }
+  ],
+  "regexManagers": [
+    {
+      "description": "Update ingress-nginx Helm chart version in ArgoCD applications",
+      "fileMatch": ["argocd/apps/ingress-nginx/.*\\.ya?ml$"],
+      "matchStrings": [
+        "chart:\\s+ingress-nginx\\s+repoURL:\\s+(?<registryUrl>https://kubernetes\\.github\\.io/ingress-nginx)\\s+targetRevision:\\s+(?<currentValue>[^\\s]+)"
+      ],
+      "datasourceTemplate": "helm",
+      "depNameTemplate": "ingress-nginx"
+    }
+  ],
+  "hostRules": [
+    {
+      "matchHost": "kubernetes.github.io",
+      "timeout": 30000
+    }
+  ]
+}

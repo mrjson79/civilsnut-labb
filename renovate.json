@@ -1,46 +1,94 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Test Renovate configuration for podinfo only",
+  "description": "Renovate configuration for podinfo and kube-prometheus-stack",
   "extends": ["config:recommended"],
   "forkProcessing": "disabled",
-  "gitAuthor": "Renovate Test <renovate-test@civilsnut.com>",
-  "branchPrefix": "renovate-test/",
-  "commitMessagePrefix": "test:",
-  "labels": ["renovate-test", "podinfo"],
-  "assignees": [],
-  "reviewers": [],
-  "schedule": ["at any time"],
-  "prConcurrentLimit": 1,
-  "prHourlyLimit": 1,
+  "gitAuthor": "Renovate Bot <renovate@civilsnut.com>",
+  "branchPrefix": "renovate/",
+  "commitMessagePrefix": "chore:",
+  "labels": ["dependencies"],
+  "assignees": ["mrjson79"],
+  "reviewers": ["mrjson79"],
+  "schedule": ["before 6am on monday"],
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  "separateMinorPatch": true,
+  "separateMajorMinor": true,
   "packageRules": [
     {
-      "description": "Only update podinfo",
+      "description": "Podinfo application updates",
       "matchPackageNames": ["podinfo"],
-      "enabled": true
+      "labels": ["podinfo", "dependencies"],
+      "groupName": "Podinfo",
+      "automerge": false,
+      "schedule": ["before 6am on monday"]
     },
     {
-      "description": "Disable everything else",
-      "matchPackageNames": ["*"],
-      "excludePackageNames": ["podinfo"],
-      "enabled": false
+      "description": "Monitoring stack updates",
+      "matchPackageNames": ["kube-prometheus-stack", "prometheus", "grafana", "alertmanager"],
+      "labels": ["monitoring", "dependencies"],
+      "groupName": "Monitoring Stack",
+      "automerge": false,
+      "schedule": ["before 6am on saturday"]
+    },
+    {
+      "description": "Major updates require manual review",
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "labels": ["major-update", "dependencies"],
+      "reviewers": ["mrjson79"],
+      "assignees": ["mrjson79"],
+      "prPriority": 10
+    },
+    {
+      "description": "Patch updates can be auto-merged for non-critical components",
+      "matchUpdateTypes": ["patch"],
+      "matchPackageNames": ["podinfo"],
+      "automerge": true,
+      "automergeType": "branch",
+      "labels": ["patch-update", "automerge"]
     }
   ],
-  "customManagers": [
+  "regexManagers": [
     {
-      "customType": "regex",
-      "description": "Update podinfo Helm chart version in ArgoCD applications",
+      "description": "Podinfo Helm chart version in ArgoCD applications",
       "fileMatch": ["argocd/apps/podinfo/.*\\.ya?ml$"],
       "matchStrings": [
-        "chart:\\s+podinfo\\s+repoURL:\\s+(?<registryUrl>https://stefanprodan\\.github\\.io/podinfo)\\s+targetRevision:\\s+(?<currentValue>[^\\s]+)"
+        "chart:\\s+(?<depName>podinfo)\\s+repoURL:\\s+(?<registryUrl>https://stefanprodan\\.github\\.io/podinfo)\\s+targetRevision:\\s+(?<currentValue>[^\\s]+)"
       ],
-      "datasourceTemplate": "helm",
-      "depNameTemplate": "podinfo"
+      "datasourceTemplate": "helm"
+    },
+    {
+      "description": "Kube-prometheus-stack Helm chart version in ArgoCD applications",
+      "fileMatch": ["argocd/apps/kube-prometheus/.*\\.ya?ml$"],
+      "matchStrings": [
+        "chart:\\s+(?<depName>kube-prometheus-stack)\\s+repoURL:\\s+(?<registryUrl>https://prometheus-community\\.github\\.io/helm-charts)\\s+targetRevision:\\s+(?<currentValue>[^\\s]+)"
+      ],
+      "datasourceTemplate": "helm"
+    },
+    {
+      "description": "General Helm chart versions in ArgoCD applications",
+      "fileMatch": ["argocd/apps/.+\\.ya?ml$"],
+      "matchStrings": [
+        "chart: (?<depName>[^\\s]+)\\s+repoURL: (?<registryUrl>[^\\s]+)\\s+targetRevision: (?<currentValue>[^\\s]+)"
+      ],
+      "datasourceTemplate": "helm"
     }
   ],
   "hostRules": [
     {
       "matchHost": "stefanprodan.github.io",
       "timeout": 30000
+    },
+    {
+      "matchHost": "prometheus-community.github.io",
+      "timeout": 30000
     }
-  ]
+  ],
+  "kubernetes": {
+    "fileMatch": ["\\.ya?ml$"]
+  },
+  "argocd": {
+    "fileMatch": ["argocd/.+\\.ya?ml$"]
+  }
 }

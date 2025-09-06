@@ -1,0 +1,90 @@
+name: Renovate
+
+on:
+  schedule:
+    # Run every Monday at 05:00 UTC (06:00 CET/07:00 CEST)
+    - cron: "0 5 * * 1"
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: "Log level"
+        required: false
+        default: "info"
+        type: choice
+        options:
+          - info
+          - debug
+          - trace
+  push:
+    branches:
+      - main
+    paths:
+      - "renovate.json"
+      - ".github/workflows/renovate.yaml"
+
+env:
+  LOG_LEVEL: ${{ inputs.logLevel || 'info' }}
+  RENOVATE_AUTODISCOVER: true
+  RENOVATE_AUTODISCOVER_FILTER: "${{ github.repository }}"
+  RENOVATE_DRY_RUN: false
+  RENOVATE_PLATFORM: github
+  RENOVATE_ONBOARDING: false
+
+jobs:
+  renovate:
+    name: Renovate Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get token
+        uses: tibdex/github-app-token@v2
+        id: get_token
+        with:
+          app_id: ${{ secrets.RENOVATE_APP_ID }}
+          private_key: ${{ secrets.RENOVATE_APP_PRIVATE_KEY }}
+
+      - name: Self-hosted Renovate
+        uses: renovatebot/github-action@v40.3.2
+        env:
+          RENOVATE_TOKEN: ${{ steps.get_token.outputs.token }}
+          RENOVATE_GIT_AUTHOR: "Renovate Bot <renovate@civilsnut.com>"
+          # Enable Renovate to access private repositories if needed
+          RENOVATE_HOST_RULES: |
+            [
+              {
+                "matchHost": "github.com",
+                "token": "${{ steps.get_token.outputs.token }}"
+              }
+            ]
+          # Kubernetes and Helm specific configuration
+          RENOVATE_KUBERNETES_API: true
+          RENOVATE_INCLUDE_FORKS: false
+          # Logging configuration
+          LOG_LEVEL: ${{ env.LOG_LEVEL }}
+        with:
+          configurationFile: renovate.json
+          token: ${{ steps.get_token.outputs.token }}
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Renovate Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Repository**: ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Log Level**: ${{ env.LOG_LEVEL }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Triggered by**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Configuration**: renovate.json" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Managed Applications:" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Podinfo** - Demo application for testing" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Kube-Prometheus-Stack** - Monitoring and alerting" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Update Groups:" >> $GITHUB_STEP_SUMMARY
+          echo "- **Podinfo**: Scheduled for Monday mornings" >> $GITHUB_STEP_SUMMARY
+          echo "- **Monitoring Stack**: Scheduled for Saturday mornings" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check the [Dependency Dashboard](https://github.com/${{ github.repository }}/issues?q=is%3Aissue+is%3Aopen+label%3Adependencies) for more details." >> $GITHUB_STEP_SUMMARY

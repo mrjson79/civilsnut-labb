@@ -24,20 +24,6 @@ spec:
         include: "cert-manager.yaml"
         recurse: false
 
-    # Cloudflare Secret Application
-    #- repoURL: https://github.com/mrjson79/civilsnut-labb.git
-    #  targetRevision: HEAD
-    #  path: argocd/apps
-    #  directory:
-    #    include: "cloudflare-secret.yaml
-
-    # Ingress Nginx Application
-    #- repoURL: https://github.com/mrjson79/civilsnut-labb.git
-    #  targetRevision: HEAD
-    #  path: argocd/apps/ingress-nginx
-    #  directory:
-    #    include: "ingress-nginx.yaml"
-
     # Longhorn Application
     - repoURL: https://github.com/mrjson79/civilsnut-labb.git
       targetRevision: HEAD
@@ -80,13 +66,6 @@ spec:
       directory:
         include: "hubble-ui-httproute.yaml"
 
-    # KubeVirt Application
-    #- repoURL: https://github.com/mrjson79/civilsnut-labb.git
-    #  targetRevision: HEAD
-    #  path: argocd/apps/kube-virt
-    #  directory:
-    #    include: "kubevirt.yaml"
-
     # Home Assistant Application
     - repoURL: https://github.com/mrjson79/civilsnut-labb.git
       targetRevision: HEAD
@@ -119,34 +98,6 @@ spec:
       path: argocd/apps/external-secrets
       directory:
         include: "{external-secrets-manifests.yaml}"
-
-    # Kargo Application (commented out - path doesn't exist)
-    #- repoURL: https://github.com/mrjson79/civilsnut-labb.git
-    #  targetRevision: HEAD
-    #  path: argocd/apps/kargo
-    #  directory:
-    #    include: "{kargo.yaml}"
-
-    # vcluster Staging Application
-    #- repoURL: https://github.com/mrjson79/civilsnut-labb.git
-    #  targetRevision: HEAD
-    #  path: argocd/apps/vcluster-staging
-    #  directory:
-    #    include: "vcluster-staging.yaml"
-
-    # Podinfo Staging Application (vcluster) - commented out, path doesn't exist
-    #- repoURL: https://github.com/mrjson79/civilsnut-labb.git
-    #  targetRevision: HEAD
-    #  path: argocd/apps/podinfo-staging
-    #  directory:
-    #    include: "podinfo-staging.yaml"
-
-    # Podinfo Production Application - commented out, path doesn't exist
-    #- repoURL: https://github.com/mrjson79/civilsnut-labb.git
-    #  targetRevision: HEAD
-    #  path: argocd/apps/podinfo-production
-    #  directory:
-    #    include: "podinfo-production.yaml"
 
   destination:
     server: https://kubernetes.default.svc

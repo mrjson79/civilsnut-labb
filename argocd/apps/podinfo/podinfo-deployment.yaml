@@ -8,7 +8,7 @@ spec:
   source:
     chart: podinfo
     repoURL: https://stefanprodan.github.io/podinfo
-    targetRevision: 6.9.0
+    targetRevision: 6.9.1
     helm:
       values: |
         ui:

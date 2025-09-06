@@ -1,0 +1,75 @@
+name: Renovate Test (ingress-nginx only)
+
+on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: false
+        default: 'debug'
+        type: choice
+        options:
+          - info
+          - debug
+          - trace
+  push:
+    branches:
+      - main
+    paths:
+      - 'renovate-test.json'
+      - '.github/workflows/renovate-test.yaml'
+
+env:
+  LOG_LEVEL: ${{ inputs.logLevel || 'debug' }}
+  RENOVATE_AUTODISCOVER: true
+  RENOVATE_AUTODISCOVER_FILTER: '${{ github.repository }}'
+  RENOVATE_DRY_RUN: true
+  RENOVATE_PLATFORM: github
+  RENOVATE_ONBOARDING: false
+
+jobs:
+  renovate-test:
+    name: Test Renovate (ingress-nginx)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Self-hosted Renovate Test
+        uses: renovatebot/github-action@v40.3.2
+        env:
+          RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RENOVATE_GIT_AUTHOR: 'Renovate Test <renovate-test@civilsnut.com>'
+          # Test configuration
+          RENOVATE_CONFIG_FILE: renovate-test.json
+          # Kubernetes and Helm specific configuration
+          RENOVATE_KUBERNETES_API: true
+          RENOVATE_INCLUDE_FORKS: false
+          # Logging configuration
+          LOG_LEVEL: ${{ env.LOG_LEVEL }}
+          # Dry run - no actual changes
+          RENOVATE_DRY_RUN: true
+        with:
+          configurationFile: renovate-test.json
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Test Summary
+        if: always()
+        run: |
+          echo "## Renovate Test Summary (ingress-nginx)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Repository**: ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Log Level**: ${{ env.LOG_LEVEL }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Dry Run**: ${{ env.RENOVATE_DRY_RUN }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Triggered by**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Configuration**: renovate-test.json" >> $GITHUB_STEP_SUMMARY
+          echo "- **Target**: ingress-nginx only" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### What This Test Does:" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Scans only ingress-nginx configuration" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Shows what updates would be available" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Runs in dry-run mode (no actual changes)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Tests Renovate configuration without risk" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check the workflow logs above to see what Renovate detected!" >> $GITHUB_STEP_SUMMARY

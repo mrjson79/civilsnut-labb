@@ -2,7 +2,6 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "description": "Test Renovate configuration for ingress-nginx only",
   "extends": ["config:recommended"],
-  "dryRun": "full",
   "forkProcessing": "disabled",
   "gitAuthor": "Renovate Test <renovate-test@civilsnut.com>",
   "branchPrefix": "renovate-test/",

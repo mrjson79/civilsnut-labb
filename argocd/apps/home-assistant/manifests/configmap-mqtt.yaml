@@ -24,9 +24,6 @@ data:
         command_topic: "shellies/Livingroom/relay/0/command"
         payload_on: "on"
         payload_off: "off"
-        availability_topic: "shellies/Livingroom/online"
-        payload_available: "true"
-        payload_not_available: "false"
         unique_id: "shelly_livingroom_relay"
 
       - name: "Saras Kontor Shelly"
@@ -35,8 +32,6 @@ data:
         payload_on: "on"
         payload_off: "off"
         availability_topic: "shellies/saras_kontor/online"
-        payload_available: "true"
-        payload_not_available: "false"
         unique_id: "shelly_saras_kontor_relay"
 
     sensor:

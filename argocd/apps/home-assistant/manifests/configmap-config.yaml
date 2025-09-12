@@ -27,36 +27,7 @@ data:
       server_port: 8123
 
     # MQTT Configuration
-    mqtt:
-      switch:
-        - name: "Anders Kontor Shelly"
-          state_topic: "shellies/anders_kontor/relay/0"
-          command_topic: "shellies/anders_kontor/relay/0/command"
-          payload_on: "on"
-          payload_off: "off"
-          availability_topic: "shellies/anders_kontor/online"
-          payload_available: "true"
-          payload_not_available: "false"
-          unique_id: "shelly_anders_kontor_relay"
-
-      sensor:
-        - name: "Anders Kontor Power"
-          state_topic: "shellies/anders_kontor/relay/0/power"
-          unit_of_measurement: "W"
-          device_class: "power"
-          unique_id: "shelly_anders_kontor_power"
-
-        - name: "Anders Kontor Energy"
-          state_topic: "shellies/anders_kontor/relay/0/energy"
-          unit_of_measurement: "Wh"
-          device_class: "energy"
-          unique_id: "shelly_anders_kontor_energy"
-
-        - name: "Anders Kontor Temperature"
-          state_topic: "shellies/anders_kontor/temperature"
-          unit_of_measurement: "°C"
-          device_class: "temperature"
-          unique_id: "shelly_anders_kontor_temp"
+    mqtt: !include mqtt.yaml
 
     # Basic configuration files (will be managed by UI)
     automation: !include automations.yaml

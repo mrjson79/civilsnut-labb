@@ -1,0 +1,98 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: home-assistant-mqtt-config
+  namespace: home-assistant
+  labels:
+    app: home-assistant
+data:
+  mqtt.yaml: |
+    # MQTT Configuration for Shelly devices
+    switch:
+      - name: "Anders Kontor Shelly"
+        state_topic: "shellies/anders_kontor/relay/0"
+        command_topic: "shellies/anders_kontor/relay/0/command"
+        payload_on: "on"
+        payload_off: "off"
+        availability_topic: "shellies/anders_kontor/online"
+        payload_available: "true"
+        payload_not_available: "false"
+        unique_id: "shelly_anders_kontor_relay"
+
+      - name: "Livingroom Shelly"
+        state_topic: "shellies/Livingroom/relay/0"
+        command_topic: "shellies/Livingroom/relay/0/command"
+        payload_on: "on"
+        payload_off: "off"
+        availability_topic: "shellies/Livingroom/online"
+        payload_available: "true"
+        payload_not_available: "false"
+        unique_id: "shelly_livingroom_relay"
+
+      - name: "Saras Kontor Shelly"
+        state_topic: "shellies/saras_kontor/relay/0"
+        command_topic: "shellies/saras_kontor/relay/0/command"
+        payload_on: "on"
+        payload_off: "off"
+        availability_topic: "shellies/saras_kontor/online"
+        payload_available: "true"
+        payload_not_available: "false"
+        unique_id: "shelly_saras_kontor_relay"
+
+    sensor:
+    # Anders Kontor Sensor
+      - name: "Anders Kontor Power"
+        state_topic: "shellies/anders_kontor/relay/0/power"
+        unit_of_measurement: "W"
+        device_class: "power"
+        unique_id: "shelly_anders_kontor_power"
+
+      - name: "Anders Kontor Energy"
+        state_topic: "shellies/anders_kontor/relay/0/energy"
+        unit_of_measurement: "Wh"
+        device_class: "energy"
+        unique_id: "shelly_anders_kontor_energy"
+
+      - name: "Anders Kontor Temperature"
+        state_topic: "shellies/anders_kontor/temperature"
+        unit_of_measurement: "°C"
+        device_class: "temperature"
+        unique_id: "shelly_anders_kontor_temp"
+
+      # Livingroom Shelly Device
+      - name: "Livingroom Power"
+        state_topic: "shellies/Livingroom/relay/0/power"
+        unit_of_measurement: "W"
+        device_class: "power"
+        unique_id: "shelly_livingroom_power"
+
+      - name: "Livingroom Energy"
+        state_topic: "shellies/Livingroom/relay/0/energy"
+        unit_of_measurement: "Wh"
+        device_class: "energy"
+        unique_id: "shelly_livingroom_energy"
+
+      - name: "Livingroom Temperature"
+        state_topic: "shellies/Livingroom/temperature"
+        unit_of_measurement: "°C"
+        device_class: "temperature"
+        unique_id: "shelly_livingroom_temp"
+
+      # Saras Kontor Shelly Device
+      - name: "Saras Kontor Power"
+        state_topic: "shellies/saras_kontor/relay/0/power"
+        unit_of_measurement: "W"
+        device_class: "power"
+        unique_id: "shelly_saras_kontor_power"
+
+      - name: "Saras Kontor Energy"
+        state_topic: "shellies/saras_kontor/relay/0/energy"
+        unit_of_measurement: "Wh"
+        device_class: "energy"
+        unique_id: "shelly_saras_kontor_energy"
+
+      - name: "Saras Kontor Temperature"
+        state_topic: "shellies/saras_kontor/temperature"
+        unit_of_measurement: "°C"
+        device_class: "temperature"
+        unique_id: "shelly_saras_kontor_temp"

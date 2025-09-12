@@ -72,6 +72,9 @@ spec:
             - name: ha-config
               mountPath: /config/scenes.yaml
               subPath: scenes.yaml
+            - name: ha-mqtt-config
+              mountPath: /config/mqtt.yaml
+              subPath: mqtt.yaml
           env:
             - name: TZ
               value: "UTC"
@@ -101,4 +104,7 @@ spec:
         - name: ha-config
           configMap:
             name: home-assistant-config
+        - name: ha-mqtt-config
+          configMap:
+            name: home-assistant-mqtt-config
       restartPolicy: Always

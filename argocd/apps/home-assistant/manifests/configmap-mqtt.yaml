@@ -31,7 +31,6 @@ data:
         command_topic: "shellies/saras_kontor/relay/0/command"
         payload_on: "on"
         payload_off: "off"
-        availability_topic: "shellies/saras_kontor/online"
         unique_id: "shelly_saras_kontor_relay"
 
     sensor:

@@ -18,6 +18,12 @@ data:
         payload_available: "true"
         payload_not_available: "false"
         unique_id: "shelly_anders_kontor_relay"
+        device:
+          identifiers: ["shelly_anders_kontor"]
+          name: "Anders Kontor Shelly"
+          model: "Shelly Plug S"
+          manufacturer: "Allterco"
+          configuration_url: "http://192.168.3.104"
 
       - name: "Livingroom Shelly"
         state_topic: "shellies/Livingroom/relay/0"
@@ -25,6 +31,12 @@ data:
         payload_on: "on"
         payload_off: "off"
         unique_id: "shelly_livingroom_relay"
+        device:
+          identifiers: ["shelly_livingroom"]
+          name: "Livingroom Shelly"
+          model: "Shelly Plug S"
+          manufacturer: "Allterco"
+          configuration_url: "http://192.168.3.182"
 
       - name: "Saras Kontor Shelly"
         state_topic: "shellies/saras_kontor/relay/0"
@@ -32,6 +44,12 @@ data:
         payload_on: "on"
         payload_off: "off"
         unique_id: "shelly_saras_kontor_relay"
+        device:
+          identifiers: ["shelly_saras_kontor"]
+          name: "Saras Kontor Shelly"
+          model: "Shelly Plug S"
+          manufacturer: "Allterco"
+          configuration_url: "http://192.168.3.63"
 
     sensor:
     # Anders Kontor Sensor
@@ -40,18 +58,24 @@ data:
         unit_of_measurement: "W"
         device_class: "power"
         unique_id: "shelly_anders_kontor_power"
+        device:
+          identifiers: ["shelly_anders_kontor"]
 
       - name: "Anders Kontor Energy"
         state_topic: "shellies/anders_kontor/relay/0/energy"
         unit_of_measurement: "Wh"
         device_class: "energy"
         unique_id: "shelly_anders_kontor_energy"
+        device:
+          identifiers: ["shelly_anders_kontor"]
 
       - name: "Anders Kontor Temperature"
         state_topic: "shellies/anders_kontor/temperature"
         unit_of_measurement: "°C"
         device_class: "temperature"
         unique_id: "shelly_anders_kontor_temp"
+        device:
+          identifiers: ["shelly_anders_kontor"]
 
       # Livingroom Shelly Device
       - name: "Livingroom Power"
@@ -59,18 +83,24 @@ data:
         unit_of_measurement: "W"
         device_class: "power"
         unique_id: "shelly_livingroom_power"
+        device:
+          identifiers: ["shelly_livingroom"]
 
       - name: "Livingroom Energy"
         state_topic: "shellies/Livingroom/relay/0/energy"
         unit_of_measurement: "Wh"
         device_class: "energy"
         unique_id: "shelly_livingroom_energy"
+        device:
+          identifiers: ["shelly_livingroom"]
 
       - name: "Livingroom Temperature"
         state_topic: "shellies/Livingroom/temperature"
         unit_of_measurement: "°C"
         device_class: "temperature"
         unique_id: "shelly_livingroom_temp"
+        device:
+          identifiers: ["shelly_livingroom"]
 
       # Saras Kontor Shelly Device
       - name: "Saras Kontor Power"
@@ -78,15 +108,21 @@ data:
         unit_of_measurement: "W"
         device_class: "power"
         unique_id: "shelly_saras_kontor_power"
+        device:
+          identifiers: ["shelly_saras_kontor"]
 
       - name: "Saras Kontor Energy"
         state_topic: "shellies/saras_kontor/relay/0/energy"
         unit_of_measurement: "Wh"
         device_class: "energy"
         unique_id: "shelly_saras_kontor_energy"
+        device:
+          identifiers: ["shelly_saras_kontor"]
 
       - name: "Saras Kontor Temperature"
         state_topic: "shellies/saras_kontor/temperature"
         unit_of_measurement: "°C"
         device_class: "temperature"
         unique_id: "shelly_saras_kontor_temp"
+        device:
+          identifiers: ["shelly_saras_kontor"]

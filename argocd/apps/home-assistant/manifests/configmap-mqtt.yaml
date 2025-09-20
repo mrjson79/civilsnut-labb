@@ -64,6 +64,19 @@ data:
           manufacturer: "Allterco"
           configuration_url: "http://192.168.3.64"
 
+      - name: "Network Shelly"
+        state_topic: "shellies/network/relay/0"
+        command_topic: "shellies/network/relay/0/command"
+        payload_on: "on"
+        payload_off: "off"
+        unique_id: "shelly_network_relay"
+        device:
+          identifiers: ["shelly_network"]
+          name: "Network Shelly"
+          model: "Shelly Plug S"
+          manufacturer: "Allterco"
+          configuration_url: "http://192.168.3.53"
+
     sensor:
     # Anders Kontor Sensor
       - name: "Anders Kontor Power"
@@ -148,6 +161,31 @@ data:
         unique_id: "shelly_frysen_power"
         device:
           identifiers: ["shelly_frysen"]
+
+      # Network Shelly Device
+      - name: "Network Power"
+        state_topic: "shellies/network/relay/0/power"
+        unit_of_measurement: "W"
+        device_class: "power"
+        unique_id: "shelly_network_power"
+        device:
+          identifiers: ["shelly_network"]
+
+      - name: "Network Energy"
+        state_topic: "shellies/network/relay/0/energy"
+        unit_of_measurement: "Wh"
+        device_class: "energy"
+        unique_id: "shelly_network_energy"
+        device:
+          identifiers: ["shelly_network"]
+
+      - name: "Network Temperature"
+        state_topic: "shellies/network/temperature"
+        unit_of_measurement: "°C"
+        device_class: "temperature"
+        unique_id: "shelly_network_temp"
+        device:
+          identifiers: ["shelly_network"]
 
       - name: "Frysen Energy"
         state_topic: "shellies/frysen/relay/0/energy"

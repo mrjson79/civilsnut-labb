@@ -132,6 +132,25 @@ data:
           configuration_url: "http://192.168.3.XXX"
           suggested_area: "Anders Office"
 
+      # Anders_office2 - Gen 2 Shelly Plus Plug S
+      - name: "anders_office2 Shelly"
+        state_topic: "anders_office2/status/switch:0"
+        command_topic: "anders_office2/rpc"
+        payload_on: '{"id":1,"method":"Switch.Set","params":{"id":0,"on":true}}'
+        payload_off: '{"id":1,"method":"Switch.Set","params":{"id":0,"on":false}}'
+        value_template: "{{ 'ON' if value_json.output else 'OFF' }}"
+        availability_topic: "anders_office2/online"
+        payload_available: "true"
+        payload_not_available: "false"
+        unique_id: "shelly_anders_office2_relay"
+        device:
+          identifiers: ["shelly_anders_office2"]
+          name: "anders_office2 Shelly"
+          model: "Shelly Plus Plug S"
+          manufacturer: "Allterco"
+          configuration_url: "http://192.168.3.XXX"
+          suggested_area: "Anders Office"
+
 
     sensor:
       # Anders Kontor Sensors
@@ -353,6 +372,52 @@ data:
         unique_id: "shelly_anders_aps_current"
         device:
           identifiers: ["shelly_anders_aps"]
+
+      # Anders_office2 Sensors (Gen 2 - uses JSON value templates)
+      - name: "anders_office2 Power"
+        state_topic: "anders_office2/status/switch:0"
+        unit_of_measurement: "W"
+        device_class: "power"
+        value_template: "{{ value_json.apower }}"
+        unique_id: "shelly_anders_office2_power"
+        device:
+          identifiers: ["shelly_anders_office2"]
+
+      - name: "anders_office2 Energy"
+        state_topic: "anders_office2/status/switch:0"
+        unit_of_measurement: "Wh"
+        device_class: "energy"
+        value_template: "{{ value_json.aenergy.total }}"
+        unique_id: "shelly_anders_office2_energy"
+        device:
+          identifiers: ["shelly_anders_office2"]
+
+      - name: "anders_office2 Temperature"
+        state_topic: "anders_office2/status/switch:0"
+        unit_of_measurement: "°C"
+        device_class: "temperature"
+        value_template: "{{ value_json.temperature.tC }}"
+        unique_id: "shelly_anders_office2_temp"
+        device:
+          identifiers: ["shelly_anders_office2"]
+
+      - name: "anders_office2 Voltage"
+        state_topic: "anders_office2/status/switch:0"
+        unit_of_measurement: "V"
+        device_class: "voltage"
+        value_template: "{{ value_json.voltage }}"
+        unique_id: "shelly_anders_office2_voltage"
+        device:
+          identifiers: ["shelly_anders_office2"]
+
+      - name: "anders_office2 Current"
+        state_topic: "anders_office2/status/switch:0"
+        unit_of_measurement: "A"
+        device_class: "current"
+        value_template: "{{ value_json.current }}"
+        unique_id: "shelly_anders_office2_current"
+        device:
+          identifiers: ["shelly_anders_office2"]
 
       - name: "Network Voltage"
         state_topic: "Network/status/switch:0"

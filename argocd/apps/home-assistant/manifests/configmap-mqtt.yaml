@@ -79,12 +79,13 @@ data:
 
       # Frysen - Gen 2 Shelly Plus Plug S
       - name: "Frysen Shelly"
-        state_topic: "frysen/status/switch:0"
+        state_topic: "frysen/events"
         command_topic: "frysen/rpc"
         payload_on: '{"id":1,"method":"Switch.Set","params":{"id":0,"on":true}}'
         payload_off: '{"id":1,"method":"Switch.Set","params":{"id":0,"on":false}}'
-        value_template: "{{ 'ON' if value_json.output else 'OFF' }}"
-        availability_topic: "frysen/online"
+        value_template: "{{ 'ON' if value_json.params['switch:0'].output == true else 'OFF' }}"
+        availability_topic: "frysen/events"
+        availability_template: "{{ 'online' if value_json.params['switch:0'] is defined else 'offline' }}"
         payload_available: "true"
         payload_not_available: "false"
         unique_id: "shelly_frysen_relay"
@@ -198,46 +199,51 @@ data:
 
       # Frysen Sensors (Gen 2 - uses JSON value templates)
       - name: "Frysen Power"
-        state_topic: "frysen/status/switch:0"
+        state_topic: "frysen/events"
         unit_of_measurement: "W"
         device_class: "power"
-        value_template: "{{ value_json.apower }}"
+        value_template: "{{ value_json.params['switch:0'].apower | float }}"
+        state_class: "measurement"
         unique_id: "shelly_frysen_power"
         device:
           identifiers: ["shelly_frysen"]
 
       - name: "Frysen Energy"
-        state_topic: "frysen/status/switch:0"
+        state_topic: "frysen/events"
         unit_of_measurement: "Wh"
         device_class: "energy"
-        value_template: "{{ value_json.aenergy.total }}"
+        value_template: "{{ value_json.params['switch:0'].aenergy.total | float }}"
+        state_class: "total_increasing"
         unique_id: "shelly_frysen_energy"
         device:
           identifiers: ["shelly_frysen"]
 
       - name: "Frysen Temperature"
-        state_topic: "frysen/status/switch:0"
+        state_topic: "frysen/events"
         unit_of_measurement: "°C"
         device_class: "temperature"
-        value_template: "{{ value_json.temperature.tC }}"
+        value_template: "{{ value_json.params['switch:0'].temperature.tC | float if value_json.params['switch:0'].temperature is defined else 'unavailable' }}"
+        state_class: "measurement"
         unique_id: "shelly_frysen_temp"
         device:
           identifiers: ["shelly_frysen"]
 
       - name: "Frysen Voltage"
-        state_topic: "frysen/status/switch:0"
+        state_topic: "frysen/events"
         unit_of_measurement: "V"
         device_class: "voltage"
-        value_template: "{{ value_json.voltage }}"
+        value_template: "{{ value_json.params['switch:0'].voltage | float }}"
+        state_class: "measurement"
         unique_id: "shelly_frysen_voltage"
         device:
           identifiers: ["shelly_frysen"]
 
       - name: "Frysen Current"
-        state_topic: "frysen/status/switch:0"
+        state_topic: "frysen/events"
         unit_of_measurement: "A"
         device_class: "current"
-        value_template: "{{ value_json.current }}"
+        value_template: "{{ value_json.params['switch:0'].current | float }}"
+        state_class: "measurement"
         unique_id: "shelly_frysen_current"
         device:
           identifiers: ["shelly_frysen"]

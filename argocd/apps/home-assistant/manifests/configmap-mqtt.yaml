@@ -114,7 +114,7 @@ data:
           configuration_url: "http://192.168.3.XXX"
 
       # Anders_aps - Gen 2 Shelly Plus Plug S
-      - name: "Anders_aps Shelly"
+      - name: "anders_aps Shelly"
         state_topic: "anders_aps/status/switch:0"
         command_topic: "anders_aps/rpc"
         payload_on: '{"id":1,"method":"Switch.Set","params":{"id":0,"on":true}}'
@@ -126,10 +126,11 @@ data:
         unique_id: "shelly_anders_aps_relay"
         device:
           identifiers: ["shelly_anders_aps"]
-          name: "Anders_aps Shelly"
+          name: "anders_aps Shelly"
           model: "Shelly Plus Plug S"
           manufacturer: "Allterco"
           configuration_url: "http://192.168.3.XXX"
+          suggested_area: "Anders Office"
 
 
     sensor:
@@ -308,7 +309,7 @@ data:
           identifiers: ["shelly_network"]
 
       # Anders_aps Sensors (Gen 2 - uses JSON value templates)
-      - name: "Anders_aps Power"
+      - name: "anders_aps Power"
         state_topic: "anders_aps/status/switch:0"
         unit_of_measurement: "W"
         device_class: "power"
@@ -317,7 +318,7 @@ data:
         device:
           identifiers: ["shelly_anders_aps"]
 
-      - name: "Anders_aps Energy"
+      - name: "anders_aps Energy"
         state_topic: "anders_aps/status/switch:0"
         unit_of_measurement: "Wh"
         device_class: "energy"
@@ -326,7 +327,7 @@ data:
         device:
           identifiers: ["shelly_anders_aps"]
 
-      - name: "Anders_aps Temperature"
+      - name: "anders_aps Temperature"
         state_topic: "anders_aps/status/switch:0"
         unit_of_measurement: "°C"
         device_class: "temperature"
@@ -335,7 +336,7 @@ data:
         device:
           identifiers: ["shelly_anders_aps"]
 
-      - name: "Anders_aps Voltage"
+      - name: "anders_aps Voltage"
         state_topic: "anders_aps/status/switch:0"
         unit_of_measurement: "V"
         device_class: "voltage"
@@ -344,7 +345,7 @@ data:
         device:
           identifiers: ["shelly_anders_aps"]
 
-      - name: "Anders_aps Current"
+      - name: "anders_aps Current"
         state_topic: "anders_aps/status/switch:0"
         unit_of_measurement: "A"
         device_class: "current"

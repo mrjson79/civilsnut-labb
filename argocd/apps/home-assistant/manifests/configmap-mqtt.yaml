@@ -97,7 +97,7 @@ data:
 
       # Network - Gen 2 Shelly Plus Plug S
       - name: "Network Shelly"
-        state_topic: "Network/events"
+        state_topic: "Network/status/switch:0"
         command_topic: "Network/rpc"
         payload_on: '{"id":1,"method":"Switch.Set","params":{"id":0,"on":true}}'
         payload_off: '{"id":1,"method":"Switch.Set","params":{"id":0,"on":false}}'
@@ -262,7 +262,7 @@ data:
 
       # Network Sensors (Gen 2 - uses JSON value templates)
       - name: "Network Power"
-        state_topic: "Network/events"
+        state_topic: "Network/status/switch:0"
         unit_of_measurement: "W"
         device_class: "power"
         value_template: "{{ value_json.apower }}"
@@ -271,7 +271,7 @@ data:
           identifiers: ["shelly_network"]
 
       - name: "Network Energy"
-        state_topic: "Network/events"
+        state_topic: "Network/status/switch:0"
         unit_of_measurement: "Wh"
         device_class: "energy"
         value_template: "{{ value_json.aenergy.total }}"
@@ -280,7 +280,7 @@ data:
           identifiers: ["shelly_network"]
 
       - name: "Network Temperature"
-        state_topic: "Network/events"
+        state_topic: "Network/status/switch:0"
         unit_of_measurement: "°C"
         device_class: "temperature"
         value_template: "{{ value_json.temperature.tC }}"
@@ -289,7 +289,7 @@ data:
           identifiers: ["shelly_network"]
 
       - name: "Network Voltage"
-        state_topic: "Network/events"
+        state_topic: "Network/status/switch:0"
         unit_of_measurement: "V"
         device_class: "voltage"
         value_template: "{{ value_json.voltage }}"
@@ -298,7 +298,7 @@ data:
           identifiers: ["shelly_network"]
 
       - name: "Network Current"
-        state_topic: "Network/events"
+        state_topic: "Network/status/switch:0"
         unit_of_measurement: "A"
         device_class: "current"
         value_template: "{{ value_json.current }}"

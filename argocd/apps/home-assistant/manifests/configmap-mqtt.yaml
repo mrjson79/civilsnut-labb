@@ -113,6 +113,7 @@ data:
           manufacturer: "Allterco"
           configuration_url: "http://192.168.3.XXX"
 
+
     sensor:
       # Anders Kontor Sensors
       - name: "Anders Kontor Power"

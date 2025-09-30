@@ -21,7 +21,6 @@ spec:
       allowedRoutes:
         kinds:
           - kind: HTTPRoute
-          - kind: GRPCRoute
         namespaces:
           from: Selector
           selector:
@@ -39,7 +38,6 @@ spec:
       allowedRoutes:
         kinds:
           - kind: HTTPRoute
-          - kind: GRPCRoute
         namespaces:
           from: Selector
           selector:

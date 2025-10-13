@@ -9,7 +9,7 @@ spec:
     # Ingress-nginx Helm chart
     - chart: ingress-nginx
       repoURL: https://kubernetes.github.io/ingress-nginx
-      targetRevision: 4.12.6
+      targetRevision: 4.12.7
       helm:
         values: |
           controller:

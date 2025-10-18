@@ -87,6 +87,13 @@ spec:
       directory:
         include: "{1password-connect.yaml}"
 
+    # Ingress Nginx Application
+    - repoURL: https://github.com/mrjson79/civilsnut-labb.git
+      targetRevision: HEAD
+      path: argocd/apps/ingress-nginx
+      directory:
+        include: "{ingress-nginx.yaml}"
+
     # External Secrets Application
     - repoURL: https://github.com/mrjson79/civilsnut-labb.git
       targetRevision: HEAD

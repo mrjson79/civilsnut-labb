@@ -67,9 +67,11 @@ jobs:
           echo "### Managed Applications:" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ **Podinfo** - Demo application for testing" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ **Kube-Prometheus-Stack** - Monitoring and alerting" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **External-Secrets** - Secret management operator" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Update Groups:" >> $GITHUB_STEP_SUMMARY
           echo "- **Podinfo**: Scheduled for Monday mornings" >> $GITHUB_STEP_SUMMARY
           echo "- **Monitoring Stack**: Scheduled for Saturday mornings" >> $GITHUB_STEP_SUMMARY
+          echo "- **External Secrets**: Scheduled for Saturday mornings" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Check the [Dependency Dashboard](https://github.com/${{ github.repository }}/issues?q=is%3Aissue+is%3Aopen+label%3Adependencies) for more details." >> $GITHUB_STEP_SUMMARY

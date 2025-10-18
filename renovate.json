@@ -25,9 +25,22 @@
     },
     {
       "description": "Monitoring stack updates",
-      "matchPackageNames": ["kube-prometheus-stack", "prometheus", "grafana", "alertmanager"],
+      "matchPackageNames": [
+        "kube-prometheus-stack",
+        "prometheus",
+        "grafana",
+        "alertmanager"
+      ],
       "labels": ["monitoring", "dependencies"],
       "groupName": "Monitoring Stack",
+      "automerge": false,
+      "schedule": ["before 6am on saturday"]
+    },
+    {
+      "description": "External secrets updates",
+      "matchPackageNames": ["external-secrets"],
+      "labels": ["external-secrets", "dependencies"],
+      "groupName": "External Secrets",
       "automerge": false,
       "schedule": ["before 6am on saturday"]
     },
@@ -67,6 +80,14 @@
       "datasourceTemplate": "helm"
     },
     {
+      "description": "External-secrets Helm chart version in ArgoCD applications",
+      "fileMatch": ["argocd/apps/external-secrets/.*\\.ya?ml$"],
+      "matchStrings": [
+        "chart:\\s+(?<depName>external-secrets)\\s+repoURL:\\s+(?<registryUrl>https://charts\\.external-secrets\\.io)\\s+targetRevision:\\s+(?<currentValue>[^\\s]+)"
+      ],
+      "datasourceTemplate": "helm"
+    },
+    {
       "description": "General Helm chart versions in ArgoCD applications",
       "fileMatch": ["argocd/apps/.+\\.ya?ml$"],
       "matchStrings": [
@@ -82,6 +103,10 @@
     },
     {
       "matchHost": "prometheus-community.github.io",
+      "timeout": 30000
+    },
+    {
+      "matchHost": "charts.external-secrets.io",
       "timeout": 30000
     }
   ],

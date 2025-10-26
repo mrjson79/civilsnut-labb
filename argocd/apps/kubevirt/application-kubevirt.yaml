@@ -45,7 +45,7 @@ spec:
       targetRevision: HEAD
       path: argocd/apps/kubevirt
       directory:
-        include: "{httproute.yaml,referencegrant.yaml,kubevirt-cr.yaml}"
+        include: "{httproute.yaml,referencegrant.yaml,kubevirt-cr.yaml,namespace.yaml}"
   destination:
     server: https://kubernetes.default.svc
     namespace: kubevirt

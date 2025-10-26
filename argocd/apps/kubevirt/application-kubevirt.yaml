@@ -52,6 +52,9 @@ spec:
                 nodePlacement:
                   nodeSelector:
                     kubernetes.io/arch: amd64
+            # Monitoring configuration - set to empty strings to avoid null values
+            monitorAccount: ""
+            monitorNamespace: ""
 
           # Containerized Data Importer
           kubevirt-cdi:

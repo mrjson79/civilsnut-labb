@@ -14,52 +14,61 @@ spec:
       targetRevision: "0.1.0"
       helm:
         values: |
-          # KubeVirt Core Operator - disable CR creation to avoid null values
-          kubevirt:
-            enabled: true
-            namespace: kubevirt
-            createResource: false
+          # KubeVirt on ARM64 (TuringPi RK1) Configuration
+          # Note: Some features are disabled due to ARM64 limitations:
+          # - CDI (Containerized Data Importer) - not supported on ARM64
+          # - HotplugVolumes - requires CDI
+          # - VirtualMachineExport - requires CDI
+          # - HotplugNICs - ARM64 image not available
+          # See: https://kubevirt.io/user-guide/cluster_admin/operations_on_Arm64/
 
+          # KubeVirt Core Operator
+          operator:
+            image:
+              tag: "v1.5.2"
+            nodeSelector:
+              kubernetes.io/arch: arm64
+            featureGates:
+              - LiveMigration
+              - Snapshot
+              - ExpandDisks
+              - CPUManager
+              - GPU
+              - HostDevices
+              - HostDisk
+              - Macvtap
+              - Passt
+              - clientPassthrough
+              - CPUNodeDiscovery
+              # ARM64 unsupported features (commented out):
+              # - HotplugVolumes      # Requires CDI (not supported on ARM64)
+              # - VirtualMachineExport # Requires CDI (not supported on ARM64)
+              # - VMExport            # Requires CDI (not supported on ARM64)
+              # - HotplugNICs         # ARM64 image not available
 
-          # Containerized Data Importer
-          kubevirt-cdi:
-            enabled: true
-            namespace: cdi
-            spec:
-              config:
-                featureGates:
-                  - HonorWaitForFirstConsumer
-              infra:
-                replicas: 1
-                nodePlacement:
-                  nodeSelector:
-                    kubernetes.io/arch: arm64
+          # Containerized Data Importer - DISABLED (not supported on ARM64)
+          cdi:
+            replicaCount: 0
 
           # Web UI for VM Management
-          kubevirt-manager:
+          manager:
             enabled: true
-            namespace: kubevirt-manager
             service:
               type: ClusterIP
               port: 8080
-              targetPort: 8080
             ingress:
               enabled: false
 
-          # Cluster API (disabled by default)
-          cluster-api-operator:
+          # Cluster API (disabled)
+          capi:
             enabled: false
-
-          # Global settings
-          global:
-            imagePullPolicy: IfNotPresent
 
     # Additional manifests (HTTPRoute and ReferenceGrant)
     - repoURL: https://github.com/mrjson79/civilsnut-labb
       targetRevision: HEAD
       path: argocd/apps/kubevirt
       directory:
-        include: "{httproute.yaml,referencegrant.yaml,kubevirt-cr.yaml}"
+        include: "{httproute.yaml,referencegrant.yaml}"
   destination:
     server: https://kubernetes.default.svc
     namespace: kubevirt

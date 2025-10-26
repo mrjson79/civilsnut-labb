@@ -6,11 +6,8 @@ metadata:
   labels:
     app.kubernetes.io/name: kubevirt-manager
     app.kubernetes.io/managed-by: argocd
-    gateway.networking.k8s.io/allowed: "true"
   annotations:
     argocd.argoproj.io/sync-wave: "0"
-    # Allow HTTPRoute in this namespace to reference Gateways from other namespaces
-    gateway.networking.k8s.io/allowed: "true"
 ---
 apiVersion: v1
 kind: Namespace

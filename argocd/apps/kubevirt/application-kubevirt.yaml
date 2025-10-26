@@ -27,9 +27,9 @@ spec:
           cdi:
             replicaCount: 0
 
-          # Enable Web UI for VM Management only
+          # Disable Web UI for VM Management (not supported on ARM64)
           manager:
-            enabled: true
+            enabled: false
             service:
               type: ClusterIP
               port: 8080
@@ -45,7 +45,7 @@ spec:
       targetRevision: HEAD
       path: argocd/apps/kubevirt
       directory:
-        include: "{httproute.yaml,referencegrant.yaml,kubevirt-cr.yaml,namespace.yaml}"
+        include: "{kubevirt-cr.yaml,namespace.yaml}"
   destination:
     server: https://kubernetes.default.svc
     namespace: kubevirt

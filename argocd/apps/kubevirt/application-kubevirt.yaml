@@ -33,7 +33,7 @@ spec:
                 replicas: 1
                 nodePlacement:
                   nodeSelector:
-                    kubernetes.io/arch: amd64
+                    kubernetes.io/arch: arm64
 
           # Web UI for VM Management
           kubevirt-manager:

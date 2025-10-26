@@ -3,19 +3,111 @@ kind: Application
 metadata:
   name: kubevirt
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
-  source:
-    repoURL: https://github.com/mrjson79/civilsnut-labb.git
-    targetRevision: HEAD
-    path: argocd/apps/kubevirt/manifests
+  sources:
+    # Helm chart for KubeVirt stack
+    - repoURL: https://cloudymax.github.io/kubevirt-community-stack
+      chart: kubevirt-stack
+      targetRevision: "0.1.0"
+      helm:
+        values: |
+          # KubeVirt Core Operator
+          kubevirt:
+            enabled: true
+            namespace: kubevirt
+            spec:
+              configuration:
+                developerConfiguration:
+                  featureGates:
+                    - LiveMigration
+                    - Snapshot
+                    - HotplugVolumes
+                    - VirtualMachineExport
+                  useEmulation: false
+                network:
+                  defaultNetworkInterface: "masquerade"
+                  permitSlirpInterface: false
+                  permitBridgeInterfaceOnPodNetwork: false
+                virtualMachineInstancesPerNode: 10
+                migrations:
+                  parallelMigrationsPerCluster: 5
+                  parallelOutboundMigrationsPerNode: 2
+                  bandwidthPerMigration: "64Mi"
+                  completionTimeoutPerGiB: 800
+                  progressTimeout: 150
+                  allowAutoConverge: false
+                  allowPostCopy: false
+              infra:
+                replicas: 2
+                nodePlacement:
+                  nodeSelector:
+                    kubernetes.io/arch: amd64
+                  tolerations:
+                    - key: CriticalAddonsOnly
+                      operator: Exists
+              workloads:
+                nodePlacement:
+                  nodeSelector:
+                    kubernetes.io/arch: amd64
+
+          # Containerized Data Importer
+          kubevirt-cdi:
+            enabled: true
+            namespace: cdi
+            spec:
+              config:
+                featureGates:
+                  - HonorWaitForFirstConsumer
+              infra:
+                replicas: 1
+                nodePlacement:
+                  nodeSelector:
+                    kubernetes.io/arch: amd64
+
+          # Web UI for VM Management
+          kubevirt-manager:
+            enabled: true
+            namespace: kubevirt-manager
+            service:
+              type: ClusterIP
+              port: 8080
+              targetPort: 8080
+            ingress:
+              enabled: false
+
+          # Cluster API (disabled by default)
+          cluster-api-operator:
+            enabled: false
+
+          # Global settings
+          global:
+            imagePullPolicy: IfNotPresent
+
+    # Additional manifests (HTTPRoute and ReferenceGrant)
+    - repoURL: https://github.com/mrjson79/civilsnut-labb
+      targetRevision: HEAD
+      path: argocd/apps/kubevirt
+      directory:
+        include: "{httproute.yaml,referencegrant.yaml}"
   destination:
     server: https://kubernetes.default.svc
     namespace: kubevirt
   syncPolicy:
     automated:
-      selfHeal: true
       prune: true
+      selfHeal: true
+      allowEmpty: false
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+  revisionHistoryLimit: 3

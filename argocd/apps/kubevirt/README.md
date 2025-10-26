@@ -1,127 +1,184 @@
-# KubeVirt GitOps Setup
+# KubeVirt GitOps Setup (Helm-based)
 
-This directory contains the GitOps configuration for deploying KubeVirt (Kubernetes-based Virtual Machine management) using ArgoCD.
+This directory contains the GitOps configuration for deploying KubeVirt (Kubernetes-based Virtual Machine management) using ArgoCD and the [kubevirt-community-stack](https://cloudymax.github.io/kubevirt-community-stack/) Helm chart.
 
 ## Overview
 
-KubeVirt allows you to run virtual machines alongside containers in Kubernetes. This setup deploys KubeVirt v1.6.2 using the official releases via GitOps methodology with a Job-based installer approach.
+KubeVirt allows you to run virtual machines alongside containers in Kubernetes. This setup uses a modern Helm-based approach with the kubevirt-community-stack (v0.1.0), providing:
+
+- **KubeVirt Operator**: Core virtualization platform
+- **Containerized Data Importer (CDI)**: Import VM images from various sources
+- **Web UI**: Kubevirt-manager for VM management (enabled with HTTP route)
+- **Optional Cluster API**: Create Kubernetes clusters using VMs
 
 ## Architecture
 
-- **ArgoCD Application**: Deploys KubeVirt to the local cluster
-- **Official Manifests**: Uses KubeVirt's official release manifests from GitHub
-- **GitOps Workflow**: All changes are tracked in Git and automatically applied
+- **ArgoCD Application**: Manages KubeVirt deployment using Helm
+- **Helm Chart**: kubevirt-community-stack from CloudyMax
+- **GitOps Workflow**: All changes tracked in Git and automatically applied
+- **Modular Components**: Enable/disable features as needed
 
 ## Files Structure
 
 ```
 kubevirt/
 ├── README.md                           # This file
-├── application-kubevirt.yaml           # ArgoCD Application definition
-└── manifests/
-    ├── kubevirt-operator.yaml         # KubeVirt operator installation job
-    └── kubevirt-cr.yaml               # KubeVirt custom resource installation job
+├── application-kubevirt.yaml           # ArgoCD Application definition (kubevirt-stack v0.1.0)
+├── httproute.yaml                      # HTTP route for kubevirt-manager web UI
+└── referencegrant.yaml                 # ReferenceGrant for gateway access
 ```
+
+## Component Versions
+
+This deployment uses the following chart versions:
+
+- **kubevirt-stack**: v0.1.0 (meta-chart)
+- **kubevirt**: v0.3.0 (KubeVirt v1.5.2)
+- **kubevirt-cdi**: v0.2.2 (CDI v1.63.0)
+- **kubevirt-manager**: v0.3.0 (Manager v1.5.3)
 
 ## Prerequisites
 
-1. **Kubernetes Cluster** with virtualization support:
-   - Hardware virtualization enabled (Intel VT-x or AMD-V)
-   - Nested virtualization for cloud/VM environments
-   - Kubernetes 1.28+ recommended
+### 1. Hardware Requirements
 
-2. **ArgoCD** deployed and configured
-
-3. **Node Requirements**:
-   - Linux nodes with KVM support
-   - `kvm` kernel module loaded
-   - Sufficient resources (CPU, Memory, Storage)
-
-## 5-Step KubeVirt Configuration and Setup
-
-### Step 1: Verify Hardware Virtualization Support
-
-Check if your nodes support virtualization:
-
+**Bare Metal or VM with Nested Virtualization**:
 ```bash
-# On each node, verify virtualization support
-sudo apt-get update && sudo apt-get install -y cpu-checker
-sudo kvm-ok
+# Check virtualization support
+sudo apt-get install -y libvirt-clients
+virt-host-validate qemu
 
-# Should return: "KVM acceleration can be used"
+# Expected output:
+# QEMU: Checking for hardware virtualization          : PASS
+# QEMU: Checking if device /dev/kvm exists            : PASS
+# QEMU: Checking if device /dev/kvm is accessible     : PASS
+# QEMU: Checking if device /dev/vhost-net exists      : PASS
+# QEMU: Checking if device /dev/net/tun exists        : PASS
 ```
 
-For nested virtualization (if running on VMs):
+### 2. Kubernetes Cluster Requirements
+
+- **Kubernetes 1.28+** recommended
+- **Node Resources**: Sufficient CPU, Memory, and Storage
+- **Architecture**: AMD64 nodes (ARM64 support limited)
+- **CPUManager Policy**: Recommended to set `cpuManagerPolicy: static` in kubelet config for performance
+
+### 3. ArgoCD
+
+- ArgoCD deployed and configured in your cluster
+- Access to apply applications in the `argocd` namespace
+
+### 4. Storage
+
+- **Default StorageClass** or configure specific StorageClass for VM disks
+- **Fast Storage** recommended for better VM performance (NVMe, SSD)
+
+## Quick Start
+
+### Deploy KubeVirt Stack
+
+The deployment includes the kubevirt-manager web UI accessible at `kubevirt-manager.civilsnut.se`.
+
 ```bash
-# Check if nested virtualization is enabled
-cat /sys/module/kvm_intel/parameters/nested  # Intel
-cat /sys/module/kvm_amd/parameters/nested    # AMD
-```
-
-### Step 2: Deploy KubeVirt via GitOps
-
-Apply the Application to deploy KubeVirt to your local cluster:
-
-```bash
-# Apply the Application
+# Apply the ArgoCD Application
 kubectl apply -f application-kubevirt.yaml
+
+# Monitor the deployment
+kubectl get applications -n argocd kubevirt
+argocd app get kubevirt
 ```
 
-This will:
-- Create the `kubevirt` namespace
-- Install the KubeVirt operator using the official v1.6.2 release via a Kubernetes Job
-- Create the KubeVirt custom resource to trigger installation via another Job
-- Wait for all components to be ready
-- Use official KubeVirt releases from GitHub, ensuring consistency and reliability
-
-### Step 3: Verify KubeVirt Installation
-
-Check that KubeVirt is properly installed and running:
+### Verify Installation
 
 ```bash
 # Check KubeVirt status
 kubectl get kubevirt -n kubevirt
 
-# Verify all KubeVirt components are running
+# Verify all components are running
 kubectl get pods -n kubevirt
+kubectl get pods -n cdi
 
-# Check KubeVirt version
+# Check KubeVirt version and status
 kubectl get kubevirt kubevirt -n kubevirt -o yaml
 ```
 
-Expected output should show `Available: True` condition.
+## Configuration
 
-### Step 4: Install virtctl (KubeVirt CLI)
+The ArgoCD application includes sensible defaults, but you can customize the deployment by modifying the Helm values in `application-kubevirt.yaml`.
 
-Install the KubeVirt command-line tool:
+### Key Configuration Options
 
-```bash
-# Download and install virtctl v1.6.2
-VERSION=v1.6.2
-ARCH=$(uname -s | tr A-Z a-z)-$(uname -m | sed 's/x86_64/amd64/') 
-curl -L -o virtctl https://github.com/kubevirt/kubevirt/releases/download/${VERSION}/virtctl-${VERSION}-${ARCH}
-chmod +x virtctl
-sudo install virtctl /usr/local/bin
-```
-
-### Step 5: Create and Run Your First Virtual Machine
-
-Create a simple VM to test the setup:
+#### KubeVirt Core Settings
 
 ```yaml
-# Save as test-vm.yaml
+kubevirt:
+  enabled: true
+  spec:
+    configuration:
+      developerConfiguration:
+        featureGates:
+          - LiveMigration      # Enable VM live migration
+          - Snapshot          # Enable VM snapshots
+          - HotplugVolumes    # Enable volume hotplug
+          - VirtualMachineExport  # Enable VM export
+        useEmulation: false   # Set to true if no hardware virtualization
+      virtualMachineInstancesPerNode: 10  # Max VMs per node
+```
+
+#### CDI (Containerized Data Importer) Settings
+
+```yaml
+kubevirt-cdi:
+  enabled: true
+  spec:
+    config:
+      featureGates:
+        - HonorWaitForFirstConsumer  # Better storage handling
+```
+
+#### Optional Components
+
+```yaml
+# Web UI for VM management
+kubevirt-manager:
+  enabled: false  # Set to true to enable web interface
+
+# Cluster API for creating k8s clusters with VMs
+cluster-api-operator:
+  enabled: false  # Set to true for multi-cluster scenarios
+```
+
+## Creating Virtual Machines
+
+### Install virtctl CLI
+
+```bash
+# Latest version
+export VERSION=$(curl -s https://api.github.com/repos/kubevirt/kubevirt/releases/latest | jq -r .tag_name)
+curl -L -o virtctl https://github.com/kubevirt/kubevirt/releases/download/${VERSION}/virtctl-${VERSION}-linux-amd64
+chmod +x virtctl
+sudo mv virtctl /usr/local/bin/
+
+# Or via kubectl plugin
+kubectl krew install virt
+```
+
+### Basic VM Example
+
+Create a simple test VM:
+
+```yaml
+# test-vm.yaml
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
-  name: testvm
-  namespace: default
+  name: test-vm
+  namespace: kubevirt
 spec:
   running: false
   template:
     metadata:
       labels:
-        kubevirt.io/size: small
-        kubevirt.io/domain: testvm
+        kubevirt.io/domain: test-vm
     spec:
       domain:
         devices:
@@ -133,14 +190,15 @@ spec:
               disk:
                 bus: virtio
           interfaces:
-          - name: default
-            masquerade: {}
+            - name: default
+              masquerade: {}
         resources:
           requests:
-            memory: 64M
+            memory: 1Gi
+            cpu: 1
       networks:
-      - name: default
-        pod: {}
+        - name: default
+          pod: {}
       volumes:
         - name: containerdisk
           containerDisk:
@@ -150,21 +208,176 @@ spec:
             userDataBase64: SGkuXG4=
 ```
 
-Apply and start the VM:
-
 ```bash
-# Create the VM
+# Create and start the VM
 kubectl apply -f test-vm.yaml
-
-# Start the VM
-virtctl start testvm
+virtctl start test-vm -n kubevirt
 
 # Check VM status
-kubectl get vms
-kubectl get vmis
+kubectl get vms -n kubevirt
+kubectl get vmis -n kubevirt
 
-# Connect to VM console (optional)
-virtctl console testvm
+# Connect to VM console
+virtctl console test-vm -n kubevirt
+```
+
+### Advanced VM with Custom Image
+
+```yaml
+# ubuntu-vm.yaml
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: ubuntu-vm
+  namespace: kubevirt
+spec:
+  running: false
+  template:
+    spec:
+      domain:
+        devices:
+          disks:
+            - name: ubuntu-disk
+              disk:
+                bus: virtio
+          interfaces:
+            - name: default
+              masquerade: {}
+        resources:
+          requests:
+            memory: 2Gi
+            cpu: 2
+      networks:
+        - name: default
+          pod: {}
+      volumes:
+        - name: ubuntu-disk
+          dataVolume:
+            name: ubuntu-dv
+  dataVolumeTemplates:
+    - metadata:
+        name: ubuntu-dv
+      spec:
+        source:
+          http:
+            url: "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"
+        storage:
+          resources:
+            requests:
+              storage: 10Gi
+          storageClassName: fast-ssd  # Adjust to your storage class
+        accessModes:
+          - ReadWriteOnce
+```
+
+### Using the Helm Chart for VMs
+
+You can also use the kubevirt-vm Helm chart for more complex VM definitions:
+
+```bash
+# Add the repo if not already done
+helm repo add kubevirt https://cloudymax.github.io/kubevirt-community-stack
+
+# Create a VM using Helm
+helm install my-vm kubevirt/kubevirt-vm \
+  --namespace kubevirt \
+  --set virtualMachine.name="my-vm" \
+  --set virtualMachine.machine.vCores=2 \
+  --set virtualMachine.machine.memory.base="4Gi" \
+  --set disks[0].name="root-disk" \
+  --set disks[0].pvsize="20Gi" \
+  --set disks[0].source="url" \
+  --set disks[0].url="https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"
+```
+
+## Management and Operations
+
+### Common VM Operations
+
+```bash
+# List VMs
+kubectl get vms -A
+
+# Start/Stop/Restart VM
+virtctl start my-vm -n kubevirt
+virtctl stop my-vm -n kubevirt  
+virtctl restart my-vm -n kubevirt
+
+# Access VM console
+virtctl console my-vm -n kubevirt
+
+# Access VM via VNC (requires VNC client)
+virtctl vnc my-vm -n kubevirt
+
+# Port forwarding to VM
+virtctl port-forward --address=0.0.0.0 my-vm 8080:80 -n kubevirt
+```
+
+### Live Migration
+
+```bash
+# Migrate VM to another node
+virtctl migrate my-vm -n kubevirt
+
+# Check migration status
+kubectl get vmim -n kubevirt
+```
+
+### Snapshots (if enabled)
+
+```bash
+# Create snapshot
+virtctl snapshot vm my-vm --snapshot-name=backup-$(date +%Y%m%d) -n kubevirt
+
+# List snapshots
+kubectl get vmsnapshot -n kubevirt
+
+# Restore from snapshot
+kubectl apply -f - <<EOF
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: restored-vm
+spec:
+  dataVolumeTemplates:
+  - metadata:
+      name: restored-dv
+    spec:
+      source:
+        snapshot:
+          namespace: kubevirt
+          name: my-vm-backup-20231201
+      storage:
+        resources:
+          requests:
+            storage: 20Gi
+EOF
+```
+
+### Data Volume Management
+
+```bash
+# List data volumes
+kubectl get dv -n kubevirt
+
+# Import from URL
+kubectl apply -f - <<EOF
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: imported-image
+  namespace: kubevirt
+spec:
+  source:
+    http:
+      url: "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"
+  storage:
+    resources:
+      requests:
+        storage: 10Gi
+    accessModes:
+    - ReadWriteOnce
+EOF
 ```
 
 ## Monitoring and Troubleshooting
@@ -172,243 +385,183 @@ virtctl console testvm
 ### Check Installation Status
 
 ```bash
-# Monitor ArgoCD Application
-kubectl get applications -n argocd | grep kubevirt
+# ArgoCD Application status
+kubectl get application kubevirt -n argocd -o yaml
 
-# Check sync status
-argocd app get kubevirt
-
-# View KubeVirt operator logs
+# KubeVirt operator logs
 kubectl logs -n kubevirt deployment/virt-operator
 
-# Check node compatibility
-kubectl get nodes -o wide
-kubectl describe node <node-name>
+# CDI operator logs
+kubectl logs -n cdi deployment/cdi-operator
 ```
 
 ### Common Issues
 
 1. **Hardware Virtualization Not Available**:
    ```bash
-   # Enable nested virtualization for cloud VMs
-   # AWS: Use metal instances or enable nested virtualization
-   # GCP: Enable nested virtualization on the VM
-   # Azure: Use Dv3/Ev3 series with nested virtualization
+   # Enable emulation mode
+   kubectl patch kubevirt kubevirt -n kubevirt --type merge -p '{"spec":{"configuration":{"developerConfiguration":{"useEmulation":true}}}}'
    ```
 
-2. **KubeVirt Pods Not Starting**:
-   ```bash
-   # Check node labels and taints
-   kubectl get nodes --show-labels
-   
-   # Ensure privileged pods can run
-   kubectl describe pods -n kubevirt
-   ```
-
-3. **VM Creation Fails**:
+2. **VM Not Starting**:
    ```bash
    # Check VM events
-   kubectl describe vm testvm
+   kubectl describe vm my-vm -n kubevirt
    
-   # Check VMI status
-   kubectl describe vmi testvm
+   # Check VMI events if VM started
+   kubectl describe vmi my-vm -n kubevirt
    ```
 
-## Virtual Machine Examples
+3. **Storage Issues**:
+   ```bash
+   # Check DataVolume status
+   kubectl get dv -n kubevirt
+   kubectl describe dv my-dv -n kubevirt
+   
+   # Check PVC status
+   kubectl get pvc -n kubevirt
+   ```
 
-### Ubuntu VM with DataVolume
+## Web UI Access
 
-```yaml
-apiVersion: kubevirt.io/v1
-kind: VirtualMachine
-metadata:
-  name: ubuntu-vm
-spec:
-  running: false
-  template:
-    metadata:
-      labels:
-        kubevirt.io/domain: ubuntu-vm
-    spec:
-      domain:
-        devices:
-          disks:
-          - name: datavolumedisk
-            disk:
-              bus: virtio
-          interfaces:
-          - name: default
-            masquerade: {}
-        machine:
-          type: ""
-        resources:
-          requests:
-            memory: 1Gi
-            cpu: 1
-      networks:
-      - name: default
-        pod: {}
-      volumes:
-      - dataVolume:
-          name: ubuntu-dv
-        name: datavolumedisk
-  dataVolumeTemplates:
-  - metadata:
-      name: ubuntu-dv
-    spec:
-      source:
-        registry:
-          url: "docker://quay.io/containerdisks/ubuntu:22.04"
-      pvc:
-        accessModes:
-        - ReadWriteOnce
-        resources:
-          requests:
-            storage: 5Gi
-```
+The kubevirt-manager web interface is enabled and accessible via HTTP route:
 
-### Windows VM Example
+- **URL**: https://kubevirt-manager.civilsnut.se
+- **Namespace**: kubevirt-manager
+- **Service**: kubevirt-manager:8080
 
-```yaml
-apiVersion: kubevirt.io/v1
-kind: VirtualMachine
-metadata:
-  name: windows-vm
-spec:
-  running: false
-  template:
-    spec:
-      domain:
-        clock:
-          utc: {}
-          timer:
-            hpet:
-              present: false
-            pit:
-              present: false
-            rtc:
-              present: false
-            hyperv: {}
-        cpu:
-          cores: 2
-        devices:
-          disks:
-          - name: datavolumedisk
-            disk:
-              bus: sata
-          interfaces:
-          - name: default
-            masquerade: {}
-        features:
-          acpi: {}
-          apic: {}
-          hyperv:
-            relaxed: {}
-            spinlocks:
-              spinlocks: 8191
-            vapic: {}
-        firmware:
-          bootloader:
-            efi: {}
-        machine:
-          type: q35
-        resources:
-          requests:
-            memory: 4Gi
-      networks:
-      - name: default
-        pod: {}
-      volumes:
-      - dataVolume:
-          name: windows-dv
-        name: datavolumedisk
-```
+### Alternative Local Access
 
-## Advanced Configuration
-
-### Enable Feature Gates
-
-Modify the KubeVirt CR to enable additional features:
-
-```yaml
-apiVersion: kubevirt.io/v1
-kind: KubeVirt
-metadata:
-  name: kubevirt
-  namespace: kubevirt
-spec:
-  configuration:
-    developerConfiguration:
-      featureGates:
-        - LiveMigration
-        - Snapshot
-        - HotplugVolumes
-        - VirtualMachineExport
-```
-
-### Resource Limits and Requests
-
-Configure resource management:
-
-```yaml
-spec:
-  configuration:
-    supportContainerResources:
-    - type: virt-launcher
-      resources:
-        requests:
-          cpu: 100m
-          memory: 1Gi
-        limits:
-          cpu: 1000m
-          memory: 2Gi
-```
-
-## Useful Commands
+If you need local access for development:
 
 ```bash
-# List all VMs
-kubectl get vms --all-namespaces
+# Port-forward to access locally
+kubectl port-forward -n kubevirt-manager service/kubevirt-manager 8080:8080
 
-# List running VMs
-kubectl get vmis --all-namespaces
+# Access at http://localhost:8080
+```
 
-# Start/Stop/Restart VM
-virtctl start <vm-name>
-virtctl stop <vm-name>
-virtctl restart <vm-name>
+### Web UI Features
 
-# Access VM console
-virtctl console <vm-name>
+The kubevirt-manager provides:
+- Visual VM creation and management
+- VM console access through the browser
+- Resource monitoring and metrics
+- VM lifecycle operations (start, stop, restart, delete)
+- Network and storage configuration
 
-# Access VM via VNC
-virtctl vnc <vm-name>
+## Performance Tuning
 
-# Migrate VM
-virtctl migrate <vm-name>
+### For Production Workloads
 
-# Create VM snapshot
-virtctl snapshot vm <vm-name> --snapshot-name=<snapshot-name>
+```yaml
+kubevirt:
+  spec:
+    configuration:
+      # Use host CPU model for better performance
+      cpuModel: "host-model"
+      
+      # Dedicated CPU policy
+      # Requires cpuManagerPolicy: static in kubelet
+      # and appropriate node labeling
+      
+      # Memory settings
+      memoryOvercommit: 150  # 150% overcommit
+      
+      # Network performance
+      network:
+        defaultNetworkInterface: "bridge"  # Better performance than masquerade
+        
+    # Node placement for compute-intensive workloads
+    workloads:
+      nodePlacement:
+        nodeSelector:
+          node-role.kubernetes.io/worker: ""
+          kubevirt.io/schedulable: "true"
+```
 
-# Export VM
-virtctl export vm <vm-name> --output=<output-file>
+## Upgrading
+
+KubeVirt upgrades are handled through ArgoCD by updating the Helm chart version:
+
+```bash
+# Check current version
+argocd app get kubevirt
+
+# Trigger sync to get latest chart version
+argocd app sync kubevirt
+
+# Monitor upgrade progress
+kubectl get kubevirt kubevirt -n kubevirt -w
+```
+
+## Uninstalling
+
+To completely remove KubeVirt:
+
+```bash
+# Delete the ArgoCD application
+kubectl delete application kubevirt -n argocd
+
+# If resources are stuck, force cleanup
+kubectl delete kubevirt kubevirt -n kubevirt --wait=true
+kubectl delete apiservices v1.subresources.kubevirt.io
+kubectl delete mutatingwebhookconfigurations virt-api-mutator
+kubectl delete validatingwebhookconfigurations virt-operator-validator virt-api-validator
+
+# Clean up namespaces if stuck
+kubectl get namespace kubevirt -o json | \
+  tr -d "\n" | sed "s/\"finalizers\": \[[^]]\+\]/\"finalizers\": []/" | \
+  kubectl replace --raw /api/v1/namespaces/kubevirt/finalize -f -
+```
+
+## Security Considerations
+
+1. **Pod Security Standards**: KubeVirt requires privileged containers
+2. **Network Policies**: Implement appropriate network isolation
+3. **RBAC**: Review and customize RBAC permissions as needed
+4. **VM Images**: Only use trusted VM images from verified sources
+5. **Storage**: Ensure proper storage encryption for sensitive workloads
+
+## Useful Commands Reference
+
+```bash
+# VM Management
+virtctl start/stop/restart <vm-name> -n <namespace>
+virtctl console <vm-name> -n <namespace>
+virtctl vnc <vm-name> -n <namespace>
+virtctl ssh <user>@<vm-name>.<namespace>
+
+# Information
+kubectl get vms,vmis,dvs -A
+kubectl describe vm <vm-name> -n <namespace>
+virtctl version
+
+# Troubleshooting  
+kubectl logs -n kubevirt deployment/virt-operator
+kubectl get events -n kubevirt --sort-by='.lastTimestamp'
+
+# Performance
+kubectl top nodes
+kubectl top pods -n kubevirt
 ```
 
 ## References
 
 - [KubeVirt Official Documentation](https://kubevirt.io/)
+- [KubeVirt Community Stack](https://cloudymax.github.io/kubevirt-community-stack/)
 - [KubeVirt User Guide](https://kubevirt.io/user-guide/)
-- [GitOps Demo by 0xFelix](https://github.com/0xFelix/gitops-demo) - Original inspiration
-- [KubeVirt GitHub Releases](https://github.com/kubevirt/kubevirt/releases)
-- [Containerized Data Importer (CDI)](https://github.com/kubevirt/containerized-data-importer)
+- [ArgoCD Documentation](https://argo-cd.readthedocs.io/)
+- [Containerized Data Importer](https://github.com/kubevirt/containerized-data-importer)
 
 ## Support
 
 For issues related to:
 - **KubeVirt**: Check the [KubeVirt Issues](https://github.com/kubevirt/kubevirt/issues)
+- **Helm Chart**: Check the [Community Stack Issues](https://github.com/cloudymax/kubevirt-community-stack/issues)
 - **ArgoCD**: Check the [ArgoCD Documentation](https://argo-cd.readthedocs.io/)
 - **This Setup**: Create an issue in this repository
 
 ---
 
-**Note**: This setup is based on KubeVirt v1.6.2. For production environments, ensure you test thoroughly and follow security best practices.
+**Note**: This setup uses the kubevirt-community-stack Helm chart (v0.1.0) which provides a more maintainable and configurable approach compared to direct manifest deployment. The chart is actively maintained and includes additional useful components for a complete virtualization stack.

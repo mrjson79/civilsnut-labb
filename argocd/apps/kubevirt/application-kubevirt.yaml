@@ -14,46 +14,11 @@ spec:
       targetRevision: "0.1.0"
       helm:
         values: |
-          # KubeVirt Core Operator
+          # KubeVirt Core Operator - disable CR creation to avoid null values
           kubevirt:
             enabled: true
             namespace: kubevirt
-            monitorAccount: ""
-            monitorNamespace: ""
-            spec:
-              configuration:
-                developerConfiguration:
-                  featureGates:
-                    - LiveMigration
-                    - Snapshot
-                    - HotplugVolumes
-                    - VirtualMachineExport
-                  useEmulation: false
-                network:
-                  defaultNetworkInterface: "masquerade"
-                  permitSlirpInterface: false
-                  permitBridgeInterfaceOnPodNetwork: false
-                virtualMachineInstancesPerNode: 10
-                migrations:
-                  parallelMigrationsPerCluster: 5
-                  parallelOutboundMigrationsPerNode: 2
-                  bandwidthPerMigration: "64Mi"
-                  completionTimeoutPerGiB: 800
-                  progressTimeout: 150
-                  allowAutoConverge: false
-                  allowPostCopy: false
-              infra:
-                replicas: 2
-                nodePlacement:
-                  nodeSelector:
-                    kubernetes.io/arch: amd64
-                  tolerations:
-                    - key: CriticalAddonsOnly
-                      operator: Exists
-              workloads:
-                nodePlacement:
-                  nodeSelector:
-                    kubernetes.io/arch: amd64
+            createResource: false
 
 
           # Containerized Data Importer
@@ -94,7 +59,7 @@ spec:
       targetRevision: HEAD
       path: argocd/apps/kubevirt
       directory:
-        include: "{httproute.yaml,referencegrant.yaml}"
+        include: "{httproute.yaml,referencegrant.yaml,kubevirt-cr.yaml}"
   destination:
     server: https://kubernetes.default.svc
     namespace: kubevirt

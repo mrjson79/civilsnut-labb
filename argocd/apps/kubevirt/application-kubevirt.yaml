@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/andersjohansson/omni.git
+    repoURL: https://github.com/mrjson79/civilsnut-labb.git
     targetRevision: HEAD
     path: argocd/apps/kubevirt/manifests
   destination:

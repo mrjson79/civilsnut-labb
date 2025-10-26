@@ -8,7 +8,7 @@ KubeVirt allows you to run virtual machines alongside containers in Kubernetes. 
 
 ## Architecture
 
-- **ArgoCD ApplicationSet**: Automatically deploys KubeVirt to managed clusters
+- **ArgoCD Application**: Deploys KubeVirt to the local cluster
 - **Official Manifests**: Uses KubeVirt's official release manifests from GitHub
 - **GitOps Workflow**: All changes are tracked in Git and automatically applied
 
@@ -17,7 +17,7 @@ KubeVirt allows you to run virtual machines alongside containers in Kubernetes. 
 ```
 kubevirt/
 ├── README.md                           # This file
-├── applicationset-kubevirt.yaml        # ArgoCD ApplicationSet definition
+├── application-kubevirt.yaml           # ArgoCD Application definition
 └── manifests/
     ├── kubevirt-operator.yaml         # KubeVirt operator installation job
     └── kubevirt-cr.yaml               # KubeVirt custom resource installation job
@@ -32,12 +32,7 @@ kubevirt/
 
 2. **ArgoCD** deployed and configured
 
-3. **Managed Clusters** registered with ArgoCD with label:
-   ```yaml
-   argocd.argoproj.io/secret-type: cluster
-   ```
-
-4. **Node Requirements**:
+3. **Node Requirements**:
    - Linux nodes with KVM support
    - `kvm` kernel module loaded
    - Sufficient resources (CPU, Memory, Storage)
@@ -65,11 +60,11 @@ cat /sys/module/kvm_amd/parameters/nested    # AMD
 
 ### Step 2: Deploy KubeVirt via GitOps
 
-Apply the ApplicationSet to deploy KubeVirt across your managed clusters:
+Apply the Application to deploy KubeVirt to your local cluster:
 
 ```bash
-# Apply the ApplicationSet
-kubectl apply -f applicationset-kubevirt.yaml
+# Apply the Application
+kubectl apply -f application-kubevirt.yaml
 ```
 
 This will:
@@ -180,7 +175,7 @@ virtctl console testvm
 kubectl get applications -n argocd | grep kubevirt
 
 # Check sync status
-argocd app get <cluster-name>-kubevirt
+argocd app get kubevirt
 
 # View KubeVirt operator logs
 kubectl logs -n kubevirt deployment/virt-operator

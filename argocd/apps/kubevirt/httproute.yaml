@@ -20,7 +20,7 @@ spec:
   rules:
     - backendRefs:
         - group: ""
-          kind: service
+          kind: Service
           name: kubevirt-manager
           port: 8080
           weight: 1

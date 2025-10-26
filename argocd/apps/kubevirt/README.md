@@ -4,7 +4,7 @@ This directory contains the GitOps configuration for deploying KubeVirt (Kuberne
 
 ## Overview
 
-KubeVirt allows you to run virtual machines alongside containers in Kubernetes. This setup deploys KubeVirt v1.6.2 using the official releases via GitOps methodology.
+KubeVirt allows you to run virtual machines alongside containers in Kubernetes. This setup deploys KubeVirt v1.6.2 using the official releases via GitOps methodology with a Job-based installer approach.
 
 ## Architecture
 
@@ -69,9 +69,10 @@ kubectl apply -f application-kubevirt.yaml
 
 This will:
 - Create the `kubevirt` namespace
-- Install the KubeVirt operator using the official v1.6.2 release
-- Create the KubeVirt custom resource to trigger installation
+- Install the KubeVirt operator using the official v1.6.2 release via a Kubernetes Job
+- Create the KubeVirt custom resource to trigger installation via another Job
 - Wait for all components to be ready
+- Use official KubeVirt releases from GitHub, ensuring consistency and reliability
 
 ### Step 3: Verify KubeVirt Installation
 

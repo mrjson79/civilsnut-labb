@@ -1,0 +1,62 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kubevirt
+  labels:
+    kubevirt.io: ""
+    pod-security.kubernetes.io/enforce: "privileged"
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kubevirt-installer
+  namespace: kubevirt
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kubevirt-installer
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: kubevirt-installer
+    namespace: kubevirt
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kubevirt-operator-installer
+  namespace: kubevirt
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  template:
+    spec:
+      serviceAccountName: kubevirt-installer
+      containers:
+        - name: kubectl
+          image: bitnami/kubectl:latest
+          command:
+            - /bin/bash
+            - -c
+            - |
+              set -e
+              echo "Applying KubeVirt operator v1.6.2..."
+              kubectl apply -f https://github.com/kubevirt/kubevirt/releases/download/v1.6.2/kubevirt-operator.yaml
+              echo "KubeVirt operator applied successfully"
+              echo "Waiting for operator to be ready..."
+              kubectl -n kubevirt wait deployment/virt-operator --for=condition=Available --timeout=300s
+      restartPolicy: OnFailure
+  backoffLimit: 3

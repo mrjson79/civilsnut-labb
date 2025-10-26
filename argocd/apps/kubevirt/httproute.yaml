@@ -13,11 +13,15 @@ spec:
   hostnames:
     - kubevirt-manager.civilsnut.se
   parentRefs:
-    - name: shared-gateway
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: shared-gateway
       namespace: gateway-system
   rules:
     - backendRefs:
-        - name: kubevirt-manager
+        - group: ""
+          kind: service
+          name: kubevirt-manager
           port: 8080
       matches:
         - path:

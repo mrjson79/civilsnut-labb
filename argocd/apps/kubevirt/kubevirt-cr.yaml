@@ -18,6 +18,18 @@ spec:
       featureGates:
         - LiveMigration
         - Snapshot
+        - HotplugVolumes
+        - VirtualMachineExport
+        - VMExport
+        - ExpandDisks
+        - CPUManager
+        - GPU
+        - HostDevices
+        - HostDisk
+        - Macvtap
+        - Passt
+        - clientPassthrough
+        - CPUNodeDiscovery
 
       useEmulation: false
     network:

@@ -7,12 +7,64 @@ metadata:
     - resources-finalizer.argocd.argoproj.io/background
 spec:
   project: default
-  source:
-    repoURL: https://github.com/mrjson79/civilsnut-labb
-    targetRevision: HEAD
-    path: argocd/apps/kubevirt
-    directory:
-      include: "{kubevirt-cr.yaml,namespace.yaml}"
+  sources:
+    # Helm chart for KubeVirt stack with mixed architecture support
+    - repoURL: https://cloudymax.github.io/kubevirt-community-stack
+      chart: kubevirt-stack
+      targetRevision: "0.1.0"
+      helm:
+        values: |
+          # Mixed Architecture KubeVirt Configuration
+          # ARM64: TuringPi RK1 nodes for VM workloads
+          # AMD64: wrk-05 node for CDI and management UI
+
+          # KubeVirt Core Operator - disable since we use existing
+          operator:
+            replicaCount: 0
+
+          # Containerized Data Importer - AMD64 node (wrk-05)
+          cdi:
+            nodeSelector:
+              kubernetes.io/arch: amd64
+              kubernetes.io/hostname: wrk-05
+            resources:
+              requests:
+                cpu: 10m
+                memory: 150Mi
+            cdi:
+              featureGates:
+                - HonorWaitForFirstConsumer
+              resources:
+                limits:
+                  cpu: "2"
+                  memory: 2Gi
+                requests:
+                  cpu: "500m"
+                  memory: 250Mi
+
+          # Web UI for VM Management - AMD64 node (wrk-05)
+          manager:
+            enabled: true
+            nodeSelector:
+              kubernetes.io/arch: amd64
+              kubernetes.io/hostname: wrk-05
+            replicaCount: 1
+            service:
+              type: ClusterIP
+              port: 8080
+            ingress:
+              enabled: false
+
+          # Disable Cluster API
+          capi:
+            enabled: false
+
+    # Additional manifests (HTTPRoute, ReferenceGrant, KubeVirt CR)
+    - repoURL: https://github.com/mrjson79/civilsnut-labb
+      targetRevision: HEAD
+      path: argocd/apps/kubevirt
+      directory:
+        include: "{httproute.yaml,referencegrant.yaml,kubevirt-cr.yaml,namespace.yaml,priorityclass.yaml}"
   destination:
     server: https://kubernetes.default.svc
     namespace: kubevirt

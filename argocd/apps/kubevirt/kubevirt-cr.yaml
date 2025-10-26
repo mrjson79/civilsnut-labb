@@ -10,14 +10,15 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
+  monitorNamespace: ""
+  monitorAccount: ""
   certificateRotateStrategy: {}
   configuration:
     developerConfiguration:
       featureGates:
         - LiveMigration
         - Snapshot
-        - HotplugVolumes
-        - VirtualMachineExport
+
       useEmulation: false
     network:
       defaultNetworkInterface: "masquerade"
@@ -39,7 +40,7 @@ spec:
     replicas: 2
     nodePlacement:
       nodeSelector:
-        kubernetes.io/arch: amd64
+        kubernetes.io/arch: arm64
       tolerations:
         - key: CriticalAddonsOnly
           operator: Exists

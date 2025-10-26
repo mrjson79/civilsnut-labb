@@ -15,42 +15,19 @@ spec:
       helm:
         values: |
           # KubeVirt on ARM64 (TuringPi RK1) Configuration
-          # Note: Some features are disabled due to ARM64 limitations:
-          # - CDI (Containerized Data Importer) - not supported on ARM64
-          # - HotplugVolumes - requires CDI
-          # - VirtualMachineExport - requires CDI
-          # - HotplugNICs - ARM64 image not available
+          # Using existing KubeVirt operator, only deploying manager UI
+          # Note: CDI and some features disabled due to ARM64 limitations
           # See: https://kubevirt.io/user-guide/cluster_admin/operations_on_Arm64/
 
-          # KubeVirt Core Operator
+          # Disable KubeVirt operator (using existing one)
           operator:
-            image:
-              tag: "v1.5.2"
-            nodeSelector:
-              kubernetes.io/arch: arm64
-            featureGates:
-              - LiveMigration
-              - Snapshot
-              - ExpandDisks
-              - CPUManager
-              - GPU
-              - HostDevices
-              - HostDisk
-              - Macvtap
-              - Passt
-              - clientPassthrough
-              - CPUNodeDiscovery
-              # ARM64 unsupported features (commented out):
-              # - HotplugVolumes      # Requires CDI (not supported on ARM64)
-              # - VirtualMachineExport # Requires CDI (not supported on ARM64)
-              # - VMExport            # Requires CDI (not supported on ARM64)
-              # - HotplugNICs         # ARM64 image not available
+            replicaCount: 0
 
-          # Containerized Data Importer - DISABLED (not supported on ARM64)
+          # Disable CDI (not supported on ARM64)
           cdi:
             replicaCount: 0
 
-          # Web UI for VM Management
+          # Enable Web UI for VM Management only
           manager:
             enabled: true
             service:
@@ -59,7 +36,7 @@ spec:
             ingress:
               enabled: false
 
-          # Cluster API (disabled)
+          # Disable Cluster API
           capi:
             enabled: false
 
@@ -68,7 +45,7 @@ spec:
       targetRevision: HEAD
       path: argocd/apps/kubevirt
       directory:
-        include: "{httproute.yaml,referencegrant.yaml}"
+        include: "{httproute.yaml,referencegrant.yaml,kubevirt-cr.yaml}"
   destination:
     server: https://kubernetes.default.svc
     namespace: kubevirt

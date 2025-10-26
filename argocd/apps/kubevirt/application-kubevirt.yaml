@@ -7,45 +7,12 @@ metadata:
     - resources-finalizer.argocd.argoproj.io/background
 spec:
   project: default
-  sources:
-    # Helm chart for KubeVirt stack
-    - repoURL: https://cloudymax.github.io/kubevirt-community-stack
-      chart: kubevirt-stack
-      targetRevision: "0.1.0"
-      helm:
-        values: |
-          # KubeVirt on ARM64 (TuringPi RK1) Configuration
-          # Using existing KubeVirt operator, only deploying manager UI
-          # Note: CDI and some features disabled due to ARM64 limitations
-          # See: https://kubevirt.io/user-guide/cluster_admin/operations_on_Arm64/
-
-          # Disable KubeVirt operator (using existing one)
-          operator:
-            replicaCount: 0
-
-          # Disable CDI (not supported on ARM64)
-          cdi:
-            replicaCount: 0
-
-          # Disable Web UI for VM Management (not supported on ARM64)
-          manager:
-            enabled: false
-            service:
-              type: ClusterIP
-              port: 8080
-            ingress:
-              enabled: false
-
-          # Disable Cluster API
-          capi:
-            enabled: false
-
-    # Additional manifests (HTTPRoute and ReferenceGrant)
-    - repoURL: https://github.com/mrjson79/civilsnut-labb
-      targetRevision: HEAD
-      path: argocd/apps/kubevirt
-      directory:
-        include: "{kubevirt-cr.yaml,namespace.yaml}"
+  source:
+    repoURL: https://github.com/mrjson79/civilsnut-labb
+    targetRevision: HEAD
+    path: argocd/apps/kubevirt
+    directory:
+      include: "{kubevirt-cr.yaml,namespace.yaml}"
   destination:
     server: https://kubernetes.default.svc
     namespace: kubevirt

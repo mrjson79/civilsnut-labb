@@ -11,7 +11,7 @@ spec:
     # Helm chart for KubeVirt stack with mixed architecture support
     - repoURL: https://cloudymax.github.io/kubevirt-community-stack
       chart: kubevirt-stack
-      targetRevision: "0.1.0"
+      targetRevision: "0.2.0"
       helm:
         values: |
           # Mixed Architecture KubeVirt Configuration

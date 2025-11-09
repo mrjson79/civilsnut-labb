@@ -22,9 +22,9 @@ spec:
   upgrade:
     remediation:
       retries: 3
-  dependsOn:
-    - name: shared-gateway
-      namespace: flux-system
+  #dependsOn:
+  # - name: shared-gateway
+  #  namespace: flux-system
   values:
     global:
       nodeSelector:

@@ -140,28 +140,6 @@ spec:
         script: !include scripts.yaml
         scene: !include scenes.yaml
 
-    # Init containers for HACS installation
-    initContainers:
-      - name: install-hacs
-        image: alpine:latest
-        command:
-          - /bin/sh
-          - -c
-          - |
-            apk add --no-cache wget unzip
-            mkdir -p /config/custom_components/hacs
-            cd /config/custom_components/hacs
-            wget -O hacs.zip https://github.com/hacs/integration/releases/latest/download/hacs.zip
-            unzip -o hacs.zip
-            rm hacs.zip
-            chown -R 0:0 /config/custom_components
-        volumeMounts:
-          - name: data
-            mountPath: /config
-        securityContext:
-          runAsUser: 0
-          runAsGroup: 0
-
     # Additional volumes for custom components
     additionalVolumes: []
 

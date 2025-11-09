@@ -5,7 +5,6 @@ resources:
   - namespace.yaml
   - repository.yaml
   - release.yaml
-  - mqtt-config.yaml
   - httproute.yaml
   - referencegrant.yaml
   - service-coap-lb.yaml

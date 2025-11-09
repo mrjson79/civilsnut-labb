@@ -126,8 +126,14 @@ spec:
           server_host: 0.0.0.0
           server_port: 8123
 
-        # MQTT Configuration
-        mqtt: !include mqtt.yaml
+        # MQTT Integration Configuration
+        mqtt:
+          broker: mosquitto.mosquitto.svc.cluster.local
+          port: 1883
+          username: admin
+          password: mystrongmqttpassword
+          discovery: true
+          discovery_prefix: homeassistant
 
         # Include additional config files
         automation: !include automations.yaml
@@ -135,16 +141,10 @@ spec:
         scene: !include scenes.yaml
 
     # Additional volumes for custom components
-    additionalVolumes:
-      - name: mqtt-config-volume
-        configMap:
-          name: home-assistant-mqtt-config
+    additionalVolumes: []
 
     # Additional volume mounts
-    additionalMounts:
-      - name: mqtt-config-volume
-        mountPath: /config/mqtt.yaml
-        subPath: mqtt.yaml
+    additionalMounts: []
 
     # Ingress disabled - using HTTPRoute instead
     ingress:

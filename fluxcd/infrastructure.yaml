@@ -1,52 +1,17 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infrastructure
+  name: cert-manager-release
   namespace: flux-system
 spec:
-  interval: 10m
-  timeout: 15m
+  interval: 5m
+  timeout: 10m
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: "./fluxcd"
+  path: "./fluxcd/cert-manager"
   prune: true
   wait: true
-  postBuild:
-    substitute: {}
-  patches:
-    # Ensure proper ordering of infrastructure components
-    - target:
-        kind: Kustomization
-        name: cert-manager-release
-      patch: |
-        - op: add
-          path: /spec/dependsOn
-          value: []
-    - target:
-        kind: Kustomization
-        name: ingress-nginx-release
-      patch: |
-        - op: add
-          path: /spec/dependsOn
-          value:
-            - name: cert-manager-config
-    - target:
-        kind: Kustomization
-        name: shared-gateway
-      patch: |
-        - op: add
-          path: /spec/dependsOn
-          value:
-            - name: ingress-nginx-config
-    - target:
-        kind: Kustomization
-        name: longhorn-release
-      patch: |
-        - op: add
-          path: /spec/dependsOn
-          value:
-            - name: cert-manager-config
   healthChecks:
     - apiVersion: apps/v1
       kind: Deployment
@@ -54,12 +19,119 @@ spec:
       namespace: cert-manager
     - apiVersion: apps/v1
       kind: Deployment
+      name: cert-manager-webhook
+      namespace: cert-manager
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: cert-manager-cainjector
+      namespace: cert-manager
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cert-manager-config
+  namespace: flux-system
+spec:
+  interval: 5m
+  timeout: 10m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: "./fluxcd/cert-manager/manifests"
+  prune: true
+  wait: true
+  dependsOn:
+    - name: cert-manager-release
+  targetNamespace: cert-manager
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: ingress-nginx-release
+  namespace: flux-system
+spec:
+  interval: 5m
+  timeout: 10m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: "./fluxcd/ingress-nginx"
+  prune: true
+  wait: true
+  dependsOn:
+    - name: cert-manager-config
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
       name: ingress-nginx-controller
       namespace: ingress-nginx
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: ingress-nginx-config
+  namespace: flux-system
+spec:
+  interval: 5m
+  timeout: 10m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: "./fluxcd/ingress-nginx/manifests"
+  prune: true
+  wait: true
+  dependsOn:
+    - name: ingress-nginx-release
+  targetNamespace: ingress-nginx
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: shared-gateway
+  namespace: flux-system
+spec:
+  interval: 5m
+  timeout: 10m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: "./fluxcd/shared-gateway"
+  prune: true
+  wait: true
+  dependsOn:
+    - name: ingress-nginx-config
+  targetNamespace: gateway-system
+  healthChecks:
     - apiVersion: gateway.networking.k8s.io/v1
       kind: Gateway
       name: shared-gateway
       namespace: gateway-system
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: longhorn-release
+  namespace: flux-system
+spec:
+  interval: 5m
+  timeout: 15m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: "./fluxcd/longhorn"
+  prune: true
+  wait: true
+  dependsOn:
+    - name: cert-manager-config
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: longhorn-manager
+      namespace: longhorn-system
+    - apiVersion: apps/v1
+      kind: DaemonSet
+      name: longhorn-manager
+      namespace: longhorn-system
     - apiVersion: apps/v1
       kind: Deployment
       name: longhorn-ui

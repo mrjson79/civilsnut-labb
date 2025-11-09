@@ -157,7 +157,7 @@ spec:
   prune: true
   wait: true
   dependsOn:
-    - name: external-secrets-config
+    - name: cert-manager-release
   targetNamespace: cert-manager
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -174,8 +174,7 @@ spec:
   path: "./fluxcd/ingress-nginx"
   prune: true
   wait: true
-  dependsOn:
-    - name: cert-manager-config
+
   healthChecks:
     - apiVersion: apps/v1
       kind: Deployment
@@ -214,8 +213,7 @@ spec:
   path: "./fluxcd/shared-gateway"
   prune: true
   wait: true
-  dependsOn:
-    - name: ingress-nginx-config
+
   targetNamespace: gateway-system
   healthChecks:
     - apiVersion: gateway.networking.k8s.io/v1

@@ -1,0 +1,186 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: external-secrets
+  namespace: external-secrets
+spec:
+  interval: 5m
+  timeout: 10m
+  chart:
+    spec:
+      chart: external-secrets
+      version: "0.20.3"
+      sourceRef:
+        kind: HelmRepository
+        name: external-secrets
+        namespace: external-secrets
+      interval: 1h
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    installCRDs: true
+
+    replicaCount: 2
+
+    image:
+      repository: ghcr.io/external-secrets/external-secrets
+      pullPolicy: IfNotPresent
+      tag: ""
+
+    crds:
+      createClusterExternalSecret: true
+      createClusterSecretStore: true
+      createPushSecret: true
+
+    leaderElect: true
+
+    controllerClass: ""
+
+    scopedNamespace: ""
+    scopedRBAC: false
+
+    concurrent: 1
+
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+
+    nodeSelector:
+      has-disk: "yes"
+
+    tolerations: []
+
+    affinity: {}
+
+    podSecurityContext:
+      fsGroup: 65534
+
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      runAsUser: 65534
+      seccompProfile:
+        type: RuntimeDefault
+
+    serviceAccount:
+      create: true
+      annotations: {}
+      name: ""
+      automount: true
+
+    rbac:
+      create: true
+
+    serviceMonitor:
+      enabled: false
+      namespace: ""
+      interval: 30s
+      scrapeTimeout: 25s
+      labels: {}
+
+    metrics:
+      listen:
+        port: 8080
+      service:
+        enabled: true
+        port: 8080
+        annotations: {}
+
+    webhook:
+      port: 9443
+      create: true
+      certCheckInterval: "5m"
+      lookaheadInterval: "5m"
+      replicaCount: 2
+      certDir: /tmp/k8s-webhook-server/serving-certs
+      image:
+        repository: ghcr.io/external-secrets/external-secrets
+        pullPolicy: IfNotPresent
+        tag: ""
+      resources:
+        limits:
+          cpu: 200m
+          memory: 256Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      nodeSelector:
+        has-disk: "yes"
+      tolerations: []
+      affinity: {}
+      podSecurityContext:
+        fsGroup: 65534
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 65534
+        seccompProfile:
+          type: RuntimeDefault
+
+    certController:
+      create: true
+      requeueInterval: "5m"
+      replicaCount: 1
+      image:
+        repository: ghcr.io/external-secrets/external-secrets
+        pullPolicy: IfNotPresent
+        tag: ""
+      resources:
+        limits:
+          cpu: 200m
+          memory: 256Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      nodeSelector:
+        has-disk: "yes"
+      tolerations: []
+      affinity: {}
+      podSecurityContext:
+        fsGroup: 65534
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 65534
+        seccompProfile:
+          type: RuntimeDefault
+
+    processClusterStore: true
+    processClusterExternalSecret: true
+
+    createOperator: true
+
+    extraArgs: {}
+
+    extraEnv: []
+
+    extraVolumes: []
+
+    extraVolumeMounts: []
+
+    deploymentAnnotations: {}
+
+    podAnnotations: {}
+
+    podLabels: {}

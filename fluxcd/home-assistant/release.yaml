@@ -135,10 +135,10 @@ spec:
           discovery: true
           discovery_prefix: homeassistant
 
-        # Include additional config files
-        automation: !include automations.yaml
-        script: !include scripts.yaml
-        scene: !include scenes.yaml
+        # Basic configuration - files managed by UI
+        automation: []
+        script: {}
+        scene: []
 
     # Additional volumes for custom components
     additionalVolumes: []

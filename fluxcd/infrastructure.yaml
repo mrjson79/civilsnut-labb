@@ -54,8 +54,7 @@ spec:
   path: "./fluxcd/cert-manager"
   prune: true
   wait: true
-  dependsOn:
-    - name: kube-prometheus-config
+
   healthChecks:
     - apiVersion: apps/v1
       kind: Deployment

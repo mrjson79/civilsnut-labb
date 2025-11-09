@@ -1,0 +1,326 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gateway-api-crs-config
+  namespace: monitoring
+  labels:
+    app: kube-state-metrics
+    release: kube-prometheus-stack
+data:
+  gateway-api-crs.yaml: |
+    spec:
+      resources:
+        - groupVersionKind:
+            group: gateway.networking.k8s.io
+            version: "v1beta1"
+            kind: "Gateway"
+          metricNamePrefix: kube_gateway
+          metrics:
+            - name: "info"
+              help: "Information about a Gateway"
+              each:
+                type: Info
+                info:
+                  labelsFromPath:
+                    gateway: [metadata, name]
+                    namespace: [metadata, namespace]
+                    gateway_class: [spec, gatewayClassName]
+            - name: "status_conditions"
+              help: "The status conditions of a Gateway"
+              each:
+                type: StateSet
+                stateSet:
+                  labelsFromPath:
+                    gateway: [metadata, name]
+                    namespace: [metadata, namespace]
+                    type: [type]
+                  valueFrom: [status]
+                  list: [status, conditions]
+                  states:
+                    - "True"
+                    - "False"
+                    - "Unknown"
+            - name: "listeners"
+              help: "Number of listeners configured on a Gateway"
+              each:
+                type: Gauge
+                gauge:
+                  labelsFromPath:
+                    gateway: [metadata, name]
+                    namespace: [metadata, namespace]
+                  valueFrom: [spec, listeners]
+                  nilIsZero: true
+            - name: "listener_info"
+              help: "Information about Gateway listeners"
+              each:
+                type: Info
+                info:
+                  labelsFromPath:
+                    gateway: [metadata, name]
+                    namespace: [metadata, namespace]
+                    listener_name: [name]
+                    protocol: [protocol]
+                    port: [port]
+                  path: [spec, listeners]
+
+        - groupVersionKind:
+            group: gateway.networking.k8s.io
+            version: "v1beta1"
+            kind: "HTTPRoute"
+          metricNamePrefix: kube_httproute
+          metrics:
+            - name: "info"
+              help: "Information about an HTTPRoute"
+              each:
+                type: Info
+                info:
+                  labelsFromPath:
+                    httproute: [metadata, name]
+                    namespace: [metadata, namespace]
+            - name: "status_conditions"
+              help: "The status conditions of an HTTPRoute"
+              each:
+                type: StateSet
+                stateSet:
+                  labelsFromPath:
+                    httproute: [metadata, name]
+                    namespace: [metadata, namespace]
+                    type: [type]
+                  valueFrom: [status]
+                  list: [status, conditions]
+                  states:
+                    - "True"
+                    - "False"
+                    - "Unknown"
+            - name: "parent_refs"
+              help: "Number of parent references for an HTTPRoute"
+              each:
+                type: Gauge
+                gauge:
+                  labelsFromPath:
+                    httproute: [metadata, name]
+                    namespace: [metadata, namespace]
+                  valueFrom: [spec, parentRefs]
+                  nilIsZero: true
+            - name: "rules"
+              help: "Number of rules configured on an HTTPRoute"
+              each:
+                type: Gauge
+                gauge:
+                  labelsFromPath:
+                    httproute: [metadata, name]
+                    namespace: [metadata, namespace]
+                  valueFrom: [spec, rules]
+                  nilIsZero: true
+            - name: "hostnames"
+              help: "Number of hostnames configured on an HTTPRoute"
+              each:
+                type: Gauge
+                gauge:
+                  labelsFromPath:
+                    httproute: [metadata, name]
+                    namespace: [metadata, namespace]
+                  valueFrom: [spec, hostnames]
+                  nilIsZero: true
+            - name: "parent_ref_info"
+              help: "Information about HTTPRoute parent references"
+              each:
+                type: Info
+                info:
+                  labelsFromPath:
+                    httproute: [metadata, name]
+                    namespace: [metadata, namespace]
+                    parent_name: [name]
+                    parent_namespace: [namespace]
+                    parent_group: [group]
+                    parent_kind: [kind]
+                  path: [spec, parentRefs]
+
+        - groupVersionKind:
+            group: gateway.networking.k8s.io
+            version: "v1alpha2"
+            kind: "GRPCRoute"
+          metricNamePrefix: kube_grpcroute
+          metrics:
+            - name: "info"
+              help: "Information about a GRPCRoute"
+              each:
+                type: Info
+                info:
+                  labelsFromPath:
+                    grpcroute: [metadata, name]
+                    namespace: [metadata, namespace]
+            - name: "status_conditions"
+              help: "The status conditions of a GRPCRoute"
+              each:
+                type: StateSet
+                stateSet:
+                  labelsFromPath:
+                    grpcroute: [metadata, name]
+                    namespace: [metadata, namespace]
+                    type: [type]
+                  valueFrom: [status]
+                  list: [status, conditions]
+                  states:
+                    - "True"
+                    - "False"
+                    - "Unknown"
+            - name: "parent_refs"
+              help: "Number of parent references for a GRPCRoute"
+              each:
+                type: Gauge
+                gauge:
+                  labelsFromPath:
+                    grpcroute: [metadata, name]
+                    namespace: [metadata, namespace]
+                  valueFrom: [spec, parentRefs]
+                  nilIsZero: true
+
+        - groupVersionKind:
+            group: gateway.networking.k8s.io
+            version: "v1alpha2"
+            kind: "TCPRoute"
+          metricNamePrefix: kube_tcproute
+          metrics:
+            - name: "info"
+              help: "Information about a TCPRoute"
+              each:
+                type: Info
+                info:
+                  labelsFromPath:
+                    tcproute: [metadata, name]
+                    namespace: [metadata, namespace]
+            - name: "status_conditions"
+              help: "The status conditions of a TCPRoute"
+              each:
+                type: StateSet
+                stateSet:
+                  labelsFromPath:
+                    tcproute: [metadata, name]
+                    namespace: [metadata, namespace]
+                    type: [type]
+                  valueFrom: [status]
+                  list: [status, conditions]
+                  states:
+                    - "True"
+                    - "False"
+                    - "Unknown"
+            - name: "parent_refs"
+              help: "Number of parent references for a TCPRoute"
+              each:
+                type: Gauge
+                gauge:
+                  labelsFromPath:
+                    tcproute: [metadata, name]
+                    namespace: [metadata, namespace]
+                  valueFrom: [spec, parentRefs]
+                  nilIsZero: true
+
+        - groupVersionKind:
+            group: gateway.networking.k8s.io
+            version: "v1alpha2"
+            kind: "TLSRoute"
+          metricNamePrefix: kube_tlsroute
+          metrics:
+            - name: "info"
+              help: "Information about a TLSRoute"
+              each:
+                type: Info
+                info:
+                  labelsFromPath:
+                    tlsroute: [metadata, name]
+                    namespace: [metadata, namespace]
+            - name: "status_conditions"
+              help: "The status conditions of a TLSRoute"
+              each:
+                type: StateSet
+                stateSet:
+                  labelsFromPath:
+                    tlsroute: [metadata, name]
+                    namespace: [metadata, namespace]
+                    type: [type]
+                  valueFrom: [status]
+                  list: [status, conditions]
+                  states:
+                    - "True"
+                    - "False"
+                    - "Unknown"
+            - name: "parent_refs"
+              help: "Number of parent references for a TLSRoute"
+              each:
+                type: Gauge
+                gauge:
+                  labelsFromPath:
+                    tlsroute: [metadata, name]
+                    namespace: [metadata, namespace]
+                  valueFrom: [spec, parentRefs]
+                  nilIsZero: true
+
+        - groupVersionKind:
+            group: gateway.networking.k8s.io
+            version: "v1alpha2"
+            kind: "UDPRoute"
+          metricNamePrefix: kube_udproute
+          metrics:
+            - name: "info"
+              help: "Information about a UDPRoute"
+              each:
+                type: Info
+                info:
+                  labelsFromPath:
+                    udproute: [metadata, name]
+                    namespace: [metadata, namespace]
+            - name: "status_conditions"
+              help: "The status conditions of a UDPRoute"
+              each:
+                type: StateSet
+                stateSet:
+                  labelsFromPath:
+                    udproute: [metadata, name]
+                    namespace: [metadata, namespace]
+                    type: [type]
+                  valueFrom: [status]
+                  list: [status, conditions]
+                  states:
+                    - "True"
+                    - "False"
+                    - "Unknown"
+            - name: "parent_refs"
+              help: "Number of parent references for a UDPRoute"
+              each:
+                type: Gauge
+                gauge:
+                  labelsFromPath:
+                    udproute: [metadata, name]
+                    namespace: [metadata, namespace]
+                  valueFrom: [spec, parentRefs]
+                  nilIsZero: true
+
+        - groupVersionKind:
+            group: gateway.networking.k8s.io
+            version: "v1beta1"
+            kind: "GatewayClass"
+          metricNamePrefix: kube_gatewayclass
+          metrics:
+            - name: "info"
+              help: "Information about a GatewayClass"
+              each:
+                type: Info
+                info:
+                  labelsFromPath:
+                    gatewayclass: [metadata, name]
+                    controller: [spec, controllerName]
+            - name: "status_conditions"
+              help: "The status conditions of a GatewayClass"
+              each:
+                type: StateSet
+                stateSet:
+                  labelsFromPath:
+                    gatewayclass: [metadata, name]
+                    type: [type]
+                  valueFrom: [status]
+                  list: [status, conditions]
+                  states:
+                    - "True"
+                    - "False"
+                    - "Unknown"

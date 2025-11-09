@@ -93,7 +93,7 @@ spec:
       allowPrivilegeEscalation: false
       capabilities:
         drop:
-        - ALL
+          - ALL
       readOnlyRootFilesystem: true
       runAsNonRoot: true
       seccompProfile:

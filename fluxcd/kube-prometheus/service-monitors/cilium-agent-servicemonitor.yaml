@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: cilium-agent
+  namespace: monitoring
+  labels:
+    app: cilium-agent
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      k8s-app: cilium
+  namespaceSelector:
+    matchNames:
+    - kube-system
+  endpoints:
+  - port: prometheus
+    interval: 30s
+    path: /metrics
+    honorLabels: true

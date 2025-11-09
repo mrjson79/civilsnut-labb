@@ -24,9 +24,6 @@ spec:
   values:
     connect:
       serviceType: ClusterIP
-      credentials:
-        name: connect-server-credentials
-        key: 1password-credentials.json
 
     operator:
       create: true

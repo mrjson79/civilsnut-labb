@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: home-assistant-config
+  namespace: home-assistant
+  labels:
+    app: home-assistant
+data:
+  configuration.yaml: |
+    # Loads default set of integrations. Do not remove.
+    default_config:
+
+    # HTTP Configuration for reverse proxy
+    http:
+      # Trust reverse proxies (nginx ingress)
+      trusted_proxies:
+        - 10.0.0.0/8
+        - 172.16.0.0/12
+        - 192.168.0.0/16
+        - 127.0.0.1
+        - ::1
+      # Use X-Forwarded-For header for client IP
+      use_x_forwarded_for: true
+
+      # Server configuration
+      server_host: 0.0.0.0
+      server_port: 8123
+
+    # MQTT Configuration
+    mqtt: !include mqtt.yaml
+
+    # Basic configuration files (will be managed by UI)
+    automation: !include automations.yaml
+    script: !include scripts.yaml
+    scene: !include scenes.yaml
+
+  automations.yaml: |
+    # Automations will be created via the UI
+    []
+
+  scripts.yaml: |
+    # Scripts will be created via the UI
+    {}
+
+  scenes.yaml: |
+    # Scenes will be created via the UI
+    []

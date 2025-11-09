@@ -1,0 +1,110 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: home-assistant
+  namespace: home-assistant
+  labels:
+    app: home-assistant
+spec:
+  replicas: 1
+  serviceName: "home-assistant"
+  selector:
+    matchLabels:
+      app: home-assistant
+  template:
+    metadata:
+      labels:
+        app: home-assistant
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      nodeSelector:
+        has-disk: "yes"
+      securityContext:
+        fsGroup: 0
+      initContainers:
+        - name: install-hacs
+          image: alpine:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              apk add --no-cache wget unzip
+              mkdir -p /config/custom_components/hacs
+              cd /config/custom_components/hacs
+              wget -O hacs.zip https://github.com/hacs/integration/releases/latest/download/hacs.zip
+              unzip -o hacs.zip
+              rm hacs.zip
+              chown -R 0:0 /config/custom_components
+          volumeMounts:
+            - name: config
+              mountPath: /config
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+      containers:
+        - name: home-assistant
+          image: ghcr.io/home-assistant/home-assistant:2025.10.3
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8123
+              protocol: TCP
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: ha-config
+              mountPath: /config/configuration.yaml
+              subPath: configuration.yaml
+            - name: ha-config
+              mountPath: /config/automations.yaml
+              subPath: automations.yaml
+            - name: ha-config
+              mountPath: /config/scripts.yaml
+              subPath: scripts.yaml
+            - name: ha-config
+              mountPath: /config/scenes.yaml
+              subPath: scenes.yaml
+            - name: ha-mqtt-config
+              mountPath: /config/mqtt.yaml
+              subPath: mqtt.yaml
+          env:
+            - name: TZ
+              value: "UTC"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 180
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 120
+            periodSeconds: 15
+            timeoutSeconds: 10
+            failureThreshold: 5
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: home-assistant-pvc
+        - name: ha-config
+          configMap:
+            name: home-assistant-config
+        - name: ha-mqtt-config
+          configMap:
+            name: home-assistant-mqtt-config
+      restartPolicy: Always

@@ -8,7 +8,8 @@ metadata:
     service: coap
     type: loadbalancer
   annotations:
-    # Cilium LoadBalancer - uses default configuration
+    # Cilium LoadBalancer - uses ipv4-pool for IP assignment
+    io.cilium/lb-ipam-pool-selector: "ipv4-pool"
 spec:
   type: LoadBalancer
   ports:

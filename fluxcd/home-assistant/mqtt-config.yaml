@@ -1,0 +1,444 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: home-assistant-mqtt-config
+  namespace: home-assistant
+  labels:
+    app: home-assistant
+data:
+  mqtt.yaml: |
+    broker: mosquitto.mosquitto.svc.cluster.local
+    port: 1883
+    username: admin
+    password: mystrongmqttpassword
+    discovery: true
+    discovery_prefix: homeassistant
+
+    # MQTT Configuration for Shelly devices
+    switch:
+      # Anders Kontor - Gen 1 Shelly Plug S
+      - name: "Anders Kontor Shelly"
+        state_topic: "shellies/anders_kontor/relay/0"
+        command_topic: "shellies/anders_kontor/relay/0/command"
+        payload_on: "on"
+        payload_off: "off"
+        availability_topic: "shellies/anders_kontor/online"
+        payload_available: "true"
+        payload_not_available: "false"
+        unique_id: "shelly_anders_kontor_relay"
+        device:
+          identifiers: ["shelly_anders_kontor"]
+          name: "Anders Kontor Shelly"
+          model: "Shelly Plug S"
+          manufacturer: "Allterco"
+          configuration_url: "http://192.168.3.104"
+
+      # Livingroom - Gen 1 Shelly Plug S
+      - name: "Livingroom Shelly"
+        state_topic: "shellies/Livingroom/relay/0"
+        command_topic: "shellies/Livingroom/relay/0/command"
+        payload_on: "on"
+        payload_off: "off"
+        availability_topic: "shellies/Livingroom/online"
+        payload_available: "true"
+        payload_not_available: "false"
+        unique_id: "shelly_livingroom_relay"
+        device:
+          identifiers: ["shelly_livingroom"]
+          name: "Livingroom Shelly"
+          model: "Shelly Plug S"
+          manufacturer: "Allterco"
+          configuration_url: "http://192.168.3.182"
+
+      # Saras Kontor - Gen 1 Shelly Plug S
+      - name: "Saras Kontor Shelly"
+        state_topic: "shellies/saras_kontor/relay/0"
+        command_topic: "shellies/saras_kontor/relay/0/command"
+        payload_on: "on"
+        payload_off: "off"
+        availability_topic: "shellies/saras_kontor/online"
+        payload_available: "true"
+        payload_not_available: "false"
+        unique_id: "shelly_saras_kontor_relay"
+        device:
+          identifiers: ["shelly_saras_kontor"]
+          name: "Saras Kontor Shelly"
+          model: "Shelly Plug S"
+          manufacturer: "Allterco"
+          configuration_url: "http://192.168.3.63"
+
+      # Extra_1 - Gen 1 Shelly Plug S
+      - name: "Extra 1 Shelly"
+        state_topic: "shellies/extra_1/relay/0"
+        command_topic: "shellies/extra_1/relay/0/command"
+        payload_on: "on"
+        payload_off: "off"
+        availability_topic: "shellies/extra_1/online"
+        payload_available: "true"
+        payload_not_available: "false"
+        unique_id: "shelly_extra_1_relay"
+        device:
+          identifiers: ["shelly_extra_1"]
+          name: "Extra 1 Shelly"
+          model: "Shelly Plug S"
+          manufacturer: "Allterco"
+          configuration_url: "http://192.168.3.178"
+
+      # Frysen - Gen 2 Shelly Plus Plug S
+      - name: "Frysen Shelly"
+        state_topic: "frysen/status/switch:0"
+        command_topic: "frysen/rpc"
+        payload_on: '{"id":1,"method":"Switch.Set","params":{"id":0,"on":true}}'
+        payload_off: '{"id":1,"method":"Switch.Set","params":{"id":0,"on":false}}'
+        value_template: "{{ 'ON' if value_json.output else 'OFF' }}"
+        availability_topic: "frysen/online"
+        payload_available: "true"
+        payload_not_available: "false"
+        unique_id: "shelly_frysen_relay"
+        device:
+          identifiers: ["shelly_frysen"]
+          name: "Frysen Shelly"
+          model: "Shelly Plus Plug S"
+          manufacturer: "Allterco"
+          configuration_url: "http://192.168.3.XXX"
+
+      # Network - Gen 2 Shelly Plus Plug S
+      - name: "Network Shelly"
+        state_topic: "Network/status/switch:0"
+        command_topic: "Network/rpc"
+        payload_on: '{"id":1,"method":"Switch.Set","params":{"id":0,"on":true}}'
+        payload_off: '{"id":1,"method":"Switch.Set","params":{"id":0,"on":false}}'
+        value_template: "{{ 'ON' if value_json.output else 'OFF' }}"
+        availability_topic: "Network/online"
+        payload_available: "true"
+        payload_not_available: "false"
+        unique_id: "shelly_network_relay"
+        device:
+          identifiers: ["shelly_network"]
+          name: "Network Shelly"
+          model: "Shelly Plus Plug S"
+          manufacturer: "Allterco"
+          configuration_url: "http://192.168.3.XXX"
+
+      # Anders_aps - Gen 2 Shelly Plus Plug S
+      - name: "anders_aps Shelly"
+        state_topic: "anders_aps/status/switch:0"
+        command_topic: "anders_aps/rpc"
+        payload_on: '{"id":1,"method":"Switch.Set","params":{"id":0,"on":true}}'
+        payload_off: '{"id":1,"method":"Switch.Set","params":{"id":0,"on":false}}'
+        value_template: "{{ 'ON' if value_json.output else 'OFF' }}"
+        availability_topic: "anders_aps/online"
+        payload_available: "true"
+        payload_not_available: "false"
+        unique_id: "shelly_anders_aps_relay"
+        device:
+          identifiers: ["shelly_anders_aps"]
+          name: "anders_aps Shelly"
+          model: "Shelly Plus Plug S"
+          manufacturer: "Allterco"
+          configuration_url: "http://192.168.3.XXX"
+          suggested_area: "Anders Office"
+
+      # Anders_office2 - Gen 2 Shelly Plus Plug S
+      - name: "anders_office2 Shelly"
+        state_topic: "anders_office2/status/switch:0"
+        command_topic: "anders_office2/rpc"
+        payload_on: '{"id":1,"method":"Switch.Set","params":{"id":0,"on":true}}'
+        payload_off: '{"id":1,"method":"Switch.Set","params":{"id":0,"on":false}}'
+        value_template: "{{ 'ON' if value_json.output else 'OFF' }}"
+        availability_topic: "anders_office2/online"
+        payload_available: "true"
+        payload_not_available: "false"
+        unique_id: "shelly_anders_office2_relay"
+        device:
+          identifiers: ["shelly_anders_office2"]
+          name: "anders_office2 Shelly"
+          model: "Shelly Plus Plug S"
+          manufacturer: "Allterco"
+          configuration_url: "http://192.168.3.XXX"
+          suggested_area: "Anders Office"
+
+    sensor:
+      # Anders Kontor Sensors
+      - name: "Anders Kontor Power"
+        state_topic: "shellies/anders_kontor/relay/0/power"
+        unit_of_measurement: "W"
+        device_class: "power"
+        unique_id: "shelly_anders_kontor_power"
+        device:
+          identifiers: ["shelly_anders_kontor"]
+
+      - name: "Anders Kontor Energy"
+        state_topic: "shellies/anders_kontor/relay/0/energy"
+        unit_of_measurement: "Wh"
+        device_class: "energy"
+        unique_id: "shelly_anders_kontor_energy"
+        device:
+          identifiers: ["shelly_anders_kontor"]
+
+      - name: "Anders Kontor Temperature"
+        state_topic: "shellies/anders_kontor/temperature"
+        unit_of_measurement: "°C"
+        device_class: "temperature"
+        unique_id: "shelly_anders_kontor_temp"
+        device:
+          identifiers: ["shelly_anders_kontor"]
+
+      # Livingroom Sensors
+      - name: "Livingroom Power"
+        state_topic: "shellies/Livingroom/relay/0/power"
+        unit_of_measurement: "W"
+        device_class: "power"
+        unique_id: "shelly_livingroom_power"
+        device:
+          identifiers: ["shelly_livingroom"]
+
+      - name: "Livingroom Energy"
+        state_topic: "shellies/Livingroom/relay/0/energy"
+        unit_of_measurement: "Wh"
+        device_class: "energy"
+        unique_id: "shelly_livingroom_energy"
+        device:
+          identifiers: ["shelly_livingroom"]
+
+      - name: "Livingroom Temperature"
+        state_topic: "shellies/Livingroom/temperature"
+        unit_of_measurement: "°C"
+        device_class: "temperature"
+        unique_id: "shelly_livingroom_temp"
+        device:
+          identifiers: ["shelly_livingroom"]
+
+      # Saras Kontor Sensors
+      - name: "Saras Kontor Power"
+        state_topic: "shellies/saras_kontor/relay/0/power"
+        unit_of_measurement: "W"
+        device_class: "power"
+        unique_id: "shelly_saras_kontor_power"
+        device:
+          identifiers: ["shelly_saras_kontor"]
+
+      - name: "Saras Kontor Energy"
+        state_topic: "shellies/saras_kontor/relay/0/energy"
+        unit_of_measurement: "Wh"
+        device_class: "energy"
+        unique_id: "shelly_saras_kontor_energy"
+        device:
+          identifiers: ["shelly_saras_kontor"]
+
+      - name: "Saras Kontor Temperature"
+        state_topic: "shellies/saras_kontor/temperature"
+        unit_of_measurement: "°C"
+        device_class: "temperature"
+        unique_id: "shelly_saras_kontor_temp"
+        device:
+          identifiers: ["shelly_saras_kontor"]
+
+      # Extra_1 Sensors
+      - name: "Extra 1 Power"
+        state_topic: "shellies/extra_1/relay/0/power"
+        unit_of_measurement: "W"
+        device_class: "power"
+        unique_id: "shelly_extra_1_power"
+        device:
+          identifiers: ["shelly_extra_1"]
+
+      - name: "Extra 1 Energy"
+        state_topic: "shellies/extra_1/relay/0/energy"
+        unit_of_measurement: "Wh"
+        device_class: "energy"
+        unique_id: "shelly_extra_1_energy"
+        device:
+          identifiers: ["shelly_extra_1"]
+
+      - name: "Extra 1 Temperature"
+        state_topic: "shellies/extra_1/temperature"
+        unit_of_measurement: "°C"
+        device_class: "temperature"
+        unique_id: "shelly_extra_1_temp"
+        device:
+          identifiers: ["shelly_extra_1"]
+
+      # Frysen Sensors (Gen 2 - uses JSON value templates)
+      - name: "Frysen Power"
+        state_topic: "frysen/status/switch:0"
+        unit_of_measurement: "W"
+        device_class: "power"
+        value_template: "{{ value_json.apower }}"
+        unique_id: "shelly_frysen_power"
+        device:
+          identifiers: ["shelly_frysen"]
+
+      - name: "Frysen Energy"
+        state_topic: "frysen/status/switch:0"
+        unit_of_measurement: "Wh"
+        device_class: "energy"
+        value_template: "{{ value_json.aenergy.total }}"
+        unique_id: "shelly_frysen_energy"
+        device:
+          identifiers: ["shelly_frysen"]
+
+      - name: "Frysen Temperature"
+        state_topic: "frysen/status/switch:0"
+        unit_of_measurement: "°C"
+        device_class: "temperature"
+        value_template: "{{ value_json.temperature.tC }}"
+        unique_id: "shelly_frysen_temp"
+        device:
+          identifiers: ["shelly_frysen"]
+
+      - name: "Frysen Voltage"
+        state_topic: "frysen/status/switch:0"
+        unit_of_measurement: "V"
+        device_class: "voltage"
+        value_template: "{{ value_json.voltage }}"
+        unique_id: "shelly_frysen_voltage"
+        device:
+          identifiers: ["shelly_frysen"]
+
+      - name: "Frysen Current"
+        state_topic: "frysen/status/switch:0"
+        unit_of_measurement: "A"
+        device_class: "current"
+        value_template: "{{ value_json.current }}"
+        unique_id: "shelly_frysen_current"
+        device:
+          identifiers: ["shelly_frysen"]
+
+      # Network Sensors (Gen 2 - uses JSON value templates)
+      - name: "Network Power"
+        state_topic: "Network/status/switch:0"
+        unit_of_measurement: "W"
+        device_class: "power"
+        value_template: "{{ value_json.apower }}"
+        unique_id: "shelly_network_power"
+        device:
+          identifiers: ["shelly_network"]
+
+      - name: "Network Energy"
+        state_topic: "Network/status/switch:0"
+        unit_of_measurement: "Wh"
+        device_class: "energy"
+        value_template: "{{ value_json.aenergy.total }}"
+        unique_id: "shelly_network_energy"
+        device:
+          identifiers: ["shelly_network"]
+
+      - name: "Network Temperature"
+        state_topic: "Network/status/switch:0"
+        unit_of_measurement: "°C"
+        device_class: "temperature"
+        value_template: "{{ value_json.temperature.tC }}"
+        unique_id: "shelly_network_temp"
+        device:
+          identifiers: ["shelly_network"]
+
+      - name: "Network Voltage"
+        state_topic: "Network/status/switch:0"
+        unit_of_measurement: "V"
+        device_class: "voltage"
+        value_template: "{{ value_json.voltage }}"
+        unique_id: "shelly_network_voltage"
+        device:
+          identifiers: ["shelly_network"]
+
+      - name: "Network Current"
+        state_topic: "Network/status/switch:0"
+        unit_of_measurement: "A"
+        device_class: "current"
+        value_template: "{{ value_json.current }}"
+        unique_id: "shelly_network_current"
+        device:
+          identifiers: ["shelly_network"]
+
+      # Anders_aps Sensors (Gen 2 - uses JSON value templates)
+      - name: "anders_aps Power"
+        state_topic: "anders_aps/status/switch:0"
+        unit_of_measurement: "W"
+        device_class: "power"
+        value_template: "{{ value_json.apower }}"
+        unique_id: "shelly_anders_aps_power"
+        device:
+          identifiers: ["shelly_anders_aps"]
+
+      - name: "anders_aps Energy"
+        state_topic: "anders_aps/status/switch:0"
+        unit_of_measurement: "Wh"
+        device_class: "energy"
+        value_template: "{{ value_json.aenergy.total }}"
+        unique_id: "shelly_anders_aps_energy"
+        device:
+          identifiers: ["shelly_anders_aps"]
+
+      - name: "anders_aps Temperature"
+        state_topic: "anders_aps/status/switch:0"
+        unit_of_measurement: "°C"
+        device_class: "temperature"
+        value_template: "{{ value_json.temperature.tC }}"
+        unique_id: "shelly_anders_aps_temp"
+        device:
+          identifiers: ["shelly_anders_aps"]
+
+      - name: "anders_aps Voltage"
+        state_topic: "anders_aps/status/switch:0"
+        unit_of_measurement: "V"
+        device_class: "voltage"
+        value_template: "{{ value_json.voltage }}"
+        unique_id: "shelly_anders_aps_voltage"
+        device:
+          identifiers: ["shelly_anders_aps"]
+
+      - name: "anders_aps Current"
+        state_topic: "anders_aps/status/switch:0"
+        unit_of_measurement: "A"
+        device_class: "current"
+        value_template: "{{ value_json.current }}"
+        unique_id: "shelly_anders_aps_current"
+        device:
+          identifiers: ["shelly_anders_aps"]
+
+      # Anders_office2 Sensors (Gen 2 - uses JSON value templates)
+      - name: "anders_office2 Power"
+        state_topic: "anders_office2/status/switch:0"
+        unit_of_measurement: "W"
+        device_class: "power"
+        value_template: "{{ value_json.apower }}"
+        unique_id: "shelly_anders_office2_power"
+        device:
+          identifiers: ["shelly_anders_office2"]
+
+      - name: "anders_office2 Energy"
+        state_topic: "anders_office2/status/switch:0"
+        unit_of_measurement: "Wh"
+        device_class: "energy"
+        value_template: "{{ value_json.aenergy.total }}"
+        unique_id: "shelly_anders_office2_energy"
+        device:
+          identifiers: ["shelly_anders_office2"]
+
+      - name: "anders_office2 Temperature"
+        state_topic: "anders_office2/status/switch:0"
+        unit_of_measurement: "°C"
+        device_class: "temperature"
+        value_template: "{{ value_json.temperature.tC }}"
+        unique_id: "shelly_anders_office2_temp"
+        device:
+          identifiers: ["shelly_anders_office2"]
+
+      - name: "anders_office2 Voltage"
+        state_topic: "anders_office2/status/switch:0"
+        unit_of_measurement: "V"
+        device_class: "voltage"
+        value_template: "{{ value_json.voltage }}"
+        unique_id: "shelly_anders_office2_voltage"
+        device:
+          identifiers: ["shelly_anders_office2"]
+
+      - name: "anders_office2 Current"
+        state_topic: "anders_office2/status/switch:0"
+        unit_of_measurement: "A"
+        device_class: "current"
+        value_template: "{{ value_json.current }}"
+        unique_id: "shelly_anders_office2_current"
+        device:
+          identifiers: ["shelly_anders_office2"]

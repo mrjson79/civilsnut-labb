@@ -31,8 +31,7 @@ spec:
           https: 30443
       extraArgs:
         default-ssl-certificate: ingress-nginx/civilsnut-se-wildcard-tls
-      nodeSelector:
-        virt: "yes"
+
       resources:
         requests:
           memory: 256Mi

@@ -237,8 +237,7 @@ spec:
   path: "./fluxcd/longhorn"
   prune: true
   wait: true
-  dependsOn:
-    - name: cert-manager-config
+
   healthChecks:
     - apiVersion: apps/v1
       kind: Deployment

@@ -66,7 +66,8 @@ spec:
   path: "./fluxcd/external-secrets/manifests"
   prune: true
   wait: true
-  dependsOn:
+  # No dependencies - external-secrets-config can deploy independently
+  # dependsOn:
   #  - name: external-secrets-release
   # - name: onepassword-connect-release
   targetNamespace: external-secrets

@@ -98,47 +98,9 @@ spec:
       periodSeconds: 15
       timeoutSeconds: 10
 
-    # Configuration setup
+    # Configuration setup - disabled to use Helm chart defaults
     configuration:
-      enabled: true
-      forceInit: true
-      trusted_proxies:
-        - 10.0.0.0/8
-        - 172.16.0.0/12
-        - 192.168.0.0/16
-        - 127.0.0.1
-        - ::1
-
-      templateConfig: |-
-        # Loads default set of integrations. Do not remove.
-        default_config:
-
-        # HTTP Configuration for reverse proxy
-        http:
-          # Trust reverse proxies (nginx ingress)
-          trusted_proxies:
-            {{- range .Values.configuration.trusted_proxies }}
-            - {{ . }}
-            {{- end }}
-          # Use X-Forwarded-For header for client IP
-          use_x_forwarded_for: true
-          # Server configuration
-          server_host: 0.0.0.0
-          server_port: 8123
-
-        # MQTT Integration Configuration
-        mqtt:
-          broker: mosquitto.mosquitto.svc.cluster.local
-          port: 1883
-          username: admin
-          password: mystrongmqttpassword
-          discovery: true
-          discovery_prefix: homeassistant
-
-        # Basic configuration - files managed by UI
-        automation: []
-        script: {}
-        scene: []
+      enabled: false
 
     # Additional volumes for custom components
     additionalVolumes: []

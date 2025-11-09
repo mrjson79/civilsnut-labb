@@ -1,0 +1,20 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: mqtt
+  namespace: mosquitto
+spec:
+  hostnames:
+    - mqtt.civilsnut.se
+  parentRefs:
+    - name: shared-gateway
+      namespace: gateway-system
+  rules:
+    - backendRefs:
+        - name: mosquitto-ws
+          port: 9001
+      matches:
+        - path:
+            type: PathPrefix
+            value: /

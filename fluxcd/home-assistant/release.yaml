@@ -1,0 +1,173 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: home-assistant
+  namespace: home-assistant
+spec:
+  interval: 5m
+  timeout: 15m
+  chart:
+    spec:
+      chart: home-assistant
+      version: "2.0.8"
+      sourceRef:
+        kind: HelmRepository
+        name: home-assistant
+        namespace: home-assistant
+      interval: 1h
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    # Image settings
+    image:
+      repository: ghcr.io/home-assistant/home-assistant
+      tag: "2025.10.3"
+      pullPolicy: IfNotPresent
+
+    # Controller type - use StatefulSet to match existing setup
+    controller:
+      type: StatefulSet
+
+    # Environment variables
+    env:
+      - name: TZ
+        value: "UTC"
+
+    # Host network configuration - required for discovery
+    hostNetwork: true
+    dnsPolicy: ClusterFirstWithHostNet
+
+    # Node selector to ensure scheduling on worker nodes with disk
+    nodeSelector:
+      has-disk: "yes"
+
+    # Security context - needs to run as root for device access
+    podSecurityContext:
+      runAsUser: 0
+      runAsGroup: 0
+      fsGroup: 0
+
+    securityContext:
+      runAsUser: 0
+      runAsGroup: 0
+
+    # Service configuration
+    service:
+      type: ClusterIP
+      port: 8123
+
+    # Resource configuration
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+      limits:
+        memory: "2Gi"
+        cpu: "1000m"
+
+    # Persistence configuration
+    persistence:
+      enabled: true
+      accessMode: ReadWriteMany
+      size: 10Gi
+      storageClass: longhorn
+
+    # Probes configuration
+    livenessProbe:
+      failureThreshold: 5
+      httpGet:
+        path: /
+        port: http
+        scheme: HTTP
+      initialDelaySeconds: 180
+      periodSeconds: 30
+      timeoutSeconds: 10
+
+    readinessProbe:
+      failureThreshold: 5
+      httpGet:
+        path: /
+        port: http
+        scheme: HTTP
+      initialDelaySeconds: 120
+      periodSeconds: 15
+      timeoutSeconds: 10
+
+    # Configuration setup
+    configuration:
+      enabled: true
+      forceInit: true
+      trusted_proxies:
+        - 10.0.0.0/8
+        - 172.16.0.0/12
+        - 192.168.0.0/16
+        - 127.0.0.1
+        - ::1
+
+      templateConfig: |-
+        # Loads default set of integrations. Do not remove.
+        default_config:
+
+        # HTTP Configuration for reverse proxy
+        http:
+          # Trust reverse proxies (nginx ingress)
+          trusted_proxies:
+            {{- range .Values.configuration.trusted_proxies }}
+            - {{ . }}
+            {{- end }}
+          # Use X-Forwarded-For header for client IP
+          use_x_forwarded_for: true
+          # Server configuration
+          server_host: 0.0.0.0
+          server_port: 8123
+
+        # MQTT Configuration
+        mqtt:
+          broker: mosquitto.mosquitto.svc.cluster.local
+          port: 1883
+          username: admin
+          password: mystrongmqttpassword
+          discovery: true
+          discovery_prefix: homeassistant
+
+        # Include additional config files
+        automation: !include automations.yaml
+        script: !include scripts.yaml
+        scene: !include scenes.yaml
+
+    # Init containers for HACS installation
+    initContainers:
+      - name: install-hacs
+        image: alpine:latest
+        command:
+          - /bin/sh
+          - -c
+          - |
+            apk add --no-cache wget unzip
+            mkdir -p /config/custom_components/hacs
+            cd /config/custom_components/hacs
+            wget -O hacs.zip https://github.com/hacs/integration/releases/latest/download/hacs.zip
+            unzip -o hacs.zip
+            rm hacs.zip
+            chown -R 0:0 /config/custom_components
+        volumeMounts:
+          - name: data
+            mountPath: /config
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+
+    # Additional volumes for custom components
+    additionalVolumes: []
+
+    # Additional volume mounts
+    additionalMounts: []
+
+    # Ingress disabled - using HTTPRoute instead
+    ingress:
+      enabled: false

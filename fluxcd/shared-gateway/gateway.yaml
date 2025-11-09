@@ -1,0 +1,45 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: shared-gateway
+  namespace: gateway-system
+  labels:
+    app.kubernetes.io/name: shared-gateway
+    app.kubernetes.io/component: networking
+    app.kubernetes.io/managed-by: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+    # Restrict who can modify this Gateway
+    rbac.authorization.k8s.io/autoupdate: "false"
+spec:
+  gatewayClassName: cilium
+  listeners:
+    - name: http
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        kinds:
+          - kind: HTTPRoute
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              gateway.networking.k8s.io/allowed: "true"
+    - name: https
+      port: 443
+      protocol: HTTPS
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: civilsnut-se-wildcard-tls
+            namespace: cert-manager
+      allowedRoutes:
+        kinds:
+          - kind: HTTPRoute
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              gateway.networking.k8s.io/allowed: "true"

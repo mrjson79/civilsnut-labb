@@ -1,0 +1,40 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: longhorn
+  namespace: longhorn-system
+spec:
+  interval: 5m
+  timeout: 15m
+  chart:
+    spec:
+      chart: longhorn
+      version: "1.10.0"
+      sourceRef:
+        kind: HelmRepository
+        name: longhorn
+        namespace: longhorn-system
+      interval: 1h
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  dependsOn:
+    - name: shared-gateway
+      namespace: flux-system
+  values:
+    global:
+      nodeSelector:
+        has-disk: "yes"
+
+    preUpgradeChecker:
+      jobEnabled: false
+
+    defaultSettings:
+      defaultDataPath: /var/mnt/storage
+
+  # Ignore differences for CRDs as they are managed by Longhorn
+  valuesFrom: []

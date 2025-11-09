@@ -1,0 +1,24 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: shared-gateway
+  namespace: flux-system
+spec:
+  interval: 5m
+  timeout: 10m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: "./fluxcd/shared-gateway"
+  prune: true
+  wait: true
+  dependsOn:
+    - name: ingress-nginx-config
+  targetNamespace: gateway-system
+  healthChecks:
+    - apiVersion: gateway.networking.k8s.io/v1
+      kind: Gateway
+      name: shared-gateway
+      namespace: gateway-system
+  postBuild:
+    substitute: {}

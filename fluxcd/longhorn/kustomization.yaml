@@ -1,0 +1,59 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: longhorn-config
+  namespace: flux-system
+spec:
+  interval: 5m
+  timeout: 10m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: "./fluxcd/longhorn"
+  prune: true
+  wait: true
+  dependsOn:
+    - name: longhorn-release
+  targetNamespace: longhorn-system
+  postBuild:
+    substitute: {}
+  patches:
+    - target:
+        kind: HelmRelease
+        name: longhorn
+      patch: |
+        - op: test
+          path: /kind
+          value: HelmRelease
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: longhorn-release
+  namespace: flux-system
+spec:
+  interval: 5m
+  timeout: 15m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: "./fluxcd/longhorn"
+  prune: true
+  wait: true
+  dependsOn:
+    - name: shared-gateway
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: longhorn-manager
+      namespace: longhorn-system
+    - apiVersion: apps/v1
+      kind: DaemonSet
+      name: longhorn-manager
+      namespace: longhorn-system
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: longhorn-ui
+      namespace: longhorn-system
+  postBuild:
+    substitute: {}

@@ -1,0 +1,21 @@
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: shared-gateway-cert-access
+  namespace: cert-manager
+  labels:
+    app.kubernetes.io/name: shared-gateway
+    app.kubernetes.io/component: networking
+    app.kubernetes.io/managed-by: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      namespace: gateway-system
+  to:
+    - group: ""
+      kind: Secret
+      name: civilsnut-se-wildcard-tls

@@ -1,0 +1,43 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: ingress-nginx-config
+  namespace: flux-system
+spec:
+  interval: 5m
+  timeout: 10m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: "./fluxcd/ingress-nginx/manifests"
+  prune: true
+  wait: true
+  dependsOn:
+    - name: ingress-nginx-release
+  targetNamespace: ingress-nginx
+  postBuild:
+    substitute: {}
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: ingress-nginx-release
+  namespace: flux-system
+spec:
+  interval: 5m
+  timeout: 10m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: "./fluxcd/ingress-nginx"
+  prune: true
+  wait: true
+  dependsOn:
+    - name: cert-manager-config
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: ingress-nginx-controller
+      namespace: ingress-nginx
+  postBuild:
+    substitute: {}

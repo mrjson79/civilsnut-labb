@@ -1,0 +1,10 @@
+externalIPs:
+  enabled: true
+gatewayAPI:
+  enabled: true
+k8sClientRateLimit:
+  burst: 40 # Important value when many services run on a Kubernetes cluster. Check out the documentation https://docs.cilium.io/en/v1.17/network/l2-announcements/#sizing-client-rate-limit
+  qps: 20 # Important value when many services run on a Kubernetes cluster. Check out the documentation https://docs.cilium.io/en/v1.17/network/l2-announcements/#sizing-client-rate-limit
+kubeProxyReplacement: true
+l2announcements:
+  enabled: true

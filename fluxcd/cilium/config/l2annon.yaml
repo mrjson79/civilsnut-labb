@@ -1,0 +1,9 @@
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  name: l2-announcement
+spec:
+  interfaces:
+    - eth0 # Replace with your network interface name
+  externalIPs: true
+  loadBalancerIPs: true

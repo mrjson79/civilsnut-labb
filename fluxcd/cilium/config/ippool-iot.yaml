@@ -3,6 +3,7 @@ kind: CiliumLoadBalancerIPPool
 metadata:
   name: "iot-ipv4-pool"
 spec:
+  disabled: true
   blocks:
     - start: "192.168.3.200"
       stop: "192.168.3.250"

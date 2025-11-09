@@ -26,35 +26,12 @@ spec:
     # Image settings
     image:
       repository: ghcr.io/home-assistant/home-assistant
-      tag: "2025.10.3"
+      tag: "2025.11.1"
       pullPolicy: IfNotPresent
-
-    # Controller type - use StatefulSet to match existing setup
-    controller:
-      type: StatefulSet
-
-    # Environment variables
-    env:
-      - name: TZ
-        value: "UTC"
-
-    # Host network configuration - required for discovery
-    hostNetwork: true
-    dnsPolicy: ClusterFirstWithHostNet
 
     # Node selector to ensure scheduling on worker nodes with disk
     nodeSelector:
       has-disk: "yes"
-
-    # Security context - needs to run as root for device access
-    podSecurityContext:
-      runAsUser: 0
-      runAsGroup: 0
-      fsGroup: 0
-
-    securityContext:
-      runAsUser: 0
-      runAsGroup: 0
 
     # Service configuration
     service:
@@ -76,37 +53,6 @@ spec:
       accessMode: ReadWriteMany
       size: 10Gi
       storageClass: longhorn
-
-    # Probes configuration
-    livenessProbe:
-      failureThreshold: 5
-      httpGet:
-        path: /
-        port: http
-        scheme: HTTP
-      initialDelaySeconds: 180
-      periodSeconds: 30
-      timeoutSeconds: 10
-
-    readinessProbe:
-      failureThreshold: 5
-      httpGet:
-        path: /
-        port: http
-        scheme: HTTP
-      initialDelaySeconds: 120
-      periodSeconds: 15
-      timeoutSeconds: 10
-
-    # Configuration setup - disabled to use Helm chart defaults
-    configuration:
-      enabled: false
-
-    # Additional volumes for custom components
-    additionalVolumes: []
-
-    # Additional volume mounts
-    additionalMounts: []
 
     # Ingress disabled - using HTTPRoute instead
     ingress:

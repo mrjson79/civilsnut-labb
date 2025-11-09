@@ -8,5 +8,8 @@ metadata:
     app.kubernetes.io/name: zigbee2mqtt
     app.kubernetes.io/component: mqtt
     gateway.networking.k8s.io/allowed: "true"
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
   annotations:
     argocd.argoproj.io/sync-wave: "-1"

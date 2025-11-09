@@ -3,7 +3,6 @@ kind: Kustomization
 
 resources:
   - bgp-peering-policy.yaml
-  - gateway.yaml
   - ippool-iot.yaml
   - ippool.yaml
   - l2annon.yaml

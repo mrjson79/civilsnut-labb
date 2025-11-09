@@ -68,7 +68,7 @@ spec:
   wait: true
   dependsOn:
     - name: external-secrets-release
-    - name: onepassword-connect-release
+  # - name: onepassword-connect-release
   targetNamespace: external-secrets
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1

@@ -29,6 +29,33 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: onepassword-connect-release
+  namespace: flux-system
+spec:
+  interval: 5m
+  timeout: 10m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: "./fluxcd/onepassword-connect"
+  prune: true
+  wait: true
+  dependsOn:
+    - name: external-secrets-release
+  targetNamespace: external-secrets
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: onepassword-connect
+      namespace: external-secrets
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: onepassword-connect-operator
+      namespace: external-secrets
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: external-secrets-config
   namespace: flux-system
 spec:
@@ -42,6 +69,7 @@ spec:
   wait: true
   dependsOn:
     - name: external-secrets-release
+    - name: onepassword-connect-release
   targetNamespace: external-secrets
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1

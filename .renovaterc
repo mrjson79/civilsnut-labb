@@ -7,7 +7,7 @@
     "config:base",
     ":dependencyDashboard",
     ":semanticCommits",
-    ":automergeDigests",
+    ":automergeDigest",
     ":automergeBranch"
   ],
 

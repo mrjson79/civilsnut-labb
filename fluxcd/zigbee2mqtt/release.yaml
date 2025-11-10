@@ -55,9 +55,8 @@ spec:
       permit_join: false
       mqtt:
         server: "mqtt://mosquitto.mosquitto.svc.cluster.local:1883"
-        existingSecret: mqtt-credentials-secret
-        userKey: username
-        passwordKey: password
+        user: admin
+        password: mystrongmqttpassword
       serial:
         port: "tcp://192.168.1.195:6638"
         adapter: zstack
@@ -74,3 +73,16 @@ spec:
 
     ingress:
       enabled: false
+
+    # Environment variables to override MQTT credentials from secret
+    extraEnvs:
+      - name: ZIGBEE2MQTT_CONFIG_MQTT_USER
+        valueFrom:
+          secretKeyRef:
+            name: mqtt-credentials-secret
+            key: username
+      - name: ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: mqtt-credentials-secret
+            key: password

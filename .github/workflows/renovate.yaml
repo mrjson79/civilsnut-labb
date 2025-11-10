@@ -51,7 +51,7 @@ jobs:
           # Logging configuration
           LOG_LEVEL: ${{ env.LOG_LEVEL }}
         with:
-          configurationFile: renovate.json
+          configurationFile: .renovaterc
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Summary
@@ -62,16 +62,25 @@ jobs:
           echo "- **Log Level**: ${{ env.LOG_LEVEL }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Triggered by**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Configuration**: renovate.json" >> $GITHUB_STEP_SUMMARY
+          echo "- **Configuration**: .renovaterc" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Managed Applications:" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ **Podinfo** - Demo application for testing" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ **Kube-Prometheus-Stack** - Monitoring and alerting" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Cilium** - CNI and networking" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Cert-Manager** - Certificate management" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ **External-Secrets** - Secret management operator" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Kube-Prometheus-Stack** - Monitoring and alerting" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Ingress-NGINX** - Ingress controller" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Longhorn** - Distributed storage" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **1Password Connect** - Secrets integration" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Zigbee2MQTT** - IoT device integration" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Update Groups:" >> $GITHUB_STEP_SUMMARY
-          echo "- **Podinfo**: Scheduled for Monday mornings" >> $GITHUB_STEP_SUMMARY
           echo "- **Monitoring Stack**: Scheduled for Saturday mornings" >> $GITHUB_STEP_SUMMARY
           echo "- **External Secrets**: Scheduled for Saturday mornings" >> $GITHUB_STEP_SUMMARY
+          echo "- **Cert Manager**: Scheduled for Saturday mornings" >> $GITHUB_STEP_SUMMARY
+          echo "- **Cilium CNI**: Scheduled for Saturday mornings" >> $GITHUB_STEP_SUMMARY
+          echo "- **Ingress NGINX**: Scheduled for Saturday mornings" >> $GITHUB_STEP_SUMMARY
+          echo "- **Storage & IoT**: Scheduled for Saturday mornings" >> $GITHUB_STEP_SUMMARY
+          echo "- **1Password Connect**: Scheduled for Saturday mornings" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Check the [Dependency Dashboard](https://github.com/${{ github.repository }}/issues?q=is%3Aissue+is%3Aopen+label%3Adependencies) for more details." >> $GITHUB_STEP_SUMMARY

@@ -13,6 +13,7 @@ metadata:
     rbac.authorization.k8s.io/autoupdate: "false"
     # Cilium LoadBalancer IP assignment from ipv4-pool
     io.cilium/lb-ipam-ips: "192.168.4.12"
+    io.cilium/lb-ipam-pool: "ipv4-pool"
 spec:
   gatewayClassName: cilium
   listeners:

@@ -4,7 +4,7 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - configmap.yaml
-  - configmap-password.yaml
+  - mqtt-credentials-externalsecret.yaml
   - pvc.yaml
   - deployment.yaml
   - service.yaml

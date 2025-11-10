@@ -57,5 +57,8 @@ spec:
           configMap:
             name: mosquitto-config
         - name: mosquitto-password
-          configMap:
-            name: mosquitto-password
+          secret:
+            secretName: mqtt-credentials-secret
+            items:
+              - key: password-file
+                path: password.txt

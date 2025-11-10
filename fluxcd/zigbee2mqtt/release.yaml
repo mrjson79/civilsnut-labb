@@ -55,8 +55,9 @@ spec:
       permit_join: false
       mqtt:
         server: "mqtt://mosquitto.mosquitto.svc.cluster.local:1883"
-        user: admin
-        password: mystrongmqttpassword
+        existingSecret: mqtt-credentials-secret
+        userKey: username
+        passwordKey: password
       serial:
         port: "tcp://192.168.1.195:6638"
         adapter: zstack

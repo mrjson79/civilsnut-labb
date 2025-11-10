@@ -7,7 +7,6 @@
     "config:base",
     ":dependencyDashboard",
     ":semanticCommits",
-    ":automergeDigest",
     ":automergeBranch"
   ],
 
@@ -65,6 +64,13 @@
 
   // Package-specific rules
   "packageRules": [
+    {
+      "description": "Automerge digest updates",
+      "matchUpdateTypes": ["digest"],
+      "automerge": true,
+      "automergeType": "branch"
+    },
+
     {
       "description": "Critical security components - require manual review",
       "matchPackageNames": ["cert-manager", "argo-cd", "longhorn"],

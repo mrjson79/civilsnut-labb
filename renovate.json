@@ -1,68 +1,49 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "description": "Renovate configuration for civilsnut-labbet Kubernetes cluster",
-
-  // Base configuration
   "extends": [
     "config:base",
     ":dependencyDashboard",
     ":semanticCommits",
     ":automergeBranch"
   ],
-
-  // Scheduling
   "timezone": "Europe/Stockholm",
   "schedule": ["before 6am on monday"],
   "prConcurrentLimit": 10,
   "prHourlyLimit": 5,
-
-  // Update strategy
   "separateMinorPatch": true,
   "separateMajorMinor": true,
   "separateMultipleMajor": true,
   "platformAutomerge": true,
-
-  // Git configuration
   "gitAuthor": "Renovate Bot <renovate@civilsnut.com>",
   "commitMessagePrefix": "chore:",
   "commitMessageTopic": "{{depName}}",
   "commitMessageExtra": "to {{newVersion}}",
   "prTitle": "{{commitMessagePrefix}} {{commitMessageAction}} {{commitMessageTopic}} {{commitMessageExtra}}",
-
-  // Labels and assignees
   "labels": ["dependencies"],
   "assignees": ["mrjson79"],
   "reviewers": ["mrjson79"],
-
-  // Vulnerability alerts
   "vulnerabilityAlerts": {
     "labels": ["security", "dependencies"],
     "assignees": ["mrjson79"],
     "reviewers": ["mrjson79"],
     "schedule": ["at any time"]
   },
-
-  // Manager configurations
   "kubernetes": {
     "fileMatch": ["\\.ya?ml$"]
   },
-
   "argocd": {
     "fileMatch": ["argocd/.+\\.ya?ml$"]
   },
-
   "flux": {
     "fileMatch": ["fluxcd/.+\\.ya?ml$"]
   },
-
   "helm-values": {
     "fileMatch": [
       "values\\.ya?ml$",
       "values/.+\\.ya?ml$"
     ]
   },
-
-  // Package-specific rules
   "packageRules": [
     {
       "description": "Automerge digest updates",
@@ -70,7 +51,6 @@
       "automerge": true,
       "automergeType": "branch"
     },
-
     {
       "description": "Critical security components - require manual review",
       "matchPackageNames": ["cert-manager", "argo-cd", "longhorn"],
@@ -79,7 +59,6 @@
       "reviewers": ["mrjson79"],
       "assignees": ["mrjson79"]
     },
-
     {
       "description": "Storage systems - careful review needed",
       "matchPackageNames": ["longhorn", "csi-*"],
@@ -87,7 +66,6 @@
       "automerge": false,
       "reviewers": ["mrjson79"]
     },
-
     {
       "description": "Networking components - test thoroughly",
       "matchPackageNames": ["cilium", "ingress-nginx", "traefik"],
@@ -95,7 +73,6 @@
       "automerge": false,
       "groupName": "Networking Stack"
     },
-
     {
       "description": "Monitoring and observability stack",
       "matchPackageNames": ["kube-prometheus-stack", "prometheus", "grafana", "alertmanager"],
@@ -103,7 +80,6 @@
       "groupName": "Monitoring Stack",
       "schedule": ["before 6am on saturday"]
     },
-
     {
       "description": "Home automation components",
       "matchPackageNames": ["home-assistant", "zigbee2mqtt", "mqtt"],
@@ -111,7 +87,6 @@
       "groupName": "Home Automation",
       "schedule": ["before 6am on sunday"]
     },
-
     {
       "description": "FluxCD Infrastructure Components",
       "matchPackageNames": ["cilium", "cert-manager", "ingress-nginx"],
@@ -120,7 +95,6 @@
       "automerge": false,
       "schedule": ["before 6am on saturday"]
     },
-
     {
       "description": "FluxCD Storage and Security",
       "matchPackageNames": ["longhorn", "external-secrets", "connect"],
@@ -129,7 +103,6 @@
       "automerge": false,
       "schedule": ["before 6am on saturday"]
     },
-
     {
       "description": "Container images - patch updates can be auto-merged",
       "matchDatasources": ["docker"],
@@ -138,7 +111,6 @@
       "automergeType": "branch",
       "labels": ["container-images", "automerge"]
     },
-
     {
       "description": "Helm chart minor updates",
       "matchDatasources": ["helm"],
@@ -146,7 +118,6 @@
       "labels": ["helm", "minor-update"],
       "reviewers": ["mrjson79"]
     },
-
     {
       "description": "Major updates require careful review",
       "matchUpdateTypes": ["major"],
@@ -156,7 +127,6 @@
       "assignees": ["mrjson79"],
       "prPriority": 10
     },
-
     {
       "description": "Security updates have highest priority",
       "matchDatasources": ["docker"],
@@ -166,8 +136,6 @@
       "schedule": ["at any time"]
     }
   ],
-
-  // Custom regex managers for specific patterns
   "regexManagers": [
     {
       "description": "Helm chart versions in ArgoCD applications",
@@ -177,7 +145,6 @@
       ],
       "datasourceTemplate": "helm"
     },
-
     {
       "description": "Container images in Kubernetes manifests",
       "fileMatch": ["\\.ya?ml$"],
@@ -186,7 +153,6 @@
       ],
       "datasourceTemplate": "docker"
     },
-
     {
       "description": "Git repository versions in ArgoCD",
       "fileMatch": ["argocd/.+\\.ya?ml$"],
@@ -195,7 +161,6 @@
       ],
       "datasourceTemplate": "github-releases"
     },
-
     {
       "description": "FluxCD HelmRelease chart versions",
       "fileMatch": ["^fluxcd/.+/release\\.ya?ml$"],
@@ -205,8 +170,6 @@
       "datasourceTemplate": "helm"
     }
   ],
-
-  // Host rules for timeout and authentication
   "hostRules": [
     {
       "matchHost": "charts.jetstack.io",
@@ -245,17 +208,11 @@
       "timeout": 30000
     }
   ],
-
-  // Ignore certain dependencies or patterns
   "ignoreDeps": [
-    // Ignore local development images
     "localhost/**",
-    // Ignore specific tags that shouldn't be updated
     "*:latest",
     "*:main"
   ],
-
-  // Force specific versions for critical components
   "allowedVersions": {
     "kubernetes": "< 1.30.0",
     "cert-manager": "< 2.0.0"

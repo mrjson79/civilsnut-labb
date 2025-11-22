@@ -20,6 +20,7 @@ on:
       - main
     paths:
       - "renovate.json"
+      - ".renovaterc"
       - ".github/workflows/renovate.yaml"
 
 env:
@@ -51,7 +52,7 @@ jobs:
           # Logging configuration
           LOG_LEVEL: ${{ env.LOG_LEVEL }}
         with:
-          configurationFile: .renovaterc
+          configurationFile: renovate.json
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Summary
@@ -62,7 +63,7 @@ jobs:
           echo "- **Log Level**: ${{ env.LOG_LEVEL }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Triggered by**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Configuration**: .renovaterc" >> $GITHUB_STEP_SUMMARY
+          echo "- **Configuration**: renovate.json" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Managed Applications:" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ **Cilium** - CNI and networking" >> $GITHUB_STEP_SUMMARY

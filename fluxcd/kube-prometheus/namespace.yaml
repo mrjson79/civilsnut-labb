@@ -9,3 +9,4 @@ metadata:
     app.kubernetes.io/name: kube-prometheus
     app.kubernetes.io/component: monitoring
     app.kubernetes.io/part-of: infrastructure
+    gateway.networking.k8s.io/allowed: "true"

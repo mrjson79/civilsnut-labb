@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: kube-prometheus-stack
-      version: "73.2.0"
+      version: "79.7.1"
       sourceRef:
         kind: HelmRepository
         name: prometheus-community
@@ -32,7 +32,7 @@ spec:
           matchLabels:
             release: kube-prometheus-stack
         additionalScrapeConfigs:
-          - job_name: 'cilium-agent-additional'
+          - job_name: "cilium-agent-additional"
             kubernetes_sd_configs:
               - role: pod
                 namespaces:
@@ -44,9 +44,9 @@ spec:
                 regex: cilium
               - source_labels: [__address__]
                 action: replace
-                regex: '(.+):(.+)'
+                regex: "(.+):(.+)"
                 target_label: __address__
-                replacement: '${1}:9965'
+                replacement: "${1}:9965"
             scrape_interval: 30s
             scrape_timeout: 10s
         walCompression: true
@@ -101,47 +101,47 @@ spec:
         dashboardproviders.yaml:
           apiVersion: 1
           providers:
-          - name: 'grafana-dashboards-kubernetes'
-            orgId: 1
-            folder: 'Kubernetes'
-            type: file
-            disableDeletion: true
-            editable: true
-            options:
-              path: /var/lib/grafana/dashboards/grafana-dashboards-kubernetes
+            - name: "grafana-dashboards-kubernetes"
+              orgId: 1
+              folder: "Kubernetes"
+              type: file
+              disableDeletion: true
+              editable: true
+              options:
+                path: /var/lib/grafana/dashboards/grafana-dashboards-kubernetes
       dashboards:
         grafana-dashboards-kubernetes:
           k8s-system-api-server:
             url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-api-server.json
-            token: ''
+            token: ""
           k8s-system-coredns:
             url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-coredns.json
-            token: ''
+            token: ""
           k8s-views-global:
             url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-global.json
-            token: ''
+            token: ""
           k8s-views-namespaces:
             url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-namespaces.json
-            token: ''
+            token: ""
           k8s-views-nodes:
             url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-nodes.json
-            token: ''
+            token: ""
           k8s-views-pods:
             url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-pods.json
-            token: ''
+            token: ""
           # Cilium Dashboards
           cilium-overview:
             url: https://raw.githubusercontent.com/cilium/cilium/main/install/kubernetes/cilium/files/cilium-agent/dashboards/cilium-dashboard.json
-            token: ''
+            token: ""
           cilium-operator:
             url: https://raw.githubusercontent.com/cilium/cilium/main/install/kubernetes/cilium/files/cilium-operator/dashboards/cilium-operator-dashboard.json
-            token: ''
+            token: ""
           cilium-hubble:
             url: https://raw.githubusercontent.com/cilium/cilium/main/install/kubernetes/cilium/files/hubble/dashboards/hubble-dashboard.json
-            token: ''
+            token: ""
           cilium-l7-http:
             url: https://raw.githubusercontent.com/cilium/cilium/main/install/kubernetes/cilium/files/hubble/dashboards/hubble-l7-http-metrics-by-workload.json
-            token: ''
+            token: ""
 
     alertmanager:
       alertmanagerSpec:

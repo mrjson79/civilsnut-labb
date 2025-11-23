@@ -1,7 +1,7 @@
 # Custom resource state configuration for Gateway API and FluxCD resources
 spec:
   resources:
-    # Gateway API Resources
+    # Gateway API Resources (preserved from existing config)
     - groupVersionKind:
         group: gateway.networking.k8s.io
         version: "v1beta1"
@@ -17,43 +17,6 @@ spec:
                 gateway: [metadata, name]
                 namespace: [metadata, namespace]
                 gateway_class: [spec, gatewayClassName]
-        - name: "status_conditions"
-          help: "The status conditions of a Gateway"
-          each:
-            type: StateSet
-            stateSet:
-              labelsFromPath:
-                gateway: [metadata, name]
-                namespace: [metadata, namespace]
-                type: [type]
-              valueFrom: [status]
-              list: [status, conditions]
-              states:
-                - "True"
-                - "False"
-                - "Unknown"
-        - name: "listeners"
-          help: "Number of listeners configured on a Gateway"
-          each:
-            type: Gauge
-            gauge:
-              labelsFromPath:
-                gateway: [metadata, name]
-                namespace: [metadata, namespace]
-              valueFrom: [spec, listeners]
-              nilIsZero: true
-        - name: "listener_info"
-          help: "Information about Gateway listeners"
-          each:
-            type: Info
-            info:
-              labelsFromPath:
-                gateway: [metadata, name]
-                namespace: [metadata, namespace]
-                listener_name: [name]
-                protocol: [protocol]
-                port: [port]
-              path: [spec, listeners]
 
     - groupVersionKind:
         group: gateway.networking.k8s.io
@@ -69,224 +32,6 @@ spec:
               labelsFromPath:
                 httproute: [metadata, name]
                 namespace: [metadata, namespace]
-        - name: "status_conditions"
-          help: "The status conditions of an HTTPRoute"
-          each:
-            type: StateSet
-            stateSet:
-              labelsFromPath:
-                httproute: [metadata, name]
-                namespace: [metadata, namespace]
-                type: [type]
-              valueFrom: [status]
-              list: [status, conditions]
-              states:
-                - "True"
-                - "False"
-                - "Unknown"
-        - name: "parent_refs"
-          help: "Number of parent references for an HTTPRoute"
-          each:
-            type: Gauge
-            gauge:
-              labelsFromPath:
-                httproute: [metadata, name]
-                namespace: [metadata, namespace]
-              valueFrom: [spec, parentRefs]
-              nilIsZero: true
-        - name: "rules"
-          help: "Number of rules configured on an HTTPRoute"
-          each:
-            type: Gauge
-            gauge:
-              labelsFromPath:
-                httproute: [metadata, name]
-                namespace: [metadata, namespace]
-              valueFrom: [spec, rules]
-              nilIsZero: true
-        - name: "hostnames"
-          help: "Number of hostnames configured on an HTTPRoute"
-          each:
-            type: Gauge
-            gauge:
-              labelsFromPath:
-                httproute: [metadata, name]
-                namespace: [metadata, namespace]
-              valueFrom: [spec, hostnames]
-              nilIsZero: true
-        - name: "parent_ref_info"
-          help: "Information about HTTPRoute parent references"
-          each:
-            type: Info
-            info:
-              labelsFromPath:
-                httproute: [metadata, name]
-                namespace: [metadata, namespace]
-                parent_name: [name]
-                parent_namespace: [namespace]
-                parent_group: [group]
-                parent_kind: [kind]
-              path: [spec, parentRefs]
-
-    - groupVersionKind:
-        group: gateway.networking.k8s.io
-        version: "v1alpha2"
-        kind: "GRPCRoute"
-      metricNamePrefix: kube_grpcroute
-      metrics:
-        - name: "info"
-          help: "Information about a GRPCRoute"
-          each:
-            type: Info
-            info:
-              labelsFromPath:
-                grpcroute: [metadata, name]
-                namespace: [metadata, namespace]
-        - name: "status_conditions"
-          help: "The status conditions of a GRPCRoute"
-          each:
-            type: StateSet
-            stateSet:
-              labelsFromPath:
-                grpcroute: [metadata, name]
-                namespace: [metadata, namespace]
-                type: [type]
-              valueFrom: [status]
-              list: [status, conditions]
-              states:
-                - "True"
-                - "False"
-                - "Unknown"
-        - name: "parent_refs"
-          help: "Number of parent references for a GRPCRoute"
-          each:
-            type: Gauge
-            gauge:
-              labelsFromPath:
-                grpcroute: [metadata, name]
-                namespace: [metadata, namespace]
-              valueFrom: [spec, parentRefs]
-              nilIsZero: true
-
-    - groupVersionKind:
-        group: gateway.networking.k8s.io
-        version: "v1alpha2"
-        kind: "TCPRoute"
-      metricNamePrefix: kube_tcproute
-      metrics:
-        - name: "info"
-          help: "Information about a TCPRoute"
-          each:
-            type: Info
-            info:
-              labelsFromPath:
-                tcproute: [metadata, name]
-                namespace: [metadata, namespace]
-        - name: "status_conditions"
-          help: "The status conditions of a TCPRoute"
-          each:
-            type: StateSet
-            stateSet:
-              labelsFromPath:
-                tcproute: [metadata, name]
-                namespace: [metadata, namespace]
-                type: [type]
-              valueFrom: [status]
-              list: [status, conditions]
-              states:
-                - "True"
-                - "False"
-                - "Unknown"
-        - name: "parent_refs"
-          help: "Number of parent references for a TCPRoute"
-          each:
-            type: Gauge
-            gauge:
-              labelsFromPath:
-                tcproute: [metadata, name]
-                namespace: [metadata, namespace]
-              valueFrom: [spec, parentRefs]
-              nilIsZero: true
-
-    - groupVersionKind:
-        group: gateway.networking.k8s.io
-        version: "v1alpha2"
-        kind: "TLSRoute"
-      metricNamePrefix: kube_tlsroute
-      metrics:
-        - name: "info"
-          help: "Information about a TLSRoute"
-          each:
-            type: Info
-            info:
-              labelsFromPath:
-                tlsroute: [metadata, name]
-                namespace: [metadata, namespace]
-        - name: "status_conditions"
-          help: "The status conditions of a TLSRoute"
-          each:
-            type: StateSet
-            stateSet:
-              labelsFromPath:
-                tlsroute: [metadata, name]
-                namespace: [metadata, namespace]
-                type: [type]
-              valueFrom: [status]
-              list: [status, conditions]
-              states:
-                - "True"
-                - "False"
-                - "Unknown"
-        - name: "parent_refs"
-          help: "Number of parent references for a TLSRoute"
-          each:
-            type: Gauge
-            gauge:
-              labelsFromPath:
-                tlsroute: [metadata, name]
-                namespace: [metadata, namespace]
-              valueFrom: [spec, parentRefs]
-              nilIsZero: true
-
-    - groupVersionKind:
-        group: gateway.networking.k8s.io
-        version: "v1alpha2"
-        kind: "UDPRoute"
-      metricNamePrefix: kube_udproute
-      metrics:
-        - name: "info"
-          help: "Information about a UDPRoute"
-          each:
-            type: Info
-            info:
-              labelsFromPath:
-                udproute: [metadata, name]
-                namespace: [metadata, namespace]
-        - name: "status_conditions"
-          help: "The status conditions of a UDPRoute"
-          each:
-            type: StateSet
-            stateSet:
-              labelsFromPath:
-                udproute: [metadata, name]
-                namespace: [metadata, namespace]
-                type: [type]
-              valueFrom: [status]
-              list: [status, conditions]
-              states:
-                - "True"
-                - "False"
-                - "Unknown"
-        - name: "parent_refs"
-          help: "Number of parent references for a UDPRoute"
-          each:
-            type: Gauge
-            gauge:
-              labelsFromPath:
-                udproute: [metadata, name]
-                namespace: [metadata, namespace]
-              valueFrom: [spec, parentRefs]
-              nilIsZero: true
 
     - groupVersionKind:
         group: gateway.networking.k8s.io
@@ -302,228 +47,227 @@ spec:
               labelsFromPath:
                 gatewayclass: [metadata, name]
                 controller: [spec, controllerName]
-        - name: "status_conditions"
-          help: "The status conditions of a GatewayClass"
-          each:
-            type: StateSet
-            stateSet:
-              labelsFromPath:
-                gatewayclass: [metadata, name]
-                type: [type]
-              valueFrom: [status]
-              list: [status, conditions]
-              states:
-                - "True"
-                - "False"
-                - "Unknown"
 
-    # FluxCD Resources
+    # FluxCD Resources - GitRepository
     - groupVersionKind:
         group: source.toolkit.fluxcd.io
         version: "v1"
         kind: GitRepository
       metricNamePrefix: gotk
       metrics:
-        - name: "resource_info"
-          help: "The current state of a GitRepository resource."
+        - name: "reconcile_condition"
+          help: "The current condition status of a GitRepository"
           each:
-            type: Info
-            info:
+            type: StateSet
+            stateSet:
               labelsFromPath:
                 name: [metadata, name]
                 exported_namespace: [metadata, namespace]
-                ready: [status, conditions, "[type=Ready]", status]
-                suspended: [spec, suspend]
-                revision: [status, artifact, revision]
-                url: [spec, url]
+                kind: ["GitRepository"]
+                type: [type]
+              valueFrom: [status]
+              list: [status, conditions]
+              states: ["True", "False", "Unknown"]
+        - name: "suspend_status"
+          help: "The suspend status of a GitRepository"
+          each:
+            type: Gauge
+            gauge:
+              labelsFromPath:
+                name: [metadata, name]
+                exported_namespace: [metadata, namespace]
+                kind: ["GitRepository"]
+              valueFrom: [spec, suspend]
+              nilIsZero: true
 
+    # FluxCD Resources - HelmRepository
     - groupVersionKind:
         group: source.toolkit.fluxcd.io
         version: "v1beta2"
         kind: HelmRepository
       metricNamePrefix: gotk
       metrics:
-        - name: "resource_info"
-          help: "The current state of a HelmRepository resource."
+        - name: "reconcile_condition"
+          help: "The current condition status of a HelmRepository"
           each:
-            type: Info
-            info:
+            type: StateSet
+            stateSet:
               labelsFromPath:
                 name: [metadata, name]
                 exported_namespace: [metadata, namespace]
-                ready: [status, conditions, "[type=Ready]", status]
-                suspended: [spec, suspend]
-                revision: [status, artifact, revision]
-                url: [spec, url]
-
-    - groupVersionKind:
-        group: source.toolkit.fluxcd.io
-        version: "v1beta2"
-        kind: HelmChart
-      metricNamePrefix: gotk
-      metrics:
-        - name: "resource_info"
-          help: "The current state of a HelmChart resource."
+                kind: ["HelmRepository"]
+                type: [type]
+              valueFrom: [status]
+              list: [status, conditions]
+              states: ["True", "False", "Unknown"]
+        - name: "suspend_status"
+          help: "The suspend status of a HelmRepository"
           each:
-            type: Info
-            info:
+            type: Gauge
+            gauge:
               labelsFromPath:
                 name: [metadata, name]
                 exported_namespace: [metadata, namespace]
-                ready: [status, conditions, "[type=Ready]", status]
-                suspended: [spec, suspend]
-                revision: [status, artifact, revision]
-                chart_name: [spec, chart]
-                chart_version: [spec, version]
+                kind: ["HelmRepository"]
+              valueFrom: [spec, suspend]
+              nilIsZero: true
 
-    - groupVersionKind:
-        group: source.toolkit.fluxcd.io
-        version: "v1beta2"
-        kind: OCIRepository
-      metricNamePrefix: gotk
-      metrics:
-        - name: "resource_info"
-          help: "The current state of an OCIRepository resource."
-          each:
-            type: Info
-            info:
-              labelsFromPath:
-                name: [metadata, name]
-                exported_namespace: [metadata, namespace]
-                ready: [status, conditions, "[type=Ready]", status]
-                suspended: [spec, suspend]
-                revision: [status, artifact, revision]
-                url: [spec, url]
-
+    # FluxCD Resources - Bucket
     - groupVersionKind:
         group: source.toolkit.fluxcd.io
         version: "v1beta2"
         kind: Bucket
       metricNamePrefix: gotk
       metrics:
-        - name: "resource_info"
-          help: "The current state of a Bucket resource."
+        - name: "reconcile_condition"
+          help: "The current condition status of a Bucket"
           each:
-            type: Info
-            info:
+            type: StateSet
+            stateSet:
               labelsFromPath:
                 name: [metadata, name]
                 exported_namespace: [metadata, namespace]
-                ready: [status, conditions, "[type=Ready]", status]
-                suspended: [spec, suspend]
-                revision: [status, artifact, revision]
-                endpoint: [spec, endpoint]
-                bucket_name: [spec, bucketName]
+                kind: ["Bucket"]
+                type: [type]
+              valueFrom: [status]
+              list: [status, conditions]
+              states: ["True", "False", "Unknown"]
+        - name: "suspend_status"
+          help: "The suspend status of a Bucket"
+          each:
+            type: Gauge
+            gauge:
+              labelsFromPath:
+                name: [metadata, name]
+                exported_namespace: [metadata, namespace]
+                kind: ["Bucket"]
+              valueFrom: [spec, suspend]
+              nilIsZero: true
 
+    # FluxCD Resources - Kustomization
     - groupVersionKind:
         group: kustomize.toolkit.fluxcd.io
         version: "v1"
         kind: Kustomization
       metricNamePrefix: gotk
       metrics:
-        - name: "resource_info"
-          help: "The current state of a Kustomization resource."
+        - name: "reconcile_condition"
+          help: "The current condition status of a Kustomization"
           each:
-            type: Info
-            info:
+            type: StateSet
+            stateSet:
               labelsFromPath:
                 name: [metadata, name]
                 exported_namespace: [metadata, namespace]
-                ready: [status, conditions, "[type=Ready]", status]
-                suspended: [spec, suspend]
-                revision: [status, lastAppliedRevision]
-                source_name: [spec, sourceRef, name]
+                kind: ["Kustomization"]
+                type: [type]
+              valueFrom: [status]
+              list: [status, conditions]
+              states: ["True", "False", "Unknown"]
+        - name: "suspend_status"
+          help: "The suspend status of a Kustomization"
+          each:
+            type: Gauge
+            gauge:
+              labelsFromPath:
+                name: [metadata, name]
+                exported_namespace: [metadata, namespace]
+                kind: ["Kustomization"]
+              valueFrom: [spec, suspend]
+              nilIsZero: true
 
+    # FluxCD Resources - HelmRelease
     - groupVersionKind:
         group: helm.toolkit.fluxcd.io
         version: "v2"
         kind: HelmRelease
       metricNamePrefix: gotk
       metrics:
-        - name: "resource_info"
-          help: "The current state of a HelmRelease resource."
+        - name: "reconcile_condition"
+          help: "The current condition status of a HelmRelease"
           each:
-            type: Info
-            info:
+            type: StateSet
+            stateSet:
               labelsFromPath:
                 name: [metadata, name]
                 exported_namespace: [metadata, namespace]
-                ready: [status, conditions, "[type=Ready]", status]
-                suspended: [spec, suspend]
-                revision: [status, lastAppliedRevision]
-                chart_name: [spec, chart, spec, chart]
-                chart_app_version: [status, lastAttemptedConfigDigest]
-                chart_source_name: [spec, chart, spec, sourceRef, name]
-                chart_ref_name: [spec, chart, spec, sourceRef, name]
-
-    - groupVersionKind:
-        group: notification.toolkit.fluxcd.io
-        version: "v1beta3"
-        kind: Receiver
-      metricNamePrefix: gotk
-      metrics:
-        - name: "resource_info"
-          help: "The current state of a Receiver resource."
+                kind: ["HelmRelease"]
+                type: [type]
+              valueFrom: [status]
+              list: [status, conditions]
+              states: ["True", "False", "Unknown"]
+        - name: "suspend_status"
+          help: "The suspend status of a HelmRelease"
           each:
-            type: Info
-            info:
+            type: Gauge
+            gauge:
               labelsFromPath:
                 name: [metadata, name]
                 exported_namespace: [metadata, namespace]
-                ready: [status, conditions, "[type=Ready]", status]
-                suspended: [spec, suspend]
-                webhook_path: [status, webhookPath]
+                kind: ["HelmRelease"]
+              valueFrom: [spec, suspend]
+              nilIsZero: true
 
+    # FluxCD Resources - HelmChart
     - groupVersionKind:
-        group: image.toolkit.fluxcd.io
+        group: source.toolkit.fluxcd.io
         version: "v1beta2"
-        kind: ImageRepository
+        kind: HelmChart
       metricNamePrefix: gotk
       metrics:
-        - name: "resource_info"
-          help: "The current state of an ImageRepository resource."
+        - name: "reconcile_condition"
+          help: "The current condition status of a HelmChart"
           each:
-            type: Info
-            info:
+            type: StateSet
+            stateSet:
               labelsFromPath:
                 name: [metadata, name]
                 exported_namespace: [metadata, namespace]
-                ready: [status, conditions, "[type=Ready]", status]
-                suspended: [spec, suspend]
-                image: [spec, image]
+                kind: ["HelmChart"]
+                type: [type]
+              valueFrom: [status]
+              list: [status, conditions]
+              states: ["True", "False", "Unknown"]
+        - name: "suspend_status"
+          help: "The suspend status of a HelmChart"
+          each:
+            type: Gauge
+            gauge:
+              labelsFromPath:
+                name: [metadata, name]
+                exported_namespace: [metadata, namespace]
+                kind: ["HelmChart"]
+              valueFrom: [spec, suspend]
+              nilIsZero: true
 
+    # FluxCD Resources - OCIRepository
     - groupVersionKind:
-        group: image.toolkit.fluxcd.io
+        group: source.toolkit.fluxcd.io
         version: "v1beta2"
-        kind: ImagePolicy
+        kind: OCIRepository
       metricNamePrefix: gotk
       metrics:
-        - name: "resource_info"
-          help: "The current state of an ImagePolicy resource."
+        - name: "reconcile_condition"
+          help: "The current condition status of an OCIRepository"
           each:
-            type: Info
-            info:
+            type: StateSet
+            stateSet:
               labelsFromPath:
                 name: [metadata, name]
                 exported_namespace: [metadata, namespace]
-                ready: [status, conditions, "[type=Ready]", status]
-                suspended: [spec, suspend]
-                source_name: [spec, imageRepositoryRef, name]
-
-    - groupVersionKind:
-        group: image.toolkit.fluxcd.io
-        version: "v1beta2"
-        kind: ImageUpdateAutomation
-      metricNamePrefix: gotk
-      metrics:
-        - name: "resource_info"
-          help: "The current state of an ImageUpdateAutomation resource."
+                kind: ["OCIRepository"]
+                type: [type]
+              valueFrom: [status]
+              list: [status, conditions]
+              states: ["True", "False", "Unknown"]
+        - name: "suspend_status"
+          help: "The suspend status of an OCIRepository"
           each:
-            type: Info
-            info:
+            type: Gauge
+            gauge:
               labelsFromPath:
                 name: [metadata, name]
                 exported_namespace: [metadata, namespace]
-                ready: [status, conditions, "[type=Ready]", status]
-                suspended: [spec, suspend]
-                source_name: [spec, sourceRef, name]
+                kind: ["OCIRepository"]
+              valueFrom: [spec, suspend]
+              nilIsZero: true

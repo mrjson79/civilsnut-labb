@@ -198,15 +198,14 @@ spec:
         - "tlsroutes=[*]"
         - "udproutes=[*]"
       rbac:
-        create: true
         extraRules:
           - apiGroups: ["source.toolkit.fluxcd.io"]
             resources:
               [
-                "buckets",
-                "helmcharts",
                 "gitrepositories",
+                "buckets",
                 "helmrepositories",
+                "helmcharts",
                 "ocirepositories",
               ]
             verbs: ["list", "watch"]
@@ -223,12 +222,14 @@ spec:
             resources:
               ["imagepolicies", "imagerepositories", "imageupdateautomations"]
             verbs: ["list", "watch"]
+      collectors: []
       extraArgs:
-        - --custom-resource-state-config-file=/etc/flux-customresourcestate/kube-state-metrics-config.yaml
+        - --custom-resource-state-only=true
+        - --custom-resource-state-config-file=/etc/customresourcestate/kube-state-metrics-config.yaml
         - --metric-allowlist=kube_gateway.*,kube_httproute.*,kube_grpcroute.*,kube_tcproute.*,kube_tlsroute.*,kube_udproute.*,kube_gatewayclass.*,gotk_.*
       volumeMounts:
         - name: flux-kube-state-metrics-config
-          mountPath: /etc/flux-customresourcestate
+          mountPath: /etc/customresourcestate
           readOnly: true
       volumes:
         - name: flux-kube-state-metrics-config

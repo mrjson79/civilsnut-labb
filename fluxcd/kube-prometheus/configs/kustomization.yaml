@@ -5,6 +5,7 @@ namespace: monitoring
 
 resources:
   - flux-podmonitor.yaml
+  - flux-servicemonitor.yaml
 
 configMapGenerator:
   - name: flux-kube-state-metrics-config

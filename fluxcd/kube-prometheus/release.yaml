@@ -109,6 +109,14 @@ spec:
               editable: true
               options:
                 path: /var/lib/grafana/dashboards/grafana-dashboards-kubernetes
+            - name: "grafana-dashboards-flux"
+              orgId: 1
+              folder: "FluxCD"
+              type: file
+              disableDeletion: true
+              editable: true
+              options:
+                path: /var/lib/grafana/dashboards/grafana-dashboards-flux
       dashboards:
         grafana-dashboards-kubernetes:
           k8s-system-api-server:
@@ -141,6 +149,13 @@ spec:
             token: ""
           cilium-l7-http:
             url: https://raw.githubusercontent.com/cilium/cilium/main/install/kubernetes/cilium/files/hubble/dashboards/hubble-l7-http-metrics-by-workload.json
+            token: ""
+        grafana-dashboards-flux:
+          flux-control-plane:
+            url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/control-plane.json
+            token: ""
+          flux-cluster-stats:
+            url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/cluster.json
             token: ""
 
     alertmanager:
@@ -182,17 +197,43 @@ spec:
         - "tcproutes=[*]"
         - "tlsroutes=[*]"
         - "udproutes=[*]"
+      rbac:
+        create: true
+        extraRules:
+          - apiGroups: ["source.toolkit.fluxcd.io"]
+            resources:
+              [
+                "buckets",
+                "helmcharts",
+                "gitrepositories",
+                "helmrepositories",
+                "ocirepositories",
+              ]
+            verbs: ["list", "watch"]
+          - apiGroups: ["kustomize.toolkit.fluxcd.io"]
+            resources: ["kustomizations"]
+            verbs: ["list", "watch"]
+          - apiGroups: ["helm.toolkit.fluxcd.io"]
+            resources: ["helmreleases"]
+            verbs: ["list", "watch"]
+          - apiGroups: ["notification.toolkit.fluxcd.io"]
+            resources: ["providers", "alerts", "receivers"]
+            verbs: ["list", "watch"]
+          - apiGroups: ["image.toolkit.fluxcd.io"]
+            resources:
+              ["imagepolicies", "imagerepositories", "imageupdateautomations"]
+            verbs: ["list", "watch"]
       extraArgs:
-        - --custom-resource-state-config-file=/etc/customresourcestate/gateway-api-crs.yaml
-        - --metric-allowlist=kube_gateway.*,kube_httproute.*,kube_grpcroute.*,kube_tcproute.*,kube_tlsroute.*,kube_udproute.*,kube_gatewayclass.*
+        - --custom-resource-state-config-file=/etc/flux-customresourcestate/kube-state-metrics-config.yaml
+        - --metric-allowlist=kube_gateway.*,kube_httproute.*,kube_grpcroute.*,kube_tcproute.*,kube_tlsroute.*,kube_udproute.*,kube_gatewayclass.*,gotk_.*
       volumeMounts:
-        - name: gateway-api-crs-config
-          mountPath: /etc/customresourcestate
+        - name: flux-kube-state-metrics-config
+          mountPath: /etc/flux-customresourcestate
           readOnly: true
       volumes:
-        - name: gateway-api-crs-config
+        - name: flux-kube-state-metrics-config
           configMap:
-            name: gateway-api-crs-config
+            name: flux-kube-state-metrics-config
       resources:
         requests:
           memory: 256Mi

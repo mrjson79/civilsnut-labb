@@ -6,25 +6,28 @@ metadata:
   labels:
     app.kubernetes.io/name: flux-system
     app.kubernetes.io/component: monitoring
+    release: kube-prometheus-stack
 spec:
   namespaceSelector:
     matchNames:
-    - flux-system
+      - flux-system
   selector:
     matchExpressions:
-    - key: app
-      operator: In
-      values:
-      - helm-controller
-      - kustomize-controller
-      - notification-controller
-      - source-controller
+      - key: app
+        operator: In
+        values:
+          - helm-controller
+          - kustomize-controller
+          - notification-controller
+          - source-controller
   podMetricsEndpoints:
-  - port: http-prom
-    interval: 15s
-    path: /metrics
-    relabelings:
-    - sourceLabels: [__meta_kubernetes_pod_name]
-      targetLabel: pod
-    - sourceLabels: [__meta_kubernetes_pod_container_name]
-      targetLabel: container
+    - port: http-prom
+      interval: 15s
+      path: /metrics
+      relabelings:
+        - sourceLabels: [__meta_kubernetes_pod_name]
+          targetLabel: pod
+        - sourceLabels: [__meta_kubernetes_pod_container_name]
+          targetLabel: container
+        - sourceLabels: [__meta_kubernetes_namespace]
+          targetLabel: namespace

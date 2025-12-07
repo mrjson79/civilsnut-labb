@@ -166,6 +166,17 @@
       ]
     }
   ],
+  "regexManagers": [
+    {
+      "description": "Update Helm chart versions in README.md tables",
+      "fileMatch": ["^README\\.md$"],
+      "matchStrings": [
+        "\\| \\*\\*(?<displayName>[^*]+)\\*\\* \\| `v?(?<currentValue>[^`]+)` \\|"
+      ],
+      "datasourceTemplate": "helm",
+      "packageNameTemplate": "{{#if (eq displayName 'Cilium')}}cilium{{else if (eq displayName 'cert-manager')}}cert-manager{{else if (eq displayName 'External Secrets')}}external-secrets{{else if (eq displayName 'Ingress NGINX')}}ingress-nginx{{else if (eq displayName 'Longhorn')}}longhorn{{else if (eq displayName 'kube-prometheus-stack')}}kube-prometheus-stack{{else}}{{toLowerCase displayName}}{{/if}}"
+    }
+  ],
   "hostRules": [
     {
       "matchHost": "charts.jetstack.io",

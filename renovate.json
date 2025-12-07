@@ -9,11 +9,8 @@
   ],
   "timezone": "Europe/Stockholm",
   "schedule": ["before 6am on monday"],
-  "prConcurrentLimit": 10,
-  "prHourlyLimit": 5,
-  "separateMinorPatch": true,
-  "separateMajorMinor": true,
-  "separateMultipleMajor": true,
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 3,
   "platformAutomerge": true,
   "gitAuthor": "Renovate Bot <renovate@civilsnut.com>",
   "commitMessagePrefix": "chore:",
@@ -31,9 +28,6 @@
   },
   "kubernetes": {
     "fileMatch": ["\\.ya?ml$"]
-  },
-  "argocd": {
-    "fileMatch": ["argocd/.+\\.ya?ml$"]
   },
   "flux": {
     "fileMatch": ["fluxcd/.+\\.ya?ml$"]
@@ -57,21 +51,14 @@
       "assignees": ["mrjson79"]
     },
     {
-      "description": "Storage systems - careful review needed",
-      "matchPackageNames": ["longhorn", "csi-*"],
-      "labels": ["storage"],
-      "automerge": false,
-      "reviewers": ["mrjson79"]
-    },
-    {
-      "description": "Networking components - test thoroughly",
+      "description": "Networking components",
       "matchPackageNames": ["cilium", "ingress-nginx", "traefik"],
       "labels": ["networking"],
       "automerge": false,
       "groupName": "Networking Stack"
     },
     {
-      "description": "Monitoring and observability stack",
+      "description": "Monitoring stack",
       "matchPackageNames": [
         "kube-prometheus-stack",
         "prometheus",
@@ -83,29 +70,6 @@
       "schedule": ["before 6am on saturday"]
     },
     {
-      "description": "Home automation components",
-      "matchPackageNames": ["home-assistant", "zigbee2mqtt", "mqtt"],
-      "labels": ["home-automation"],
-      "groupName": "Home Automation",
-      "schedule": ["before 6am on sunday"]
-    },
-    {
-      "description": "FluxCD Infrastructure Components",
-      "matchPackageNames": ["cilium", "cert-manager", "ingress-nginx"],
-      "labels": ["infrastructure", "fluxcd"],
-      "groupName": "Infrastructure Stack",
-      "automerge": false,
-      "schedule": ["before 6am on saturday"]
-    },
-    {
-      "description": "FluxCD Storage and Security",
-      "matchPackageNames": ["longhorn", "external-secrets", "connect"],
-      "labels": ["storage", "security", "fluxcd"],
-      "groupName": "Storage & Security",
-      "automerge": false,
-      "schedule": ["before 6am on saturday"]
-    },
-    {
       "description": "Container images - patch updates can be auto-merged",
       "matchDatasources": ["docker"],
       "matchUpdateTypes": ["patch", "digest"],
@@ -114,62 +78,19 @@
       "labels": ["container-images", "automerge"]
     },
     {
-      "description": "Helm chart minor updates",
-      "matchDatasources": ["helm"],
-      "matchUpdateTypes": ["minor"],
-      "labels": ["helm", "minor-update"],
-      "reviewers": ["mrjson79"]
-    },
-    {
       "description": "Major updates require careful review",
       "matchUpdateTypes": ["major"],
       "automerge": false,
       "labels": ["major-update"],
       "reviewers": ["mrjson79"],
-      "assignees": ["mrjson79"],
-      "prPriority": 10
+      "assignees": ["mrjson79"]
     },
     {
       "description": "Security updates have highest priority",
       "matchDatasources": ["docker"],
       "matchPackageNames": ["alpine", "ubuntu", "debian"],
       "labels": ["base-images", "security"],
-      "prPriority": 20,
       "schedule": ["at any time"]
-    }
-  ],
-  "regexManagers": [
-    {
-      "description": "Helm chart versions in ArgoCD applications",
-      "fileMatch": ["argocd/apps/.+\\.ya?ml$"],
-      "matchStrings": [
-        "chart: (?<depName>[^\\s]+)\\s+repoURL: (?<registryUrl>[^\\s]+)\\s+targetRevision: (?<currentValue>[^\\s]+)"
-      ],
-      "datasourceTemplate": "helm"
-    },
-    {
-      "description": "Container images in Kubernetes manifests",
-      "fileMatch": ["\\.ya?ml$"],
-      "matchStrings": [
-        "image:\\s*[\"']?(?<depName>[^@\\s\"']+)(?:@(?<currentDigest>sha256:[a-f0-9]+)|:(?<currentValue>[^\\s\"']+))[\"']?"
-      ],
-      "datasourceTemplate": "docker"
-    },
-    {
-      "description": "Git repository versions in ArgoCD",
-      "fileMatch": ["argocd/.+\\.ya?ml$"],
-      "matchStrings": [
-        "repoURL: https://github\\.com/(?<depName>[^/]+/[^/]+)\\.git\\s+targetRevision: (?<currentValue>[^\\s]+)"
-      ],
-      "datasourceTemplate": "github-releases"
-    },
-    {
-      "description": "FluxCD HelmRelease chart versions",
-      "fileMatch": ["^fluxcd/.+/release\\.ya?ml$"],
-      "matchStrings": [
-        "kind: HelmRelease[\\s\\S]*?chart:[\\s\\S]*?name:\\s*[\"']?(?<depName>[^\\s\"']+)[\"']?[\\s\\S]*?version:\\s*[\"'](?<currentValue>[^\"']+)[\"']"
-      ],
-      "datasourceTemplate": "helm"
     }
   ],
   "hostRules": [
@@ -192,27 +113,7 @@
     {
       "matchHost": "helm.cilium.io",
       "timeout": 30000
-    },
-    {
-      "matchHost": "charts.external-secrets.io",
-      "timeout": 30000
-    },
-    {
-      "matchHost": "kubernetes.github.io",
-      "timeout": 30000
-    },
-    {
-      "matchHost": "1password.github.io",
-      "timeout": 30000
-    },
-    {
-      "matchHost": "charts.zigbee2mqtt.io",
-      "timeout": 30000
     }
   ],
-  "ignoreDeps": ["localhost/**", "*:latest", "*:main"],
-  "allowedVersions": {
-    "kubernetes": "< 1.30.0",
-    "cert-manager": "< 2.0.0"
-  }
+  "ignoreDeps": ["localhost/**", "*:latest", "*:main"]
 }

@@ -177,7 +177,8 @@
         "\\| \\*\\*Cilium\\*\\* \\| `(?<currentValue>[^`]+)` \\|"
       ],
       "datasourceTemplate": "helm",
-      "depNameTemplate": "cilium"
+      "depNameTemplate": "cilium",
+      "registryUrlTemplate": "https://helm.cilium.io"
     },
     {
       "customType": "regex",
@@ -189,7 +190,8 @@
         "\\| \\*\\*cert-manager\\*\\* \\| `v?(?<currentValue>[^`]+)` \\|"
       ],
       "datasourceTemplate": "helm",
-      "depNameTemplate": "cert-manager"
+      "depNameTemplate": "cert-manager",
+      "registryUrlTemplate": "https://charts.jetstack.io"
     },
     {
       "customType": "regex",
@@ -201,7 +203,8 @@
         "\\| \\*\\*External Secrets\\*\\* \\| `(?<currentValue>[^`]+)` \\|"
       ],
       "datasourceTemplate": "helm",
-      "depNameTemplate": "external-secrets"
+      "depNameTemplate": "external-secrets",
+      "registryUrlTemplate": "https://charts.external-secrets.io"
     },
     {
       "customType": "regex",
@@ -213,7 +216,8 @@
         "\\| \\*\\*Ingress NGINX\\*\\* \\| `(?<currentValue>[^`]+)` \\|"
       ],
       "datasourceTemplate": "helm",
-      "depNameTemplate": "ingress-nginx"
+      "depNameTemplate": "ingress-nginx",
+      "registryUrlTemplate": "https://kubernetes.github.io/ingress-nginx"
     },
     {
       "customType": "regex",
@@ -225,7 +229,8 @@
         "\\| \\*\\*Longhorn\\*\\* \\| `(?<currentValue>[^`]+)` \\|"
       ],
       "datasourceTemplate": "helm",
-      "depNameTemplate": "longhorn"
+      "depNameTemplate": "longhorn",
+      "registryUrlTemplate": "https://charts.longhorn.io"
     },
     {
       "customType": "regex",
@@ -237,7 +242,8 @@
         "\\| \\*\\*kube-prometheus-stack\\*\\* \\| `(?<currentValue>[^`]+)` \\|"
       ],
       "datasourceTemplate": "helm",
-      "depNameTemplate": "kube-prometheus-stack"
+      "depNameTemplate": "kube-prometheus-stack",
+      "registryUrlTemplate": "https://prometheus-community.github.io/helm-charts"
     }
   ],
   "hostRules": [
@@ -259,6 +265,14 @@
     },
     {
       "matchHost": "helm.cilium.io",
+      "timeout": 30000
+    },
+    {
+      "matchHost": "charts.external-secrets.io",
+      "timeout": 30000
+    },
+    {
+      "matchHost": "kubernetes.github.io",
       "timeout": 30000
     }
   ],

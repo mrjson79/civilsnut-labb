@@ -93,6 +93,62 @@
       "schedule": ["at any time"]
     }
   ],
+  "regexManagers": [
+    {
+      "description": "Update versions in README.md",
+      "fileMatch": ["^README\\.md$"],
+      "matchStrings": [
+        "\\| \\*\\*Cilium\\*\\* \\| `(?<currentValue>[^`]+)` \\|"
+      ],
+      "datasourceTemplate": "helm",
+      "depNameTemplate": "cilium"
+    },
+    {
+      "description": "Update cert-manager version in README.md",
+      "fileMatch": ["^README\\.md$"],
+      "matchStrings": [
+        "\\| \\*\\*cert-manager\\*\\* \\| `v?(?<currentValue>[^`]+)` \\|"
+      ],
+      "datasourceTemplate": "helm",
+      "depNameTemplate": "cert-manager"
+    },
+    {
+      "description": "Update External Secrets version in README.md",
+      "fileMatch": ["^README\\.md$"],
+      "matchStrings": [
+        "\\| \\*\\*External Secrets\\*\\* \\| `(?<currentValue>[^`]+)` \\|"
+      ],
+      "datasourceTemplate": "helm",
+      "depNameTemplate": "external-secrets"
+    },
+    {
+      "description": "Update Ingress NGINX version in README.md",
+      "fileMatch": ["^README\\.md$"],
+      "matchStrings": [
+        "\\| \\*\\*Ingress NGINX\\*\\* \\| `(?<currentValue>[^`]+)` \\|"
+      ],
+      "datasourceTemplate": "helm",
+      "depNameTemplate": "ingress-nginx"
+    },
+    {
+      "description": "Update Longhorn version in README.md",
+      "fileMatch": ["^README\\.md$"],
+      "matchStrings": [
+        "\\| \\*\\*Longhorn\\*\\* \\| `(?<currentValue>[^`]+)` \\|"
+      ],
+      "datasourceTemplate": "helm",
+      "depNameTemplate": "longhorn"
+    },
+    {
+      "description": "Update kube-prometheus-stack version in README.md",
+      "fileMatch": ["^README\\.md$"],
+      "matchStrings": [
+        "\\| \\*\\*kube-prometheus-stack\\*\\* \\| `(?<currentValue>[^`]+)` \\|"
+      ],
+      "datasourceTemplate": "helm",
+      "depNameTemplate": "kube-prometheus-stack"
+    }
+  ],
   "hostRules": [
     {
       "matchHost": "charts.jetstack.io",

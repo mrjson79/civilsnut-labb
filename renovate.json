@@ -2,13 +2,15 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "description": "Renovate configuration for civilsnut-labbet Kubernetes cluster",
   "extends": [
-    "config:base",
+    "config:recommended",
     ":dependencyDashboard",
     ":semanticCommits",
     ":automergeBranch"
   ],
   "timezone": "Europe/Stockholm",
-  "schedule": ["before 6am on monday"],
+  "schedule": [
+    "before 6am on monday"
+  ],
   "prConcurrentLimit": 5,
   "prHourlyLimit": 3,
   "platformAutomerge": true,
@@ -17,43 +19,83 @@
   "commitMessageTopic": "{{depName}}",
   "commitMessageExtra": "to {{newVersion}}",
   "prTitle": "{{commitMessagePrefix}} {{commitMessageAction}} {{commitMessageTopic}} {{commitMessageExtra}}",
-  "labels": ["dependencies"],
-  "assignees": ["mrjson79"],
-  "reviewers": ["mrjson79"],
+  "labels": [
+    "dependencies"
+  ],
+  "assignees": [
+    "mrjson79"
+  ],
+  "reviewers": [
+    "mrjson79"
+  ],
   "vulnerabilityAlerts": {
-    "labels": ["security", "dependencies"],
-    "assignees": ["mrjson79"],
-    "reviewers": ["mrjson79"],
-    "schedule": ["at any time"]
+    "labels": [
+      "security",
+      "dependencies"
+    ],
+    "assignees": [
+      "mrjson79"
+    ],
+    "reviewers": [
+      "mrjson79"
+    ],
+    "schedule": [
+      "at any time"
+    ]
   },
   "kubernetes": {
-    "fileMatch": ["\\.ya?ml$"]
+    "managerFilePatterns": [
+      "/\\.ya?ml$/"
+    ]
   },
   "flux": {
-    "fileMatch": ["fluxcd/.+\\.ya?ml$"]
+    "managerFilePatterns": [
+      "/fluxcd/.+\\.ya?ml$/"
+    ]
   },
   "helm-values": {
-    "fileMatch": ["values\\.ya?ml$", "values/.+\\.ya?ml$"]
+    "managerFilePatterns": [
+      "/values\\.ya?ml$/",
+      "/values/.+\\.ya?ml$/"
+    ]
   },
   "packageRules": [
     {
       "description": "Automerge digest updates",
-      "matchUpdateTypes": ["digest"],
+      "matchUpdateTypes": [
+        "digest"
+      ],
       "automerge": true,
       "automergeType": "branch"
     },
     {
       "description": "Critical security components - require manual review",
-      "matchPackageNames": ["cert-manager", "argo-cd", "longhorn"],
+      "matchPackageNames": [
+        "cert-manager",
+        "argo-cd",
+        "longhorn"
+      ],
       "automerge": false,
-      "labels": ["security-critical"],
-      "reviewers": ["mrjson79"],
-      "assignees": ["mrjson79"]
+      "labels": [
+        "security-critical"
+      ],
+      "reviewers": [
+        "mrjson79"
+      ],
+      "assignees": [
+        "mrjson79"
+      ]
     },
     {
       "description": "Networking components",
-      "matchPackageNames": ["cilium", "ingress-nginx", "traefik"],
-      "labels": ["networking"],
+      "matchPackageNames": [
+        "cilium",
+        "ingress-nginx",
+        "traefik"
+      ],
+      "labels": [
+        "networking"
+      ],
       "automerge": false,
       "groupName": "Networking Stack"
     },
@@ -65,38 +107,72 @@
         "grafana",
         "alertmanager"
       ],
-      "labels": ["monitoring"],
+      "labels": [
+        "monitoring"
+      ],
       "groupName": "Monitoring Stack",
-      "schedule": ["before 6am on saturday"]
+      "schedule": [
+        "before 6am on saturday"
+      ]
     },
     {
       "description": "Container images - patch updates can be auto-merged",
-      "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["patch", "digest"],
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchUpdateTypes": [
+        "patch",
+        "digest"
+      ],
       "automerge": true,
       "automergeType": "branch",
-      "labels": ["container-images", "automerge"]
+      "labels": [
+        "container-images",
+        "automerge"
+      ]
     },
     {
       "description": "Major updates require careful review",
-      "matchUpdateTypes": ["major"],
+      "matchUpdateTypes": [
+        "major"
+      ],
       "automerge": false,
-      "labels": ["major-update"],
-      "reviewers": ["mrjson79"],
-      "assignees": ["mrjson79"]
+      "labels": [
+        "major-update"
+      ],
+      "reviewers": [
+        "mrjson79"
+      ],
+      "assignees": [
+        "mrjson79"
+      ]
     },
     {
       "description": "Security updates have highest priority",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["alpine", "ubuntu", "debian"],
-      "labels": ["base-images", "security"],
-      "schedule": ["at any time"]
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "alpine",
+        "ubuntu",
+        "debian"
+      ],
+      "labels": [
+        "base-images",
+        "security"
+      ],
+      "schedule": [
+        "at any time"
+      ]
     }
   ],
-  "regexManagers": [
+  "customManagers": [
     {
+      "customType": "regex",
       "description": "Update versions in README.md",
-      "fileMatch": ["^README\\.md$"],
+      "managerFilePatterns": [
+        "/^README\\.md$/"
+      ],
       "matchStrings": [
         "\\| \\*\\*Cilium\\*\\* \\| `(?<currentValue>[^`]+)` \\|"
       ],
@@ -104,8 +180,11 @@
       "depNameTemplate": "cilium"
     },
     {
+      "customType": "regex",
       "description": "Update cert-manager version in README.md",
-      "fileMatch": ["^README\\.md$"],
+      "managerFilePatterns": [
+        "/^README\\.md$/"
+      ],
       "matchStrings": [
         "\\| \\*\\*cert-manager\\*\\* \\| `v?(?<currentValue>[^`]+)` \\|"
       ],
@@ -113,8 +192,11 @@
       "depNameTemplate": "cert-manager"
     },
     {
+      "customType": "regex",
       "description": "Update External Secrets version in README.md",
-      "fileMatch": ["^README\\.md$"],
+      "managerFilePatterns": [
+        "/^README\\.md$/"
+      ],
       "matchStrings": [
         "\\| \\*\\*External Secrets\\*\\* \\| `(?<currentValue>[^`]+)` \\|"
       ],
@@ -122,8 +204,11 @@
       "depNameTemplate": "external-secrets"
     },
     {
+      "customType": "regex",
       "description": "Update Ingress NGINX version in README.md",
-      "fileMatch": ["^README\\.md$"],
+      "managerFilePatterns": [
+        "/^README\\.md$/"
+      ],
       "matchStrings": [
         "\\| \\*\\*Ingress NGINX\\*\\* \\| `(?<currentValue>[^`]+)` \\|"
       ],
@@ -131,8 +216,11 @@
       "depNameTemplate": "ingress-nginx"
     },
     {
+      "customType": "regex",
       "description": "Update Longhorn version in README.md",
-      "fileMatch": ["^README\\.md$"],
+      "managerFilePatterns": [
+        "/^README\\.md$/"
+      ],
       "matchStrings": [
         "\\| \\*\\*Longhorn\\*\\* \\| `(?<currentValue>[^`]+)` \\|"
       ],
@@ -140,8 +228,11 @@
       "depNameTemplate": "longhorn"
     },
     {
+      "customType": "regex",
       "description": "Update kube-prometheus-stack version in README.md",
-      "fileMatch": ["^README\\.md$"],
+      "managerFilePatterns": [
+        "/^README\\.md$/"
+      ],
       "matchStrings": [
         "\\| \\*\\*kube-prometheus-stack\\*\\* \\| `(?<currentValue>[^`]+)` \\|"
       ],
@@ -171,5 +262,9 @@
       "timeout": 30000
     }
   ],
-  "ignoreDeps": ["localhost/**", "*:latest", "*:main"]
+  "ignoreDeps": [
+    "localhost/**",
+    "*:latest",
+    "*:main"
+  ]
 }

@@ -39,10 +39,7 @@
     "fileMatch": ["fluxcd/.+\\.ya?ml$"]
   },
   "helm-values": {
-    "fileMatch": [
-      "values\\.ya?ml$",
-      "values/.+\\.ya?ml$"
-    ]
+    "fileMatch": ["values\\.ya?ml$", "values/.+\\.ya?ml$"]
   },
   "packageRules": [
     {
@@ -75,7 +72,12 @@
     },
     {
       "description": "Monitoring and observability stack",
-      "matchPackageNames": ["kube-prometheus-stack", "prometheus", "grafana", "alertmanager"],
+      "matchPackageNames": [
+        "kube-prometheus-stack",
+        "prometheus",
+        "grafana",
+        "alertmanager"
+      ],
       "labels": ["monitoring"],
       "groupName": "Monitoring Stack",
       "schedule": ["before 6am on saturday"]
@@ -165,7 +167,7 @@
       "description": "FluxCD HelmRelease chart versions",
       "fileMatch": ["^fluxcd/.+/release\\.ya?ml$"],
       "matchStrings": [
-        "kind: HelmRelease[\\s\\S]*?chart:\\s*(?<depName>[^\\s]+)[\\s\\S]*?version:\\s*[\"'](?<currentValue>[^\"']+)[\"']"
+        "kind: HelmRelease[\\s\\S]*?chart:[\\s\\S]*?name:\\s*[\"']?(?<depName>[^\\s\"']+)[\"']?[\\s\\S]*?version:\\s*[\"'](?<currentValue>[^\"']+)[\"']"
       ],
       "datasourceTemplate": "helm"
     }
@@ -208,11 +210,7 @@
       "timeout": 30000
     }
   ],
-  "ignoreDeps": [
-    "localhost/**",
-    "*:latest",
-    "*:main"
-  ],
+  "ignoreDeps": ["localhost/**", "*:latest", "*:main"],
   "allowedVersions": {
     "kubernetes": "< 1.30.0",
     "cert-manager": "< 2.0.0"

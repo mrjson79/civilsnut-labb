@@ -75,7 +75,7 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: kube-prometheus-release
+  name: victoria-metrics-release
   namespace: flux-system
 spec:
   interval: 5m
@@ -83,23 +83,27 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: "./fluxcd/kube-prometheus"
+  path: "./fluxcd/vm-stack"
   prune: true
   wait: true
   healthChecks:
     - apiVersion: apps/v1
       kind: Deployment
-      name: kube-prometheus-stack-operator
+      name: vmsingle-victoria-metrics-k8s-stack
       namespace: monitoring
     - apiVersion: apps/v1
       kind: Deployment
-      name: kube-prometheus-stack-grafana
+      name: vm-grafana
+      namespace: monitoring
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: victoria-metrics-operator
       namespace: monitoring
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: kube-prometheus-config
+  name: victoria-metrics-config
   namespace: flux-system
 spec:
   interval: 5m
@@ -107,11 +111,11 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: "./fluxcd/kube-prometheus/service-monitors"
+  path: "./fluxcd/vm-stack/service-monitors"
   prune: true
   wait: true
   dependsOn:
-    - name: kube-prometheus-release
+    - name: victoria-metrics-release
   targetNamespace: monitoring
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1

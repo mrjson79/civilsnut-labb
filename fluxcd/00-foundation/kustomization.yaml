@@ -8,9 +8,10 @@ metadata:
 
 resources:
   # Core infrastructure components - deployed first
-  - ../cert-manager
-  - ../cilium
-  - ../external-secrets
+  - cert-manager
+  - cilium
+  - external-secrets
+  - onepassword-connect
 
 # Ensure consistent labeling across foundation components
 commonLabels:

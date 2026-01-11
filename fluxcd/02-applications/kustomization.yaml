@@ -10,11 +10,11 @@ metadata:
 
 resources:
   # Application components - deployed after infrastructure
-  - ../home-assistant
-  - ../ingress-nginx
-  - ../mqtt
-  - ../vm-stack
-  - ../zigbee2mqtt
+  - home-assistant
+  - ingress-nginx
+  - mqtt
+  - vm-stack
+  - zigbee2mqtt
 
 # Ensure consistent labeling across application components
 commonLabels:

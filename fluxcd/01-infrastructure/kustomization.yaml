@@ -10,8 +10,8 @@ metadata:
 
 resources:
   # Infrastructure components - deployed after foundation
-  - ../shared-gateway
-  - ../longhorn
+  - shared-gateway
+  - longhorn
 
 # Ensure consistent labeling across infrastructure components
 commonLabels:

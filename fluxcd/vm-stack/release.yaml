@@ -1,0 +1,340 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: victoria-metrics-k8s-stack
+  namespace: monitoring
+spec:
+  interval: 5m
+  timeout: 20m
+  chart:
+    spec:
+      chart: victoria-metrics-k8s-stack
+      version: "0.24.2"
+      sourceRef:
+        kind: HelmRepository
+        name: vm
+        namespace: monitoring
+      interval: 1h
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    # VictoriaMetrics Single configuration
+    vmsingle:
+      enabled: true
+      spec:
+        retentionPeriod: "10"
+        replicationFactor: 1
+        storage:
+          storageClassName: longhorn
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 50Gi
+        resources:
+          requests:
+            memory: 2Gi
+            cpu: 1000m
+          limits:
+            memory: 4Gi
+            cpu: 2000m
+        nodeSelector:
+          has-disk: "yes"
+        extraArgs:
+          maxConcurrentInserts: "8"
+          maxLabelsPerTimeseries: "30"
+          maxSamplesPerQuery: "50000000"
+      ingress:
+        enabled: false
+
+    # VMAgent configuration (replaces Prometheus)
+    vmagent:
+      enabled: true
+      spec:
+        selectAllByDefault: true
+        scrapeInterval: 30s
+        externalLabels:
+          cluster: "omni-cluster"
+        resources:
+          requests:
+            memory: 512Mi
+            cpu: 250m
+          limits:
+            memory: 1Gi
+            cpu: 500m
+        nodeSelector:
+          has-disk: "yes"
+        additionalScrapeConfigs:
+          name: additional-scrape-configs
+          key: additional-scrape-configs.yaml
+
+    # VMAlert configuration (replaces Prometheus rules)
+    vmalert:
+      enabled: true
+      spec:
+        selectAllByDefault: true
+        resources:
+          requests:
+            memory: 128Mi
+            cpu: 100m
+          limits:
+            memory: 256Mi
+            cpu: 200m
+        nodeSelector:
+          has-disk: "yes"
+
+    # AlertManager configuration
+    alertmanager:
+      enabled: true
+      spec:
+        selectAllByDefault: true
+        storage:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: longhorn
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 10Gi
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
+          limits:
+            memory: 512Mi
+            cpu: 200m
+        nodeSelector:
+          has-disk: "yes"
+
+    # Grafana configuration (similar to original)
+    grafana:
+      enabled: true
+      persistence:
+        enabled: true
+        storageClassName: longhorn
+        size: 10Gi
+        accessModes:
+          - ReadWriteMany
+      ingress:
+        enabled: false
+      resources:
+        requests:
+          memory: 256Mi
+          cpu: 100m
+        limits:
+          memory: 512Mi
+          cpu: 200m
+      nodeSelector:
+        has-disk: "yes"
+      downloadDashboards:
+        enabled: false
+      # Configure VictoriaMetrics as default datasource
+      datasources:
+        datasources.yaml:
+          apiVersion: 1
+          datasources:
+            - name: VictoriaMetrics
+              type: prometheus
+              url: http://vmsingle-victoria-metrics-k8s-stack:8429
+              access: proxy
+              isDefault: true
+      dashboardProviders:
+        dashboardproviders.yaml:
+          apiVersion: 1
+          providers:
+            - name: "grafana-dashboards-kubernetes"
+              orgId: 1
+              folder: "Kubernetes"
+              type: file
+              disableDeletion: true
+              editable: true
+              options:
+                path: /var/lib/grafana/dashboards/grafana-dashboards-kubernetes
+            - name: "grafana-dashboards-flux"
+              orgId: 1
+              folder: "FluxCD"
+              type: file
+              disableDeletion: true
+              editable: true
+              options:
+                path: /var/lib/grafana/dashboards/grafana-dashboards-flux
+            - name: "grafana-dashboards-vm"
+              orgId: 1
+              folder: "VictoriaMetrics"
+              type: file
+              disableDeletion: true
+              editable: true
+              options:
+                path: /var/lib/grafana/dashboards/grafana-dashboards-vm
+      dashboards:
+        grafana-dashboards-kubernetes:
+          k8s-system-api-server:
+            url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-api-server.json
+            token: ""
+          k8s-system-coredns:
+            url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-coredns.json
+            token: ""
+          k8s-views-global:
+            url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-global.json
+            token: ""
+          k8s-views-namespaces:
+            url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-namespaces.json
+            token: ""
+          k8s-views-nodes:
+            url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-nodes.json
+            token: ""
+          k8s-views-pods:
+            url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-pods.json
+            token: ""
+          # Cilium Dashboards
+          cilium-overview:
+            url: https://raw.githubusercontent.com/cilium/cilium/main/install/kubernetes/cilium/files/cilium-agent/dashboards/cilium-dashboard.json
+            token: ""
+          cilium-operator:
+            url: https://raw.githubusercontent.com/cilium/cilium/main/install/kubernetes/cilium/files/cilium-operator/dashboards/cilium-operator-dashboard.json
+            token: ""
+          cilium-hubble:
+            url: https://raw.githubusercontent.com/cilium/cilium/main/install/kubernetes/cilium/files/hubble/dashboards/hubble-dashboard.json
+            token: ""
+          cilium-l7-http:
+            url: https://raw.githubusercontent.com/cilium/cilium/main/install/kubernetes/cilium/files/hubble/dashboards/hubble-l7-http-metrics-by-workload.json
+            token: ""
+        grafana-dashboards-flux:
+          flux-control-plane:
+            url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/control-plane.json
+            token: ""
+          flux-cluster-stats:
+            url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/cluster.json
+            token: ""
+        grafana-dashboards-vm:
+          victoriametrics-overview:
+            url: https://raw.githubusercontent.com/VictoriaMetrics/VictoriaMetrics/master/dashboards/vm.json
+            token: ""
+          victoriametrics-cluster:
+            url: https://raw.githubusercontent.com/VictoriaMetrics/VictoriaMetrics/master/dashboards/vmcluster.json
+            token: ""
+          vmagent:
+            url: https://raw.githubusercontent.com/VictoriaMetrics/VictoriaMetrics/master/dashboards/vmagent.json
+            token: ""
+          vmalert:
+            url: https://raw.githubusercontent.com/VictoriaMetrics/VictoriaMetrics/master/dashboards/vmalert.json
+            token: ""
+
+    # Node Exporter configuration
+    nodeExporter:
+      enabled: true
+      resources:
+        requests:
+          memory: 64Mi
+          cpu: 50m
+        limits:
+          memory: 128Mi
+          cpu: 200m
+
+    # Kube State Metrics configuration
+    kubeStateMetrics:
+      enabled: true
+      metricLabelsAllowlist:
+        - "gateways=[*]"
+        - "httproutes=[*]"
+        - "grpcroutes=[*]"
+        - "tcproutes=[*]"
+        - "tlsroutes=[*]"
+        - "udproutes=[*]"
+      rbac:
+        extraRules:
+          - apiGroups: ["source.toolkit.fluxcd.io"]
+            resources:
+              [
+                "gitrepositories",
+                "buckets",
+                "helmrepositories",
+                "helmcharts",
+                "ocirepositories",
+              ]
+            verbs: ["list", "watch"]
+          - apiGroups: ["kustomize.toolkit.fluxcd.io"]
+            resources: ["kustomizations"]
+            verbs: ["list", "watch"]
+          - apiGroups: ["helm.toolkit.fluxcd.io"]
+            resources: ["helmreleases"]
+            verbs: ["list", "watch"]
+          - apiGroups: ["notification.toolkit.fluxcd.io"]
+            resources: ["providers", "alerts", "receivers"]
+            verbs: ["list", "watch"]
+          - apiGroups: ["image.toolkit.fluxcd.io"]
+            resources:
+              ["imagepolicies", "imagerepositories", "imageupdateautomations"]
+            verbs: ["list", "watch"]
+      collectors: []
+      extraArgs:
+        - --custom-resource-state-only=true
+        - --custom-resource-state-config-file=/etc/customresourcestate/kube-state-metrics-config.yaml
+        - --metric-allowlist=kube_gateway.*,kube_httproute.*,kube_grpcroute.*,kube_tcproute.*,kube_tlsroute.*,kube_udproute.*,kube_gatewayclass.*,gotk_.*
+      volumeMounts:
+        - name: flux-kube-state-metrics-config
+          mountPath: /etc/customresourcestate
+          readOnly: true
+      volumes:
+        - name: flux-kube-state-metrics-config
+          configMap:
+            name: flux-kube-state-metrics-config
+      resources:
+        requests:
+          memory: 256Mi
+          cpu: 100m
+        limits:
+          memory: 512Mi
+          cpu: 500m
+
+    # Default rules configuration
+    defaultRules:
+      create: true
+      rules:
+        etcd: true
+        general: true
+        k8s: true
+        kubeApiserver: true
+        kubeApiserverAvailability: true
+        kubeApiserverSlos: true
+        kubelet: true
+        kubePrometheusGeneral: true
+        kubePrometheusNodeRecording: true
+        kubernetesApps: true
+        kubernetesResources: true
+        kubernetesStorage: true
+        kubernetesSystem: true
+        kubeScheduler: true
+        kubeStateMetrics: true
+        network: true
+        node: true
+        nodeExporterAlerting: true
+        nodeExporterRecording: true
+        prometheusOperator: false # Disabled for VM stack
+        vmHealth: true
+        vmSingle: true
+        vmagent: true
+        vmalert: true
+
+    # Global configuration
+    global:
+      nodeSelector:
+        has-disk: "yes"
+
+    # VM Operator configuration
+    victoria-metrics-operator:
+      enabled: true
+      resources:
+        requests:
+          memory: 256Mi
+          cpu: 100m
+        limits:
+          memory: 512Mi
+          cpu: 500m
+      nodeSelector:
+        has-disk: "yes"

@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  labels:
+    app.kubernetes.io/name: victoria-metrics-k8s-stack
+    app.kubernetes.io/component: monitoring
+
+resources:
+  - cilium-agent-servicemonitor.yaml
+  - cilium-gateway-prometheusrule.yaml
+  - cilium-gateway-recordingrules.yaml
+  - cilium-operator-servicemonitor.yaml
+  - gateway-api-crs-config.yaml
+  - gateway-api-servicemonitor.yaml
+  - httproute-dashboard.yaml
+  - hubble-relay-servicemonitor.yaml

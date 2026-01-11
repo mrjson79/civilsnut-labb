@@ -1,0 +1,295 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: cilium-gateway-recording-rules
+  namespace: monitoring
+  labels:
+    app: cilium-gateway
+    release: victoria-metrics-k8s-stack
+    role: recording-rules
+spec:
+  groups:
+    - name: cilium.gateway.recording
+      interval: 30s
+      rules:
+        # HTTP Request Rate Recording Rules
+        - record: cilium:proxy_requests_rate5m
+          expr: rate(cilium_proxy_requests_total[5m])
+          labels:
+            metric_type: "rate"
+
+        - record: cilium:proxy_requests_rate1m
+          expr: rate(cilium_proxy_requests_total[1m])
+          labels:
+            metric_type: "rate"
+
+        # HTTP Error Rate Recording Rules
+        - record: cilium:proxy_error_rate5m
+          expr: |
+            (
+              rate(cilium_proxy_upstream_reply_xx{xx="4xx"}[5m]) +
+              rate(cilium_proxy_upstream_reply_xx{xx="5xx"}[5m])
+            ) / rate(cilium_proxy_upstream_reply_xx[5m])
+          labels:
+            metric_type: "error_rate"
+
+        - record: cilium:proxy_5xx_rate5m
+          expr: |
+            rate(cilium_proxy_upstream_reply_xx{xx="5xx"}[5m]) /
+            rate(cilium_proxy_upstream_reply_xx[5m])
+          labels:
+            metric_type: "error_rate"
+
+        - record: cilium:proxy_4xx_rate5m
+          expr: |
+            rate(cilium_proxy_upstream_reply_xx{xx="4xx"}[5m]) /
+            rate(cilium_proxy_upstream_reply_xx[5m])
+          labels:
+            metric_type: "error_rate"
+
+        # Response Time Percentile Recording Rules
+        - record: cilium:proxy_response_time_p50
+          expr: histogram_quantile(0.50, rate(cilium_proxy_upstream_reply_seconds_bucket[5m]))
+          labels:
+            quantile: "0.50"
+            metric_type: "latency"
+
+        - record: cilium:proxy_response_time_p90
+          expr: histogram_quantile(0.90, rate(cilium_proxy_upstream_reply_seconds_bucket[5m]))
+          labels:
+            quantile: "0.90"
+            metric_type: "latency"
+
+        - record: cilium:proxy_response_time_p95
+          expr: histogram_quantile(0.95, rate(cilium_proxy_upstream_reply_seconds_bucket[5m]))
+          labels:
+            quantile: "0.95"
+            metric_type: "latency"
+
+        - record: cilium:proxy_response_time_p99
+          expr: histogram_quantile(0.99, rate(cilium_proxy_upstream_reply_seconds_bucket[5m]))
+          labels:
+            quantile: "0.99"
+            metric_type: "latency"
+
+    - name: cilium.endpoint.recording
+      interval: 30s
+      rules:
+        # Endpoint Health Recording Rules
+        - record: cilium:endpoint_ready_ratio
+          expr: |
+            (
+              count(cilium_endpoint_state{endpoint_state="ready"}) or vector(0)
+            ) / (
+              count(cilium_endpoint_state) or vector(1)
+            )
+          labels:
+            metric_type: "health_ratio"
+
+        - record: cilium:endpoint_not_ready_count
+          expr: count(cilium_endpoint_state{endpoint_state!="ready"}) or vector(0)
+          labels:
+            metric_type: "count"
+
+        - record: cilium:endpoint_total_count
+          expr: count(cilium_endpoint_state) or vector(0)
+          labels:
+            metric_type: "count"
+
+    - name: cilium.drops.recording
+      interval: 30s
+      rules:
+        # Packet Drop Recording Rules
+        - record: cilium:drop_rate5m_total
+          expr: rate(cilium_drop_count_total[5m])
+          labels:
+            metric_type: "drop_rate"
+
+        - record: cilium:drop_rate5m_by_reason
+          expr: sum(rate(cilium_drop_count_total[5m])) by (reason, direction)
+          labels:
+            metric_type: "drop_rate"
+
+        - record: cilium:drop_rate1m_total
+          expr: rate(cilium_drop_count_total[1m])
+          labels:
+            metric_type: "drop_rate"
+
+    - name: cilium.bpf.recording
+      interval: 30s
+      rules:
+        # BPF Map Pressure Recording Rules
+        - record: cilium:bpf_map_pressure_max
+          expr: max(cilium_bpf_map_pressure) by (map_name)
+          labels:
+            metric_type: "pressure"
+
+        - record: cilium:bpf_map_pressure_avg
+          expr: avg(cilium_bpf_map_pressure) by (map_name)
+          labels:
+            metric_type: "pressure"
+
+        - record: cilium:bpf_map_high_pressure_count
+          expr: count(cilium_bpf_map_pressure > 0.8) or vector(0)
+          labels:
+            metric_type: "count"
+
+    - name: cilium.gateway.status.recording
+      interval: 30s
+      rules:
+        # Gateway Status Recording Rules
+        - record: cilium:gateway_ready_count
+          expr: |
+            count(kube_gateway_status_conditions{type="Ready", status="True"}) or vector(0)
+          labels:
+            metric_type: "count"
+
+        - record: cilium:gateway_total_count
+          expr: |
+            count(kube_gateway_info) or vector(0)
+          labels:
+            metric_type: "count"
+
+        - record: cilium:gateway_ready_ratio
+          expr: |
+            (
+              count(kube_gateway_status_conditions{type="Ready", status="True"}) or vector(0)
+            ) / (
+              count(kube_gateway_info) or vector(1)
+            )
+          labels:
+            metric_type: "health_ratio"
+
+        # HTTPRoute Status Recording Rules
+        - record: cilium:httproute_accepted_count
+          expr: |
+            count(kube_httproute_status_conditions{type="Accepted", status="True"}) or vector(0)
+          labels:
+            metric_type: "count"
+
+        - record: cilium:httproute_total_count
+          expr: |
+            count(kube_httproute_info) or vector(0)
+          labels:
+            metric_type: "count"
+
+        - record: cilium:httproute_accepted_ratio
+          expr: |
+            (
+              count(kube_httproute_status_conditions{type="Accepted", status="True"}) or vector(0)
+            ) / (
+              count(kube_httproute_info) or vector(1)
+            )
+          labels:
+            metric_type: "health_ratio"
+
+        - record: cilium:httproute_failed_count
+          expr: |
+            count(kube_httproute_status_conditions{type="Accepted", status="False"}) or vector(0)
+          labels:
+            metric_type: "count"
+
+    - name: cilium.service.recording
+      interval: 60s
+      rules:
+        # Service-level aggregations
+        - record: cilium:service_request_rate5m
+          expr: |
+            sum(rate(cilium_proxy_requests_total[5m])) by (destination_service_name, destination_service_namespace)
+          labels:
+            metric_type: "service_rate"
+
+        - record: cilium:service_error_rate5m
+          expr: |
+            sum(rate(cilium_proxy_upstream_reply_xx{xx=~"4xx|5xx"}[5m])) by (destination_service_name, destination_service_namespace) /
+            sum(rate(cilium_proxy_upstream_reply_xx[5m])) by (destination_service_name, destination_service_namespace)
+          labels:
+            metric_type: "service_error_rate"
+
+        - record: cilium:service_response_time_p95
+          expr: |
+            histogram_quantile(0.95,
+              sum(rate(cilium_proxy_upstream_reply_seconds_bucket[5m])) by (destination_service_name, destination_service_namespace, le)
+            )
+          labels:
+            quantile: "0.95"
+            metric_type: "service_latency"
+
+    - name: cilium.cluster.recording
+      interval: 60s
+      rules:
+        # Cluster-level aggregations
+        - record: cilium:cluster_request_rate5m
+          expr: sum(rate(cilium_proxy_requests_total[5m]))
+          labels:
+            metric_type: "cluster_rate"
+
+        - record: cilium:cluster_error_rate5m
+          expr: |
+            sum(rate(cilium_proxy_upstream_reply_xx{xx=~"4xx|5xx"}[5m])) /
+            sum(rate(cilium_proxy_upstream_reply_xx[5m]))
+          labels:
+            metric_type: "cluster_error_rate"
+
+        - record: cilium:cluster_drop_rate5m
+          expr: sum(rate(cilium_drop_count_total[5m]))
+          labels:
+            metric_type: "cluster_drop_rate"
+
+        - record: cilium:cluster_agent_up_ratio
+          expr: |
+            count(up{job="cilium-agent"} == 1) /
+            count(up{job="cilium-agent"})
+          labels:
+            metric_type: "availability"
+
+        - record: cilium:cluster_operator_up_ratio
+          expr: |
+            count(up{job="cilium-operator"} == 1) /
+            count(up{job="cilium-operator"})
+          labels:
+            metric_type: "availability"
+
+    - name: cilium.policy.recording
+      interval: 60s
+      rules:
+        # Policy enforcement metrics
+        - record: cilium:policy_enforcement_delay5m
+          expr: rate(cilium_policy_enforcement_delay_seconds_total[5m])
+          labels:
+            metric_type: "policy_delay"
+
+        - record: cilium:identity_allocation_rate5m
+          expr: rate(cilium_identity_allocation_total[5m])
+          labels:
+            metric_type: "identity_rate"
+
+        - record: cilium:identity_allocation_error_rate5m
+          expr: rate(cilium_identity_allocation_errors_total[5m])
+          labels:
+            metric_type: "identity_error_rate"
+
+    - name: cilium.controller.recording
+      interval: 60s
+      rules:
+        # Controller health metrics
+        - record: cilium:controller_failure_rate5m
+          expr: rate(cilium_controllers_failing_total[5m])
+          labels:
+            metric_type: "controller_failure_rate"
+
+        - record: cilium:kvstore_operation_duration_p95
+          expr: |
+            histogram_quantile(0.95,
+              rate(cilium_kvstore_operations_duration_seconds_bucket[5m])
+            )
+          labels:
+            quantile: "0.95"
+            metric_type: "kvstore_latency"
+
+        - record: cilium:kvstore_operation_error_rate5m
+          expr: |
+            rate(cilium_kvstore_operations_duration_seconds{outcome="fail"}[5m]) /
+            rate(cilium_kvstore_operations_duration_seconds[5m])
+          labels:
+            metric_type: "kvstore_error_rate"

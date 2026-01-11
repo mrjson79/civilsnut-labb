@@ -1,0 +1,26 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: gateway-api-controller
+  namespace: monitoring
+  labels:
+    app: gateway-api-controller
+    release: victoria-metrics-k8s-stack
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gateway-api
+      app.kubernetes.io/component: controller
+  namespaceSelector:
+    matchNames:
+      - kube-system
+      - gateway-system
+  endpoints:
+    - port: metrics
+      interval: 30s
+      path: /metrics
+      honorLabels: true
+    - port: webhook-metrics
+      interval: 30s
+      path: /metrics
+      honorLabels: true

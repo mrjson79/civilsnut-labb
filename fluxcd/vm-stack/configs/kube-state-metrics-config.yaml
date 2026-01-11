@@ -1,0 +1,273 @@
+# Custom resource state configuration for Gateway API and FluxCD resources
+spec:
+  resources:
+    # Gateway API Resources (preserved from existing config)
+    - groupVersionKind:
+        group: gateway.networking.k8s.io
+        version: "v1beta1"
+        kind: "Gateway"
+      metricNamePrefix: kube_gateway
+      metrics:
+        - name: "info"
+          help: "Information about a Gateway"
+          each:
+            type: Info
+            info:
+              labelsFromPath:
+                gateway: [metadata, name]
+                namespace: [metadata, namespace]
+                gateway_class: [spec, gatewayClassName]
+
+    - groupVersionKind:
+        group: gateway.networking.k8s.io
+        version: "v1beta1"
+        kind: "HTTPRoute"
+      metricNamePrefix: kube_httproute
+      metrics:
+        - name: "info"
+          help: "Information about an HTTPRoute"
+          each:
+            type: Info
+            info:
+              labelsFromPath:
+                httproute: [metadata, name]
+                namespace: [metadata, namespace]
+
+    - groupVersionKind:
+        group: gateway.networking.k8s.io
+        version: "v1beta1"
+        kind: "GatewayClass"
+      metricNamePrefix: kube_gatewayclass
+      metrics:
+        - name: "info"
+          help: "Information about a GatewayClass"
+          each:
+            type: Info
+            info:
+              labelsFromPath:
+                gatewayclass: [metadata, name]
+                controller: [spec, controllerName]
+
+    # FluxCD Resources - GitRepository
+    - groupVersionKind:
+        group: source.toolkit.fluxcd.io
+        version: "v1"
+        kind: GitRepository
+      metricNamePrefix: gotk
+      metrics:
+        - name: "reconcile_condition"
+          help: "The current condition status of a GitRepository"
+          each:
+            type: StateSet
+            stateSet:
+              labelsFromPath:
+                name: [metadata, name]
+                exported_namespace: [metadata, namespace]
+                kind: ["GitRepository"]
+                type: [type]
+              valueFrom: [status]
+              list: [status, conditions]
+              states: ["True", "False", "Unknown"]
+        - name: "suspend_status"
+          help: "The suspend status of a GitRepository"
+          each:
+            type: Gauge
+            gauge:
+              labelsFromPath:
+                name: [metadata, name]
+                exported_namespace: [metadata, namespace]
+                kind: ["GitRepository"]
+              valueFrom: [spec, suspend]
+              nilIsZero: true
+
+    # FluxCD Resources - HelmRepository
+    - groupVersionKind:
+        group: source.toolkit.fluxcd.io
+        version: "v1beta2"
+        kind: HelmRepository
+      metricNamePrefix: gotk
+      metrics:
+        - name: "reconcile_condition"
+          help: "The current condition status of a HelmRepository"
+          each:
+            type: StateSet
+            stateSet:
+              labelsFromPath:
+                name: [metadata, name]
+                exported_namespace: [metadata, namespace]
+                kind: ["HelmRepository"]
+                type: [type]
+              valueFrom: [status]
+              list: [status, conditions]
+              states: ["True", "False", "Unknown"]
+        - name: "suspend_status"
+          help: "The suspend status of a HelmRepository"
+          each:
+            type: Gauge
+            gauge:
+              labelsFromPath:
+                name: [metadata, name]
+                exported_namespace: [metadata, namespace]
+                kind: ["HelmRepository"]
+              valueFrom: [spec, suspend]
+              nilIsZero: true
+
+    # FluxCD Resources - Bucket
+    - groupVersionKind:
+        group: source.toolkit.fluxcd.io
+        version: "v1beta2"
+        kind: Bucket
+      metricNamePrefix: gotk
+      metrics:
+        - name: "reconcile_condition"
+          help: "The current condition status of a Bucket"
+          each:
+            type: StateSet
+            stateSet:
+              labelsFromPath:
+                name: [metadata, name]
+                exported_namespace: [metadata, namespace]
+                kind: ["Bucket"]
+                type: [type]
+              valueFrom: [status]
+              list: [status, conditions]
+              states: ["True", "False", "Unknown"]
+        - name: "suspend_status"
+          help: "The suspend status of a Bucket"
+          each:
+            type: Gauge
+            gauge:
+              labelsFromPath:
+                name: [metadata, name]
+                exported_namespace: [metadata, namespace]
+                kind: ["Bucket"]
+              valueFrom: [spec, suspend]
+              nilIsZero: true
+
+    # FluxCD Resources - Kustomization
+    - groupVersionKind:
+        group: kustomize.toolkit.fluxcd.io
+        version: "v1"
+        kind: Kustomization
+      metricNamePrefix: gotk
+      metrics:
+        - name: "reconcile_condition"
+          help: "The current condition status of a Kustomization"
+          each:
+            type: StateSet
+            stateSet:
+              labelsFromPath:
+                name: [metadata, name]
+                exported_namespace: [metadata, namespace]
+                kind: ["Kustomization"]
+                type: [type]
+              valueFrom: [status]
+              list: [status, conditions]
+              states: ["True", "False", "Unknown"]
+        - name: "suspend_status"
+          help: "The suspend status of a Kustomization"
+          each:
+            type: Gauge
+            gauge:
+              labelsFromPath:
+                name: [metadata, name]
+                exported_namespace: [metadata, namespace]
+                kind: ["Kustomization"]
+              valueFrom: [spec, suspend]
+              nilIsZero: true
+
+    # FluxCD Resources - HelmRelease
+    - groupVersionKind:
+        group: helm.toolkit.fluxcd.io
+        version: "v2"
+        kind: HelmRelease
+      metricNamePrefix: gotk
+      metrics:
+        - name: "reconcile_condition"
+          help: "The current condition status of a HelmRelease"
+          each:
+            type: StateSet
+            stateSet:
+              labelsFromPath:
+                name: [metadata, name]
+                exported_namespace: [metadata, namespace]
+                kind: ["HelmRelease"]
+                type: [type]
+              valueFrom: [status]
+              list: [status, conditions]
+              states: ["True", "False", "Unknown"]
+        - name: "suspend_status"
+          help: "The suspend status of a HelmRelease"
+          each:
+            type: Gauge
+            gauge:
+              labelsFromPath:
+                name: [metadata, name]
+                exported_namespace: [metadata, namespace]
+                kind: ["HelmRelease"]
+              valueFrom: [spec, suspend]
+              nilIsZero: true
+
+    # FluxCD Resources - HelmChart
+    - groupVersionKind:
+        group: source.toolkit.fluxcd.io
+        version: "v1beta2"
+        kind: HelmChart
+      metricNamePrefix: gotk
+      metrics:
+        - name: "reconcile_condition"
+          help: "The current condition status of a HelmChart"
+          each:
+            type: StateSet
+            stateSet:
+              labelsFromPath:
+                name: [metadata, name]
+                exported_namespace: [metadata, namespace]
+                kind: ["HelmChart"]
+                type: [type]
+              valueFrom: [status]
+              list: [status, conditions]
+              states: ["True", "False", "Unknown"]
+        - name: "suspend_status"
+          help: "The suspend status of a HelmChart"
+          each:
+            type: Gauge
+            gauge:
+              labelsFromPath:
+                name: [metadata, name]
+                exported_namespace: [metadata, namespace]
+                kind: ["HelmChart"]
+              valueFrom: [spec, suspend]
+              nilIsZero: true
+
+    # FluxCD Resources - OCIRepository
+    - groupVersionKind:
+        group: source.toolkit.fluxcd.io
+        version: "v1beta2"
+        kind: OCIRepository
+      metricNamePrefix: gotk
+      metrics:
+        - name: "reconcile_condition"
+          help: "The current condition status of an OCIRepository"
+          each:
+            type: StateSet
+            stateSet:
+              labelsFromPath:
+                name: [metadata, name]
+                exported_namespace: [metadata, namespace]
+                kind: ["OCIRepository"]
+                type: [type]
+              valueFrom: [status]
+              list: [status, conditions]
+              states: ["True", "False", "Unknown"]
+        - name: "suspend_status"
+          help: "The suspend status of an OCIRepository"
+          each:
+            type: Gauge
+            gauge:
+              labelsFromPath:
+                name: [metadata, name]
+                exported_namespace: [metadata, namespace]
+                kind: ["OCIRepository"]
+              valueFrom: [spec, suspend]
+              nilIsZero: true

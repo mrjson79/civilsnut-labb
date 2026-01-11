@@ -1,0 +1,145 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: cilium-gateway-alerts
+  namespace: monitoring
+  labels:
+    app: cilium-gateway
+    release: victoria-metrics-k8s-stack
+    role: alert-rules
+spec:
+  groups:
+    - name: cilium.gateway
+      interval: 30s
+      rules:
+        - alert: CiliumGatewayDown
+          expr: up{job="cilium-agent"} == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Cilium Gateway agent is down"
+            description: "Cilium agent {{ $labels.instance }} has been down for more than 5 minutes"
+
+        - alert: CiliumOperatorDown
+          expr: up{job="cilium-operator"} == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Cilium Operator is down"
+            description: "Cilium operator {{ $labels.instance }} has been down for more than 5 minutes"
+
+        - alert: HTTPRouteConfigError
+          expr: increase(cilium_k8s_client_api_latency_time_seconds{method="PUT",return_code!~"2..",resource="httproutes"}[5m]) > 0
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "HTTPRoute configuration errors detected"
+            description: "HTTPRoute configuration errors have been detected in the last 5 minutes"
+
+        - alert: CiliumHighErrorRate
+          expr: rate(cilium_drop_count_total[5m]) > 10
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High packet drop rate detected"
+            description: "Cilium is dropping packets at a rate of {{ $value }} packets/sec"
+
+        - alert: CiliumPolicyEnforcementFailure
+          expr: increase(cilium_policy_enforcement_delay_seconds_total[5m]) > 100
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Cilium policy enforcement delays"
+            description: "Cilium policy enforcement is experiencing delays"
+
+        - alert: HubbleRelayDown
+          expr: up{job="hubble-relay"} == 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Hubble Relay is down"
+            description: "Hubble Relay {{ $labels.instance }} has been down for more than 5 minutes"
+
+        - alert: CiliumEndpointNotReady
+          expr: cilium_endpoint_state{endpoint_state!="ready"} > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Cilium endpoints not ready"
+            description: "{{ $value }} Cilium endpoints are not in ready state"
+
+    - name: cilium.gateway.performance
+      interval: 30s
+      rules:
+        - alert: HighHTTPErrorRate
+          expr: rate(cilium_proxy_upstream_reply_xx{xx="5xx"}[5m]) / rate(cilium_proxy_upstream_reply_xx[5m]) > 0.05
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High HTTP 5xx error rate"
+            description: "HTTP 5xx error rate is {{ $value | humanizePercentage }} for {{ $labels.upstream }}"
+
+        - alert: HighHTTPLatency
+          expr: histogram_quantile(0.95, rate(cilium_proxy_upstream_reply_seconds_bucket[5m])) > 2
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High HTTP response latency"
+            description: "95th percentile latency is {{ $value }}s for {{ $labels.upstream }}"
+
+        - alert: LowHTTPRequestRate
+          expr: rate(cilium_proxy_requests_total[5m]) < 0.1
+          for: 10m
+          labels:
+            severity: info
+          annotations:
+            summary: "Low HTTP request rate"
+            description: "HTTP request rate is unusually low: {{ $value }} requests/sec"
+
+    - name: cilium.gateway.connectivity
+      interval: 30s
+      rules:
+        - alert: CiliumIdentityAllocationFailure
+          expr: increase(cilium_identity_allocation_errors_total[5m]) > 0
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Cilium identity allocation failures"
+            description: "Cilium identity allocation failures detected"
+
+        - alert: CiliumBPFMapPressure
+          expr: cilium_bpf_map_pressure > 0.8
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Cilium BPF map pressure high"
+            description: "Cilium BPF map {{ $labels.map_name }} is {{ $value | humanizePercentage }} full"
+
+        - alert: CiliumControllerFailures
+          expr: increase(cilium_controllers_failing_total[5m]) > 0
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Cilium controller failures"
+            description: "Cilium controller {{ $labels.name }} is failing"
+
+        - alert: CiliumKVStoreConnectivity
+          expr: cilium_kvstore_operations_duration_seconds{scope="update",outcome="fail"} > 0
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Cilium KVStore connectivity issues"
+            description: "Cilium is experiencing KVStore connectivity issues"

@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: applications
+  annotations:
+    config.kubernetes.io/local-config: "true"
+    # This phase depends on infrastructure phase completion
+    flux.weave.works/depends-on: "01-infrastructure"
+
+resources:
+  # Application components - deployed after infrastructure
+  - ../home-assistant
+  - ../ingress-nginx
+  - ../mqtt
+  - ../vm-stack
+  - ../zigbee2mqtt
+
+# Ensure consistent labeling across application components
+commonLabels:
+  deployment.phase: "applications"
+  deployment.wave: "02"

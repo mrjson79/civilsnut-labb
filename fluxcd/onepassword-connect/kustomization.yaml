@@ -1,6 +1,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+metadata:
+  annotations:
+    # Depends on external-secrets for CRDs and operator
+    flux.weave.works/depends-on: "external-secrets"
+
 resources:
   - repository.yaml
   - release.yaml

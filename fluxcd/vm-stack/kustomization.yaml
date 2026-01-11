@@ -6,6 +6,9 @@ metadata:
     app.kubernetes.io/name: victoria-metrics-k8s-stack
     app.kubernetes.io/component: monitoring
     app.kubernetes.io/part-of: infrastructure
+  annotations:
+    # Depends on longhorn for storage and shared-gateway for ingress
+    flux.weave.works/depends-on: "longhorn,shared-gateway"
 
 resources:
   - namespace.yaml

@@ -16,41 +16,7 @@ resources:
   - cilium
   - onepassword-connect
 
-# Wait for all foundation components to be fully ready
-# This ensures CRDs are available before next phase
-healthChecks:
-  # External Secrets operator and CRDs
-  - apiVersion: apps/v1
-    kind: Deployment
-    name: external-secrets
-    namespace: external-secrets
-  - apiVersion: apps/v1
-    kind: Deployment
-    name: external-secrets-webhook
-    namespace: external-secrets
-  - apiVersion: apiextensions.k8s.io/v1
-    kind: CustomResourceDefinition
-    name: externalsecrets.external-secrets.io
-  # Cert Manager
-  - apiVersion: apps/v1
-    kind: Deployment
-    name: cert-manager
-    namespace: cert-manager
-  - apiVersion: apps/v1
-    kind: Deployment
-    name: cert-manager-webhook
-    namespace: cert-manager
-  # Cilium
-  - apiVersion: apps/v1
-    kind: DaemonSet
-    name: cilium
-    namespace: kube-system
-  - apiVersion: apps/v1
-    kind: Deployment
-    name: cilium-operator
-    namespace: kube-system
-
 # Ensure consistent labeling across foundation components
-commonLabels:
+labels:
   deployment.phase: "foundation"
   deployment.wave: "00"

@@ -5,8 +5,10 @@ metadata:
   name: applications
   annotations:
     config.kubernetes.io/local-config: "true"
-    # This phase depends on infrastructure phase completion
-    flux.weave.works/depends-on: "01-infrastructure"
+    # This phase depends on both foundation and infrastructure phases
+    flux.weave.works/depends-on: "00-foundation,01-infrastructure"
+    kustomize.toolkit.fluxcd.io/timeout: "20m"
+    kustomize.toolkit.fluxcd.io/prune: "true"
 
 resources:
   # Application components - deployed after infrastructure
@@ -15,6 +17,37 @@ resources:
   - mqtt
   - vm-stack
   - zigbee2mqtt
+
+# Wait for foundation CRDs to be available before deploying applications
+healthChecks:
+  # Ensure External Secrets CRDs are available for mqtt and other apps
+  - apiVersion: apiextensions.k8s.io/v1
+    kind: CustomResourceDefinition
+    name: externalsecrets.external-secrets.io
+  - apiVersion: apiextensions.k8s.io/v1
+    kind: CustomResourceDefinition
+    name: secretstores.external-secrets.io
+  - apiVersion: apiextensions.k8s.io/v1
+    kind: CustomResourceDefinition
+    name: clustersecretstores.external-secrets.io
+  # Ensure external-secrets operator is running
+  - apiVersion: apps/v1
+    kind: Deployment
+    name: external-secrets
+    namespace: external-secrets
+  # Ensure cert-manager CRDs are available
+  - apiVersion: apiextensions.k8s.io/v1
+    kind: CustomResourceDefinition
+    name: certificates.cert-manager.io
+  # Ensure longhorn storage is available
+  - apiVersion: storage.k8s.io/v1
+    kind: StorageClass
+    name: longhorn
+  # Ensure shared-gateway is ready
+  - apiVersion: gateway.networking.k8s.io/v1
+    kind: Gateway
+    name: shared-gateway
+    namespace: gateway-system
 
 # Ensure consistent labeling across application components
 commonLabels:

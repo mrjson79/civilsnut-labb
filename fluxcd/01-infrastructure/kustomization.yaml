@@ -7,11 +7,40 @@ metadata:
     config.kubernetes.io/local-config: "true"
     # This phase depends on foundation phase completion
     flux.weave.works/depends-on: "00-foundation"
+    kustomize.toolkit.fluxcd.io/timeout: "15m"
+    kustomize.toolkit.fluxcd.io/prune: "true"
 
 resources:
   # Infrastructure components - deployed after foundation
   - shared-gateway
   - longhorn
+
+# Wait for foundation components to be ready before deploying infrastructure
+healthChecks:
+  # Ensure External Secrets CRDs and operator are available
+  - apiVersion: apiextensions.k8s.io/v1
+    kind: CustomResourceDefinition
+    name: externalsecrets.external-secrets.io
+  - apiVersion: apps/v1
+    kind: Deployment
+    name: external-secrets
+    namespace: external-secrets
+  # Ensure Cert Manager is ready
+  - apiVersion: apps/v1
+    kind: Deployment
+    name: cert-manager
+    namespace: cert-manager
+  - apiVersion: apiextensions.k8s.io/v1
+    kind: CustomResourceDefinition
+    name: certificates.cert-manager.io
+  # Ensure Cilium and Gateway API CRDs are ready
+  - apiVersion: apps/v1
+    kind: DaemonSet
+    name: cilium
+    namespace: kube-system
+  - apiVersion: apiextensions.k8s.io/v1
+    kind: CustomResourceDefinition
+    name: gateways.gateway.networking.k8s.io
 
 # Ensure consistent labeling across infrastructure components
 commonLabels:

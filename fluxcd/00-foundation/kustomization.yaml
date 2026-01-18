@@ -11,6 +11,7 @@ metadata:
 resources:
   # CRDs must be installed first to allow dry-run validation
   - gateway-api
+  - victoria-metrics-crds
   # Core infrastructure components - deployed after CRDs
   # external-secrets must be early to provide CRDs for other components
   - external-secrets

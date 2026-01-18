@@ -8,6 +8,8 @@ metadata:
     kustomize.toolkit.fluxcd.io/timeout: "10m"
 
 resources:
+  # CRDs must be installed first to allow dry-run validation of ExternalSecret, ClusterSecretStore, etc.
+  - crds
   - namespace.yaml
   - repository.yaml
   - release.yaml

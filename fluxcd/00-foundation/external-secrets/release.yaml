@@ -23,7 +23,8 @@ spec:
     remediation:
       retries: 3
   values:
-    installCRDs: true
+    # CRDs are managed separately via crds/kustomization.yaml to ensure they're available for dry-run validation
+    installCRDs: false
 
     replicaCount: 2
 

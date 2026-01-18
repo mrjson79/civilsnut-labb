@@ -48,7 +48,6 @@ spec:
         extraArgs:
           maxConcurrentInserts: "8"
           maxLabelsPerTimeseries: "30"
-          maxSamplesPerQuery: "50000000"
       ingress:
         enabled: false
 

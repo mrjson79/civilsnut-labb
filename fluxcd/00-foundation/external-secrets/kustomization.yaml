@@ -13,6 +13,8 @@ resources:
   - namespace.yaml
   - repository.yaml
   - release.yaml
+  # ClusterSecretStore for 1Password Connect
+  - manifests
 
 # Add common labels for foundation phase
 commonLabels:

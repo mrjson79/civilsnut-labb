@@ -13,6 +13,6 @@ resources:
   - release.yaml
 
 # Add common labels for foundation phase
-labels:
+commonLabels:
   deployment.phase: "foundation"
   deployment.component: "external-secrets"

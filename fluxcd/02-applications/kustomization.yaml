@@ -19,6 +19,6 @@ resources:
   - zigbee2mqtt
 
 # Ensure consistent labeling across application components
-labels:
+commonLabels:
   deployment.phase: "applications"
   deployment.wave: "02"

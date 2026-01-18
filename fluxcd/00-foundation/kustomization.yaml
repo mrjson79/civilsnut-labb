@@ -17,6 +17,6 @@ resources:
   - onepassword-connect
 
 # Ensure consistent labeling across foundation components
-labels:
+commonLabels:
   deployment.phase: "foundation"
   deployment.wave: "00"

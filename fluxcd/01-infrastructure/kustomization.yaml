@@ -16,6 +16,6 @@ resources:
   - longhorn
 
 # Ensure consistent labeling across infrastructure components
-labels:
+commonLabels:
   deployment.phase: "infrastructure"
   deployment.wave: "01"

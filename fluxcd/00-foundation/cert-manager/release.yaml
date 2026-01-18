@@ -76,10 +76,9 @@ spec:
         has-disk: "yes"
 
     prometheus:
-      enabled: true
+      enabled: false
       servicemonitor:
-        enabled: true
-        prometheusInstance: default
+        enabled: false
 
     global:
       leaderElection:

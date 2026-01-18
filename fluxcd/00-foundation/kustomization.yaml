@@ -9,8 +9,10 @@ metadata:
     kustomize.toolkit.fluxcd.io/prune: "false"
 
 resources:
-  # Core infrastructure components - deployed first
-  # external-secrets must be first to provide CRDs for other components
+  # CRDs must be installed first to allow dry-run validation
+  - gateway-api
+  # Core infrastructure components - deployed after CRDs
+  # external-secrets must be early to provide CRDs for other components
   - external-secrets
   - cert-manager
   - cilium

@@ -24,6 +24,10 @@ spec:
   values:
     connect:
       serviceType: ClusterIP
+      # Reference to existing secret containing 1password-credentials.json
+      # Create with: kubectl create secret generic op-credentials -n external-secrets --from-file=1password-credentials.json
+      credentialsName: op-credentials
+      credentialsKey: 1password-credentials.json
 
     operator:
       create: true

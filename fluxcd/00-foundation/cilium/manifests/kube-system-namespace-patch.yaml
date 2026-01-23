@@ -1,0 +1,9 @@
+---
+# Patch to add gateway label to kube-system namespace
+# Required for Hubble UI HTTPRoute to be accepted by shared-gateway
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kube-system
+  labels:
+    gateway.networking.k8s.io/allowed: "true"

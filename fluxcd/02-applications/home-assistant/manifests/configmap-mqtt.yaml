@@ -11,16 +11,16 @@ data:
     switch:
       # Anders Office_desk  - Gen 1 Shelly Plug S
       - name: "Anders office desk"
-        state_topic: "shellies/anders_kontor/relay/0"
-        command_topic: "shellies/anders_kontor/relay/0/command"
+        state_topic: "shellies/anders_office_desk/relay/0"
+        command_topic: "shellies/anders_office_desk/relay/0/command"
         payload_on: "on"
         payload_off: "off"
-        availability_topic: "shellies/anders_kontor/online"
+        availability_topic: "shellies/anders_office_desk/online"
         payload_available: "true"
         payload_not_available: "false"
-        unique_id: "shelly_anders_kontor_relay"
+        unique_id: "anders_office_desk"
         device:
-          identifiers: ["shelly_anders_kontor"]
+          identifiers: ["anders_office_desk"]
           name: "Anders Kontor Shelly"
           model: "Shelly Plug S"
           manufacturer: "Allterco"
@@ -153,30 +153,30 @@ data:
 
 
     sensor:
-      # Anders Kontor Sensors
-      - name: "Anders Kontor Power"
-        state_topic: "shellies/anders_kontor/relay/0/power"
+      # Anders Office Desk Sensors
+      - name: "Anders Office Desk Power"
+        state_topic: "shellies/anders_office_desk/relay/0/power"
         unit_of_measurement: "W"
         device_class: "power"
-        unique_id: "shelly_anders_kontor_power"
+        unique_id: "shelly_anders_office_desk_power"
         device:
-          identifiers: ["shelly_anders_kontor"]
+          identifiers: ["anders_office_desk"]
 
-      - name: "Anders Kontor Energy"
-        state_topic: "shellies/anders_kontor/relay/0/energy"
+      - name: "Anders Office Desk Energy"
+        state_topic: "shellies/anders_office_desk/relay/0/energy"
         unit_of_measurement: "Wh"
         device_class: "energy"
-        unique_id: "shelly_anders_kontor_energy"
+        unique_id: "shelly_anders_office_desk_energy"
         device:
-          identifiers: ["shelly_anders_kontor"]
+          identifiers: ["anders_office_desk"]
 
-      - name: "Anders Kontor Temperature"
-        state_topic: "shellies/anders_kontor/temperature"
+      - name: "Anders Office Desk Temperature"
+        state_topic: "shellies/anders_office_desk/temperature"
         unit_of_measurement: "°C"
         device_class: "temperature"
-        unique_id: "shelly_anders_kontor_temp"
+        unique_id: "shelly_anders_office_desk_temp"
         device:
-          identifiers: ["shelly_anders_kontor"]
+          identifiers: ["anders_office_desk"]
 
       # Livingroom Sensors
       - name: "Livingroom Power"

@@ -132,84 +132,9 @@ spec:
         has-disk: "yes"
       sidecar:
         dashboards:
-          enabled: false
-      downloadDashboards:
-        enabled: false
-      dashboardProviders:
-        dashboardproviders.yaml:
-          apiVersion: 1
-          providers:
-            - name: "grafana-dashboards-kubernetes"
-              orgId: 1
-              folder: "Kubernetes"
-              type: file
-              disableDeletion: true
-              editable: true
-              options:
-                path: /var/lib/grafana/dashboards/grafana-dashboards-kubernetes
-            - name: "grafana-dashboards-flux"
-              orgId: 1
-              folder: "FluxCD"
-              type: file
-              disableDeletion: true
-              editable: true
-              options:
-                path: /var/lib/grafana/dashboards/grafana-dashboards-flux
-            - name: "grafana-dashboards-vm"
-              orgId: 1
-              folder: "VictoriaMetrics"
-              type: file
-              disableDeletion: true
-              editable: true
-              options:
-                path: /var/lib/grafana/dashboards/grafana-dashboards-vm
-      dashboards:
-        grafana-dashboards-kubernetes:
-          k8s-system-api-server:
-            url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-api-server.json
-            token: ""
-          k8s-system-coredns:
-            url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-coredns.json
-            token: ""
-          k8s-views-global:
-            url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-global.json
-            token: ""
-          k8s-views-namespaces:
-            url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-namespaces.json
-            token: ""
-          k8s-views-nodes:
-            url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-nodes.json
-            token: ""
-          k8s-views-pods:
-            url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-pods.json
-            token: ""
-          # Cilium Dashboards
-          cilium-overview:
-            url: https://raw.githubusercontent.com/cilium/cilium/main/install/kubernetes/cilium/files/cilium-agent/dashboards/cilium-dashboard.json
-            token: ""
-          cilium-operator:
-            url: https://raw.githubusercontent.com/cilium/cilium/main/install/kubernetes/cilium/files/cilium-operator/dashboards/cilium-operator-dashboard.json
-            token: ""
-          cilium-hubble:
-            url: https://raw.githubusercontent.com/cilium/cilium/main/install/kubernetes/cilium/files/hubble/dashboards/hubble-dashboard.json
-            token: ""
-          cilium-l7-http:
-            url: https://raw.githubusercontent.com/cilium/cilium/main/install/kubernetes/cilium/files/hubble/dashboards/hubble-l7-http-metrics-by-workload.json
-            token: ""
-        grafana-dashboards-flux:
-          flux-control-plane:
-            url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/control-plane.json
-            token: ""
-          flux-cluster-stats:
-            url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/cluster.json
-            token: ""
-        grafana-dashboards-vm:
-          victoriametrics-overview:
-            url: https://raw.githubusercontent.com/VictoriaMetrics/VictoriaMetrics/master/dashboards/victoriametrics.json
-            token: ""
-          victoriametrics-cluster:
-            url: https://raw.githubusercontent.com/VictoriaMetrics/VictoriaMetrics/master/dashboards/victoriametrics-cluster.json
-            token: ""
+          enabled: true
+        datasources:
+          enabled: true
 
     # Node Exporter configuration
     nodeExporter:

@@ -121,11 +121,6 @@ spec:
           - ReadWriteMany
       plugins:
         - victoriametrics-logs-datasource
-      additionalDataSources:
-        - name: VictoriaLogs
-          type: victoriametrics-logs-datasource
-          url: http://victoria-logs-server.monitoring.svc:9428
-          access: proxy
       ingress:
         enabled: false
       resources:

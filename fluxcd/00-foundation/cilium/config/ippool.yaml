@@ -8,3 +8,6 @@ spec:
       stop: "192.168.4.250"
     - start: "192.168.1.150"
       stop: "192.168.1.159"
+  serviceSelector:
+    matchExpressions:
+      - { key: io.cilium/lb-pool, operator: NotIn, values: [iot] }

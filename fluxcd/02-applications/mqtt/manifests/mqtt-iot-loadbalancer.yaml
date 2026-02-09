@@ -6,8 +6,7 @@ metadata:
   labels:
     app: mosquitto
     component: iot-loadbalancer
-  annotations:
-    io.cilium/lb-ipam-pool-selector: "iot-ipv4-pool"
+    io.cilium/lb-pool: iot
 spec:
   type: LoadBalancer
   selector:

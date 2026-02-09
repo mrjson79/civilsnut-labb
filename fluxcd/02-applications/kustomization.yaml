@@ -15,7 +15,7 @@ resources:
   - home-assistant
   - ingress-nginx
   - mqtt
-  - vm-stack
+  # - vm-stack  # temporarily removed for reinstall
   - zigbee2mqtt
 
 # Ensure consistent labeling across application components

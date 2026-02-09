@@ -130,6 +130,9 @@ spec:
           cpu: 200m
       nodeSelector:
         has-disk: "yes"
+      sidecar:
+        dashboards:
+          enabled: false
       downloadDashboards:
         enabled: false
       dashboardProviders:

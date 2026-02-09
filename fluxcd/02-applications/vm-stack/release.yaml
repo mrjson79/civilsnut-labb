@@ -132,16 +132,6 @@ spec:
         has-disk: "yes"
       downloadDashboards:
         enabled: false
-      # Configure VictoriaMetrics as default datasource
-      datasources:
-        datasources.yaml:
-          apiVersion: 1
-          datasources:
-            - name: VictoriaMetrics
-              type: prometheus
-              url: http://vmsingle-victoria-metrics-k8s-stack:8429
-              access: proxy
-              isDefault: true
       dashboardProviders:
         dashboardproviders.yaml:
           apiVersion: 1

@@ -14,6 +14,7 @@ resources:
   - namespace.yaml
   - repository.yaml
   - release.yaml
+  - vlogs-release.yaml
   - httproute.yaml
   - referencegrant.yaml
   - configs

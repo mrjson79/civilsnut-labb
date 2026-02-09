@@ -10,16 +10,16 @@ data:
     # Config file for mosquitto
     persistence true
     persistence_location /mosquitto/data/
-    password_file /mosquitto/config/password.txt
+    password_file /mosquitto/password/password.txt
     log_dest stdout
     allow_anonymous false
-    
+
     # Standard MQTT listener
     listener 1883 0.0.0.0
     protocol mqtt
-    
 
-    
+
+
     # WebSocket listener
     listener 9001 0.0.0.0
     protocol websockets

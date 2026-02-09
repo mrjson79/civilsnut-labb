@@ -20,6 +20,26 @@ spec:
     spec:
       nodeSelector:
         has-disk: "yes"
+      initContainers:
+        - name: init-password
+          image: eclipse-mosquitto:2.0.22
+          command: ["sh", "-c"]
+          args:
+            - mosquitto_passwd -c -b /mosquitto/password/password.txt "$MQTT_USERNAME" "$MQTT_PASSWORD"
+          env:
+            - name: MQTT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mqtt-credentials-secret
+                  key: username
+            - name: MQTT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mqtt-credentials-secret
+                  key: password
+          volumeMounts:
+            - name: mosquitto-password
+              mountPath: /mosquitto/password
       containers:
         - name: mosquitto
           image: eclipse-mosquitto:2.0.22
@@ -49,6 +69,7 @@ spec:
             - name: mosquitto-password
               mountPath: /mosquitto/config/password.txt
               subPath: password.txt
+              readOnly: true
         - name: mosquitto-exporter
           image: jnovack/mosquitto-exporter:latest
           args:
@@ -88,8 +109,4 @@ spec:
           configMap:
             name: mosquitto-config
         - name: mosquitto-password
-          secret:
-            secretName: mqtt-credentials-secret
-            items:
-              - key: password-file
-                path: password.txt
+          emptyDir: {}

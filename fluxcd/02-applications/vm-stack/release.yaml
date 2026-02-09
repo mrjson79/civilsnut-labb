@@ -138,7 +138,7 @@ spec:
       downloadDashboards:
         enabled: false
       datasources:
-        datasources.yaml:
+        vm-datasource.yaml:
           apiVersion: 1
           datasources:
             - name: VictoriaMetrics

@@ -9,8 +9,8 @@ data:
   mqtt.yaml: |
     # MQTT Configuration for Shelly devices
     switch:
-      # Anders Kontor - Gen 1 Shelly Plug S
-      - name: "Anders Kontor Shelly"
+      # Anders Office_desk  - Gen 1 Shelly Plug S
+      - name: "Anders office desk"
         state_topic: "shellies/anders_kontor/relay/0"
         command_topic: "shellies/anders_kontor/relay/0/command"
         payload_on: "on"
@@ -24,7 +24,7 @@ data:
           name: "Anders Kontor Shelly"
           model: "Shelly Plug S"
           manufacturer: "Allterco"
-          configuration_url: "http://192.168.3.104"
+          configuration_url: "http://192.168.3.179"
 
       # Livingroom - Gen 1 Shelly Plug S
       - name: "Livingroom Shelly"

@@ -7,9 +7,7 @@ metadata:
     app: home-assistant
     service: coap
     type: loadbalancer
-  annotations:
-    # Cilium LoadBalancer - uses ipv4-pool for IP assignment
-    io.cilium/lb-ipam-pool-selector: "ipv4-pool"
+    io.cilium/lb-pool: iot
 spec:
   type: LoadBalancer
   ports:

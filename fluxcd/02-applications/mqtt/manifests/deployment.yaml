@@ -68,7 +68,6 @@ spec:
               subPath: mosquitto.conf
             - name: mosquitto-password
               mountPath: /mosquitto/password
-              readOnly: true
         - name: mosquitto-exporter
           image: jnovack/mosquitto-exporter:latest
           args:

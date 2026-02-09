@@ -1,0 +1,14 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: mosquitto
+  namespace: mosquitto
+  labels:
+    app: mosquitto
+spec:
+  selector:
+    matchLabels:
+      app: mosquitto
+  endpoints:
+    - port: metrics
+      path: /metrics

@@ -15,6 +15,10 @@ spec:
       name: mqtt
       targetPort: 1883
       protocol: TCP
+    - port: 9234
+      name: metrics
+      targetPort: 9234
+      protocol: TCP
 ---
 apiVersion: v1
 kind: Service

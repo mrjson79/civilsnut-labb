@@ -11,3 +11,4 @@ resources:
   - mqtt-loadbalancer.yaml
   - httproute.yaml
   - referencegrant.yaml
+  - vmservicescrape.yaml

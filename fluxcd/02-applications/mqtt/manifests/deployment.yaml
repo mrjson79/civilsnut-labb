@@ -49,6 +49,32 @@ spec:
             - name: mosquitto-password
               mountPath: /mosquitto/config/password.txt
               subPath: password.txt
+        - name: mosquitto-exporter
+          image: sapcc/mosquitto-exporter:0.8.0
+          ports:
+            - containerPort: 9234
+              name: metrics
+              protocol: TCP
+          env:
+            - name: MQTT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mqtt-credentials-secret
+                  key: username
+            - name: MQTT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: mqtt-credentials-secret
+                  key: password
+            - name: BROKER_ENDPOINT
+              value: "tcp://localhost:1883"
+          resources:
+            requests:
+              memory: 32Mi
+              cpu: 10m
+            limits:
+              memory: 64Mi
+              cpu: 50m
       volumes:
         - name: mosquitto-persistent-storage
           persistentVolumeClaim:

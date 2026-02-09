@@ -31,5 +31,7 @@ spec:
           cpu: 500m
       nodeSelector:
         has-disk: "yes"
+      vmServiceScrape:
+        enabled: true
     vector:
       enabled: true

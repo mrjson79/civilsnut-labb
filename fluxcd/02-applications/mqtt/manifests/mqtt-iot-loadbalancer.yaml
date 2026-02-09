@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mosquitto-iot-loadbalancer
+  namespace: mosquitto
+  labels:
+    app: mosquitto
+    component: iot-loadbalancer
+  annotations:
+    io.cilium/lb-ipam-pool-selector: "iot-ipv4-pool"
+spec:
+  type: LoadBalancer
+  selector:
+    app: mosquitto
+  ports:
+    - name: mqtt
+      port: 1883
+      targetPort: 1883
+      protocol: TCP

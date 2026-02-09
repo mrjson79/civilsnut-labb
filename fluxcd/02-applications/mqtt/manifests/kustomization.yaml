@@ -9,6 +9,7 @@ resources:
   - deployment.yaml
   - service.yaml
   - mqtt-loadbalancer.yaml
+  - mqtt-iot-loadbalancer.yaml
   - httproute.yaml
   - referencegrant.yaml
   - vmservicescrape.yaml

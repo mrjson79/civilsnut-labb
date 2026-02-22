@@ -105,4 +105,4 @@ spec:
     cephObjectStores: []
     monitoring:
       enabled: true
-      createPrometheusRules: true
+      createPrometheusRules: false

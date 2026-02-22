@@ -118,7 +118,7 @@ spec:
         storageClassName: ceph-block
         size: 10Gi
         accessModes:
-          - ReadWriteMany
+          - ReadWriteOnce
       plugins:
         - victoriametrics-logs-datasource
       ingress:

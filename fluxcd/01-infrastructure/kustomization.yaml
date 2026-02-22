@@ -13,7 +13,7 @@ metadata:
 resources:
   # Infrastructure components - deployed after foundation
   - shared-gateway
-  - longhorn
+  - rook-ceph
 
 # Ensure consistent labeling across infrastructure components
 commonLabels:

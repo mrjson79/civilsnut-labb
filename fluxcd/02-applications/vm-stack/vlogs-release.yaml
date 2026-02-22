@@ -18,7 +18,7 @@ spec:
       retentionPeriod: "7"
       persistentVolume:
         enabled: true
-        storageClassName: longhorn
+        storageClassName: ceph-block
         accessModes:
           - ReadWriteOnce
         size: 20Gi

@@ -30,7 +30,7 @@ spec:
         retentionPeriod: "10"
         replicationFactor: 1
         storage:
-          storageClassName: longhorn
+          storageClassName: ceph-block
           accessModes:
             - ReadWriteOnce
           resources:
@@ -95,7 +95,7 @@ spec:
         storage:
           volumeClaimTemplate:
             spec:
-              storageClassName: longhorn
+              storageClassName: ceph-block
               accessModes: ["ReadWriteOnce"]
               resources:
                 requests:
@@ -115,7 +115,7 @@ spec:
       enabled: true
       persistence:
         enabled: true
-        storageClassName: longhorn
+        storageClassName: ceph-block
         size: 10Gi
         accessModes:
           - ReadWriteMany

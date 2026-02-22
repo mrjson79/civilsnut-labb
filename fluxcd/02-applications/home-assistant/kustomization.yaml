@@ -3,8 +3,8 @@ kind: Kustomization
 
 metadata:
   annotations:
-    # Depends on external-secrets for secrets, longhorn for storage, shared-gateway for ingress
-    flux.weave.works/depends-on: "external-secrets,longhorn,shared-gateway"
+    # Depends on external-secrets for secrets, rook-ceph for storage, shared-gateway for ingress
+    flux.weave.works/depends-on: "external-secrets,rook-ceph,shared-gateway"
 
 resources:
   - namespace.yaml

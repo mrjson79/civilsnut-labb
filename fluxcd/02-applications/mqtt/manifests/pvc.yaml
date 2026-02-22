@@ -6,7 +6,7 @@ metadata:
   labels:
     app: mosquitto
 spec:
-  storageClassName: longhorn
+  storageClassName: ceph-block
   accessModes:
     - ReadWriteOnce
   resources:

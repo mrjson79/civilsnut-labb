@@ -1,0 +1,30 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: rook-ceph-operator
+  namespace: rook-ceph
+spec:
+  interval: 5m
+  timeout: 15m
+  chart:
+    spec:
+      chart: rook-ceph
+      sourceRef:
+        kind: HelmRepository
+        name: rook-release
+        namespace: rook-ceph
+      interval: 1h
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    nodeSelector:
+      has-disk: "yes"
+    csi:
+      enableRbdDriver: true
+      enableCephfsDriver: false
+      provisionerNodeAffinity: "has-disk=yes"
+      pluginNodeAffinity: "has-disk=yes"

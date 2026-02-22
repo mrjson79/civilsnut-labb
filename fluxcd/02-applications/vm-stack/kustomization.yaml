@@ -7,8 +7,8 @@ metadata:
     app.kubernetes.io/component: monitoring
     app.kubernetes.io/part-of: infrastructure
   annotations:
-    # Depends on longhorn for storage and shared-gateway for ingress
-    flux.weave.works/depends-on: "longhorn,shared-gateway"
+    # Depends on rook-ceph for storage and shared-gateway for ingress
+    flux.weave.works/depends-on: "rook-ceph,shared-gateway"
 
 resources:
   - namespace.yaml

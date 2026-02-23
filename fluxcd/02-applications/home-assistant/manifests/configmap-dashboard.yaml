@@ -18,23 +18,23 @@ data:
             title: Current Power Draw
             show_header_toggle: false
             entities:
-              - entity: sensor.shelly_anders_office_desk_power
+              - entity: sensor.anders_office_desk_shelly_anders_office_desk_power
                 name: Anders Office Desk
-              - entity: sensor.shelly_saras_desk_power
+              - entity: sensor.saras_desk_power
                 name: Saras Desk
-              - entity: sensor.shelly_lab_power
+              - entity: sensor.lab_shelly_lab_power
                 name: Lab
-              - entity: sensor.shelly_lab_2_power
+              - entity: sensor.lab_2_shelly_lab_2_power
                 name: Lab 2
-              - entity: sensor.shelly_master_bedroom_power
+              - entity: sensor.master_bedroom_shelly_master_bedroom_power
                 name: Master Bedroom
-              - entity: sensor.shelly_big_freezer_power
+              - entity: sensor.big_freezer_shelly_big_freezer_power
                 name: Big Freezer
-              - entity: sensor.shelly_entertainment_power
+              - entity: sensor.entertainment_shelly_entertainment_power
                 name: Entertainment
-              - entity: sensor.shelly_cooler_power
+              - entity: sensor.cooler_shelly_cooler_power
                 name: Cooler
-              - entity: sensor.shelly_freezer_power
+              - entity: sensor.freezer_shelly_freezer_power
                 name: Freezer
 
           # Power History
@@ -42,23 +42,23 @@ data:
             title: Power Usage (24h)
             hours_to_show: 24
             entities:
-              - entity: sensor.shelly_anders_office_desk_power
+              - entity: sensor.anders_office_desk_shelly_anders_office_desk_power
                 name: Anders Office Desk
-              - entity: sensor.shelly_saras_desk_power
+              - entity: sensor.saras_desk_power
                 name: Saras Desk
-              - entity: sensor.shelly_lab_power
+              - entity: sensor.lab_shelly_lab_power
                 name: Lab
-              - entity: sensor.shelly_lab_2_power
+              - entity: sensor.lab_2_shelly_lab_2_power
                 name: Lab 2
-              - entity: sensor.shelly_master_bedroom_power
+              - entity: sensor.master_bedroom_shelly_master_bedroom_power
                 name: Master Bedroom
-              - entity: sensor.shelly_big_freezer_power
+              - entity: sensor.big_freezer_shelly_big_freezer_power
                 name: Big Freezer
-              - entity: sensor.shelly_entertainment_power
+              - entity: sensor.entertainment_shelly_entertainment_power
                 name: Entertainment
-              - entity: sensor.shelly_cooler_power
+              - entity: sensor.cooler_shelly_cooler_power
                 name: Cooler
-              - entity: sensor.shelly_freezer_power
+              - entity: sensor.freezer_shelly_freezer_power
                 name: Freezer
 
           # Energy Consumption
@@ -66,23 +66,23 @@ data:
             title: Energy Consumption
             show_header_toggle: false
             entities:
-              - entity: sensor.shelly_anders_office_desk_energy
+              - entity: sensor.anders_office_desk_shelly_anders_office_desk_energy
                 name: Anders Office Desk
-              - entity: sensor.shelly_saras_desk_energy
+              - entity: sensor.saras_desk_energy
                 name: Saras Desk
-              - entity: sensor.shelly_lab_energy
+              - entity: sensor.lab_shelly_lab_energy
                 name: Lab
-              - entity: sensor.shelly_lab_2_energy
+              - entity: sensor.lab_2_shelly_lab_2_energy
                 name: Lab 2
-              - entity: sensor.shelly_master_bedroom_energy
+              - entity: sensor.master_bedroom_shelly_master_bedroom_energy
                 name: Master Bedroom
-              - entity: sensor.shelly_big_freezer_energy
+              - entity: sensor.big_freezer_shelly_big_freezer_energy
                 name: Big Freezer
-              - entity: sensor.shelly_entertainment_energy
+              - entity: sensor.entertainment_shelly_entertainment_energy
                 name: Entertainment
-              - entity: sensor.shelly_cooler_energy
+              - entity: sensor.cooler_shelly_cooler_energy
                 name: Cooler
-              - entity: sensor.shelly_freezer_energy
+              - entity: sensor.freezer_shelly_freezer_energy
                 name: Freezer
 
           # Temperature
@@ -90,23 +90,23 @@ data:
             title: Device Temperatures
             show_header_toggle: false
             entities:
-              - entity: sensor.shelly_anders_office_desk_temp
+              - entity: sensor.anders_office_desk_shelly_anders_office_desk_temperature
                 name: Anders Office Desk
-              - entity: sensor.shelly_saras_desk_temp
+              - entity: sensor.saras_desk_temperature
                 name: Saras Desk
-              - entity: sensor.shelly_lab_temp
+              - entity: sensor.lab_shelly_lab_temperature
                 name: Lab
-              - entity: sensor.shelly_lab_2_temp
+              - entity: sensor.lab_2_shelly_lab_2_temperature
                 name: Lab 2
-              - entity: sensor.shelly_master_bedroom_temp
+              - entity: sensor.master_bedroom_shelly_master_bedroom_temperature
                 name: Master Bedroom
-              - entity: sensor.shelly_big_freezer_temp
+              - entity: sensor.big_freezer_shelly_big_freezer_temperature
                 name: Big Freezer
-              - entity: sensor.shelly_entertainment_temp
+              - entity: sensor.entertainment_shelly_entertainment_temperature
                 name: Entertainment
-              - entity: sensor.shelly_cooler_temp
+              - entity: sensor.cooler_shelly_cooler_temperature
                 name: Cooler
-              - entity: sensor.shelly_freezer_temp
+              - entity: sensor.freezer_shelly_freezer_temperature
                 name: Freezer
 
       - title: By Area
@@ -118,13 +118,13 @@ data:
             title: Anders Office
             show_header_toggle: true
             entities:
-              - entity: switch.shelly_anders_office_desk_relay
+              - entity: switch.anders_office_desk_shelly_anders_office_desk
                 name: Desk Switch
-              - entity: sensor.shelly_anders_office_desk_power
+              - entity: sensor.anders_office_desk_shelly_anders_office_desk_power
                 name: Power
-              - entity: sensor.shelly_anders_office_desk_energy
+              - entity: sensor.anders_office_desk_shelly_anders_office_desk_energy
                 name: Energy
-              - entity: sensor.shelly_anders_office_desk_temp
+              - entity: sensor.anders_office_desk_shelly_anders_office_desk_temperature
                 name: Temperature
 
           # Saras Office
@@ -132,13 +132,13 @@ data:
             title: Saras Office
             show_header_toggle: true
             entities:
-              - entity: switch.shelly_saras_desk_relay
+              - entity: switch.saras_desk_shelly_saras_desk
                 name: Desk Switch
-              - entity: sensor.shelly_saras_desk_power
+              - entity: sensor.saras_desk_power
                 name: Power
-              - entity: sensor.shelly_saras_desk_energy
+              - entity: sensor.saras_desk_energy
                 name: Energy
-              - entity: sensor.shelly_saras_desk_temp
+              - entity: sensor.saras_desk_temperature
                 name: Temperature
 
           # Lab
@@ -146,25 +146,25 @@ data:
             title: Lab
             show_header_toggle: true
             entities:
-              - entity: switch.shelly_lab_relay
+              - entity: switch.lab_shelly_lab
                 name: Lab Switch
-              - entity: sensor.shelly_lab_power
+              - entity: sensor.lab_shelly_lab_power
                 name: Lab Power
-              - entity: sensor.shelly_lab_energy
+              - entity: sensor.lab_shelly_lab_energy
                 name: Lab Energy
-              - entity: sensor.shelly_lab_temp
+              - entity: sensor.lab_shelly_lab_temperature
                 name: Lab Temperature
-              - entity: switch.shelly_lab_2_relay
+              - entity: switch.lab_2_shelly_lab_2
                 name: Lab 2 Switch
-              - entity: sensor.shelly_lab_2_power
+              - entity: sensor.lab_2_shelly_lab_2_power
                 name: Lab 2 Power
-              - entity: sensor.shelly_lab_2_energy
+              - entity: sensor.lab_2_shelly_lab_2_energy
                 name: Lab 2 Energy
-              - entity: sensor.shelly_lab_2_temp
+              - entity: sensor.lab_2_shelly_lab_2_temperature
                 name: Lab 2 Temperature
-              - entity: sensor.shelly_lab_2_voltage
+              - entity: sensor.lab_2_shelly_lab_2_voltage
                 name: Lab 2 Voltage
-              - entity: sensor.shelly_lab_2_current
+              - entity: sensor.lab_2_shelly_lab_2_current
                 name: Lab 2 Current
 
           # Master Bedroom
@@ -172,13 +172,13 @@ data:
             title: Master Bedroom
             show_header_toggle: true
             entities:
-              - entity: switch.shelly_master_bedroom_relay
+              - entity: switch.master_bedroom_shelly_master_bedroom
                 name: Switch
-              - entity: sensor.shelly_master_bedroom_power
+              - entity: sensor.master_bedroom_shelly_master_bedroom_power
                 name: Power
-              - entity: sensor.shelly_master_bedroom_energy
+              - entity: sensor.master_bedroom_shelly_master_bedroom_energy
                 name: Energy
-              - entity: sensor.shelly_master_bedroom_temp
+              - entity: sensor.master_bedroom_shelly_master_bedroom_temperature
                 name: Temperature
 
           # Living Room
@@ -186,29 +186,29 @@ data:
             title: Living Room
             show_header_toggle: true
             entities:
-              - entity: switch.shelly_big_freezer_relay
+              - entity: switch.big_freezer_shelly_big_freezer
                 name: Big Freezer Switch
-              - entity: sensor.shelly_big_freezer_power
+              - entity: sensor.big_freezer_shelly_big_freezer_power
                 name: Big Freezer Power
-              - entity: sensor.shelly_big_freezer_energy
+              - entity: sensor.big_freezer_shelly_big_freezer_energy
                 name: Big Freezer Energy
-              - entity: sensor.shelly_big_freezer_temp
+              - entity: sensor.big_freezer_shelly_big_freezer_temperature
                 name: Big Freezer Temperature
-              - entity: sensor.shelly_big_freezer_voltage
+              - entity: sensor.big_freezer_shelly_big_freezer_voltage
                 name: Big Freezer Voltage
-              - entity: sensor.shelly_big_freezer_current
+              - entity: sensor.big_freezer_shelly_big_freezer_current
                 name: Big Freezer Current
-              - entity: switch.shelly_entertainment_relay
+              - entity: switch.entertainment_shelly_entertainment
                 name: Entertainment Switch
-              - entity: sensor.shelly_entertainment_power
+              - entity: sensor.entertainment_shelly_entertainment_power
                 name: Entertainment Power
-              - entity: sensor.shelly_entertainment_energy
+              - entity: sensor.entertainment_shelly_entertainment_energy
                 name: Entertainment Energy
-              - entity: sensor.shelly_entertainment_temp
+              - entity: sensor.entertainment_shelly_entertainment_temperature
                 name: Entertainment Temperature
-              - entity: sensor.shelly_entertainment_voltage
+              - entity: sensor.entertainment_shelly_entertainment_voltage
                 name: Entertainment Voltage
-              - entity: sensor.shelly_entertainment_current
+              - entity: sensor.entertainment_shelly_entertainment_current
                 name: Entertainment Current
 
           # Kitchen
@@ -216,27 +216,27 @@ data:
             title: Kitchen
             show_header_toggle: true
             entities:
-              - entity: switch.shelly_cooler_relay
+              - entity: switch.cooler_shelly_cooler
                 name: Cooler Switch
-              - entity: sensor.shelly_cooler_power
+              - entity: sensor.cooler_shelly_cooler_power
                 name: Cooler Power
-              - entity: sensor.shelly_cooler_energy
+              - entity: sensor.cooler_shelly_cooler_energy
                 name: Cooler Energy
-              - entity: sensor.shelly_cooler_temp
+              - entity: sensor.cooler_shelly_cooler_temperature
                 name: Cooler Temperature
-              - entity: sensor.shelly_cooler_voltage
+              - entity: sensor.cooler_shelly_cooler_voltage
                 name: Cooler Voltage
-              - entity: sensor.shelly_cooler_current
+              - entity: sensor.cooler_shelly_cooler_current
                 name: Cooler Current
-              - entity: switch.shelly_freezer_relay
+              - entity: switch.freezer_shelly_freezer
                 name: Freezer Switch
-              - entity: sensor.shelly_freezer_power
+              - entity: sensor.freezer_shelly_freezer_power
                 name: Freezer Power
-              - entity: sensor.shelly_freezer_energy
+              - entity: sensor.freezer_shelly_freezer_energy
                 name: Freezer Energy
-              - entity: sensor.shelly_freezer_temp
+              - entity: sensor.freezer_shelly_freezer_temperature
                 name: Freezer Temperature
-              - entity: sensor.shelly_freezer_voltage
+              - entity: sensor.freezer_shelly_freezer_voltage
                 name: Freezer Voltage
-              - entity: sensor.shelly_freezer_current
+              - entity: sensor.freezer_shelly_freezer_current
                 name: Freezer Current

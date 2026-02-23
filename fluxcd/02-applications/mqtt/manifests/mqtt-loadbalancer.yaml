@@ -8,10 +8,7 @@ metadata:
     app: mqtt
     component: loadbalancer
   annotations:
-    # Cilium LoadBalancer - uses ipv4-pool for IP assignment
-    io.cilium/lb-ipam-pool-selector: "ipv4-pool"
-    # Optional: Request specific IP from Cilium LB pool
-    # io.cilium/lb-ipam-ips: "192.168.4.13"
+    io.cilium/lb-ipam-ips: "192.168.1.150"
 spec:
   type: LoadBalancer
   selector:

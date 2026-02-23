@@ -4,6 +4,6 @@ metadata:
   name: l2-announcement
 spec:
   interfaces:
-    - eth0 # Replace with your network interface name
+    - ^en.*
   externalIPs: true
   loadBalancerIPs: true

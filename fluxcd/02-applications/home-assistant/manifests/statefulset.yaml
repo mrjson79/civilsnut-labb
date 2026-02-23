@@ -75,6 +75,9 @@ spec:
             - name: ha-mqtt-config
               mountPath: /config/mqtt.yaml
               subPath: mqtt.yaml
+            - name: ha-dashboard-config
+              mountPath: /config/dashboards/power.yaml
+              subPath: power.yaml
           env:
             - name: TZ
               value: "UTC"
@@ -107,4 +110,7 @@ spec:
         - name: ha-mqtt-config
           configMap:
             name: home-assistant-mqtt-config
+        - name: ha-dashboard-config
+          configMap:
+            name: home-assistant-dashboard-config
       restartPolicy: Always

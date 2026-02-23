@@ -29,6 +29,17 @@ data:
     # MQTT Configuration
     mqtt: !include mqtt.yaml
 
+    # Dashboard Configuration
+    lovelace:
+      mode: storage
+      dashboards:
+        dashboard-power:
+          mode: yaml
+          title: Power
+          icon: mdi:flash
+          show_in_sidebar: true
+          filename: dashboards/power.yaml
+
     # Basic configuration files (will be managed by UI)
     automation: !include automations.yaml
     script: !include scripts.yaml

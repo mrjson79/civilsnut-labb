@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - configmap-config.yaml
+  - configmap-dashboard.yaml
   - configmap-headers.yaml
   - configmap-mqtt.yaml
   - pvc.yaml

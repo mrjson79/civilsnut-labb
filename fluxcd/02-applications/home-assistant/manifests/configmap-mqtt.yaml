@@ -25,6 +25,25 @@ data:
           model: "Shelly Plug S"
           manufacturer: "Allterco"
           configuration_url: "http://192.168.3.179"
+          suggested_area: "Anders Office"
+
+      # Saras Desk - Gen 1 Shelly Plug S
+      - name: "Saras Desk"
+        state_topic: "shellies/saras_desk/relay/0"
+        command_topic: "shellies/saras_desk/relay/0/command"
+        payload_on: "on"
+        payload_off: "off"
+        availability_topic: "shellies/saras_desk/online"
+        payload_available: "true"
+        payload_not_available: "false"
+        unique_id: "shelly_saras_desk_relay"
+        device:
+          identifiers: ["saras_desk"]
+          name: "Saras Desk Shelly"
+          model: "Shelly Plug S"
+          manufacturer: "Allterco"
+          configuration_url: "http://192.168.3.63"
+          suggested_area: "Saras Office"
 
       # Lab - Gen 1 Shelly Plug S
       - name: "Lab"
@@ -42,6 +61,7 @@ data:
           model: "Shelly Plug S"
           manufacturer: "Allterco"
           configuration_url: "http://192.168.3.183"
+          suggested_area: "Lab"
 
       # Master Bedroom - Gen 1 Shelly Plug S
       - name: "Master Bedroom"
@@ -59,6 +79,7 @@ data:
           model: "Shelly Plug S"
           manufacturer: "Allterco"
           configuration_url: "http://192.168.3.104"
+          suggested_area: "Master Bedroom"
 
       # Lab 2 - Gen 2 Shelly Plus Plug S
       - name: "Lab 2"
@@ -77,6 +98,7 @@ data:
           model: "Shelly Plus Plug S"
           manufacturer: "Allterco"
           configuration_url: "http://192.168.3.109"
+          suggested_area: "Lab"
 
       # Big Freezer - Gen 2 Shelly Plus Plug S
       - name: "Big Freezer"
@@ -95,6 +117,7 @@ data:
           model: "Shelly Plus Plug S"
           manufacturer: "Allterco"
           configuration_url: "http://192.168.3.53"
+          suggested_area: "Living Room"
 
       # Entertainment - Gen 2 Shelly Plus Plug S
       - name: "Entertainment"
@@ -113,6 +136,7 @@ data:
           model: "Shelly Plus Plug S"
           manufacturer: "Allterco"
           configuration_url: "http://192.168.3.64"
+          suggested_area: "Living Room"
 
       # Cooler - Gen 2 Shelly Plus Plug S
       - name: "Cooler"
@@ -131,6 +155,7 @@ data:
           model: "Shelly Plus Plug S"
           manufacturer: "Allterco"
           configuration_url: "http://192.168.3.98"
+          suggested_area: "Kitchen"
 
       # Freezer - Gen 2 Shelly Plus Plug S
       - name: "Freezer"
@@ -149,6 +174,7 @@ data:
           model: "Shelly Plus Plug S"
           manufacturer: "Allterco"
           configuration_url: "http://192.168.3.89"
+          suggested_area: "Kitchen"
 
     sensor:
       # Anders Office Desk Sensors (Gen 1)
@@ -175,6 +201,31 @@ data:
         unique_id: "shelly_anders_office_desk_temp"
         device:
           identifiers: ["anders_office_desk"]
+
+      # Saras Desk Sensors (Gen 1)
+      - name: "Saras Desk Power"
+        state_topic: "shellies/saras_desk/relay/0/power"
+        unit_of_measurement: "W"
+        device_class: "power"
+        unique_id: "shelly_saras_desk_power"
+        device:
+          identifiers: ["saras_desk"]
+
+      - name: "Saras Desk Energy"
+        state_topic: "shellies/saras_desk/relay/0/energy"
+        unit_of_measurement: "Wh"
+        device_class: "energy"
+        unique_id: "shelly_saras_desk_energy"
+        device:
+          identifiers: ["saras_desk"]
+
+      - name: "Saras Desk Temperature"
+        state_topic: "shellies/saras_desk/temperature"
+        unit_of_measurement: "°C"
+        device_class: "temperature"
+        unique_id: "shelly_saras_desk_temp"
+        device:
+          identifiers: ["saras_desk"]
 
       # Lab Sensors (Gen 1)
       - name: "Lab Power"

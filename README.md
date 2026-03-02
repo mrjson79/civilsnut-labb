@@ -2,56 +2,52 @@
 
 A production-ready Kubernetes homelab cluster running on Talos Linux, managed with FluxCD and automated dependency updates via Renovate.
 
-## 🏗️ Cluster Architecture
+## Cluster Architecture
 
 - **Platform**: Talos Linux
-- **CNI**: Cilium with Gateway API support
+- **CNI**: Cilium with Gateway API support and BGP peering
 - **GitOps**: FluxCD
-- **Certificate Management**: cert-manager with Let's Encrypt
-- **Storage**: Longhorn distributed storage
-- **Monitoring**: Prometheus, Grafana, Alertmanager
+- **Certificate Management**: cert-manager with Let's Encrypt (Cloudflare DNS-01)
+- **Storage**: Rook-Ceph
+- **Monitoring**: Victoria Metrics + Grafana
 - **Ingress**: Cilium Gateway API + NGINX Ingress Controller
 - **Secret Management**: External Secrets Operator + 1Password Connect
 
-## 📊 Current Application Versions
+## Current Application Versions
 
-### Infrastructure Components
+### Foundation (00-foundation)
 | Application | Version | Purpose |
 |-------------|---------|---------|
-| **Cilium** | `1.18.3` | CNI, Load Balancing, Gateway API |
+| **Cilium** | `1.18.4` | CNI, Load Balancing, Gateway API, BGP |
 | **cert-manager** | `v1.19.1` | TLS Certificate Management |
-| **External Secrets** | `1.1.0` | Kubernetes Secret Management |
-| **Ingress NGINX** | `4.14.0` | HTTP(S) Ingress Controller |
-| **Longhorn** | `1.10.1` | Distributed Block Storage |
+| **External Secrets** | `1.1.1` | Kubernetes Secret Management |
 | **1Password Connect** | `2.0.5` | Secret Synchronization |
 
-### Monitoring & Observability
+### Infrastructure (01-infrastructure)
 | Application | Version | Purpose |
 |-------------|---------|---------|
-| **kube-prometheus-stack** | `79.7.1` | Monitoring Stack (Prometheus, Grafana, Alertmanager) |
+| **Rook-Ceph** | operator + cluster | Distributed Block Storage |
+| **Shared Gateway** | - | Cilium Gateway API (192.168.4.10) |
 
-### Home Automation & IoT
+### Applications (02-applications)
 | Application | Version | Purpose |
 |-------------|---------|---------|
-| **Home Assistant** | `2025.11.3` | Home Automation Platform |
-| **Zigbee2MQTT** | `2.6.3` | Zigbee to MQTT Bridge |
-| **Mosquitto MQTT** | `latest` | MQTT Broker |
+| **Victoria Metrics** | `0.70.0` | Monitoring & Observability |
+| **Ingress NGINX** | `4.14.1` | HTTP(S) Ingress Controller |
+| **Home Assistant** | `2026.2.3` | Home Automation Platform |
+| **Zigbee2MQTT** | `2.9.1` | Zigbee to MQTT Bridge |
+| **Mosquitto MQTT** | `2.0.22` | MQTT Broker |
 
-
-## 🔄 Automated Updates
+## Automated Updates
 
 - **Renovate** automatically creates PRs for dependency updates
 - **Security updates** are prioritized and can be scheduled any time
 - **Major updates** require manual review and approval
 - **Digest updates** (container image updates) are auto-merged
 
-## 📚 Documentation
+## Documentation
 
 - **FluxCD**: https://fluxcd.io/flux/
 - **Cilium**: https://docs.cilium.io/
 - **Talos**: https://www.talos.dev/
 - **Gateway API**: https://gateway-api.sigs.k8s.io/
-
----
-
-*Last updated: Managed automatically by Renovate*

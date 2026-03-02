@@ -27,7 +27,7 @@ A production-ready Kubernetes homelab cluster running on Talos Linux, managed wi
 | Application | Version | Purpose |
 |-------------|---------|---------|
 | **Rook-Ceph** | operator + cluster | Distributed Block Storage |
-| **Shared Gateway** | - | Cilium Gateway API (192.168.4.10) |
+| **Shared Gateway** | - | Cilium Gateway API |
 
 ### Applications (02-applications)
 | Application | Version | Purpose |

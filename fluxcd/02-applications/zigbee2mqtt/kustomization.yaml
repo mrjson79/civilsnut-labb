@@ -9,6 +9,7 @@ metadata:
 resources:
   - namespace.yaml
   - repository.yaml
+  - manifests
   - release.yaml
   - httproute.yaml
   - referencegrant.yaml

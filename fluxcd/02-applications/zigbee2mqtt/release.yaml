@@ -23,6 +23,33 @@ spec:
     force: true
     remediation:
       retries: 3
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: StatefulSet
+              name: zigbee2mqtt
+            patch: |
+              apiVersion: apps/v1
+              kind: StatefulSet
+              metadata:
+                name: zigbee2mqtt
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: zigbee2mqtt
+                        env:
+                          - name: ZIGBEE2MQTT_CONFIG_MQTT_USER
+                            valueFrom:
+                              secretKeyRef:
+                                name: mqtt-credentials-secret
+                                key: username
+                          - name: ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD
+                            valueFrom:
+                              secretKeyRef:
+                                name: mqtt-credentials-secret
+                                key: password
   values:
     service:
       type: ClusterIP
@@ -46,17 +73,6 @@ spec:
         privileged: true
         capabilities:
           add: ["SYS_ADMIN"]
-      extraEnvs:
-        - name: ZIGBEE2MQTT_CONFIG_MQTT_USER
-          valueFrom:
-            secretKeyRef:
-              name: mqtt-credentials-secret
-              key: username
-        - name: ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mqtt-credentials-secret
-              key: password
 
     zigbee2mqtt:
       timezone: Europe/Stockholm

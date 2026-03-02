@@ -19,20 +19,21 @@
   "labels": ["dependencies"],
   "assignees": ["mrjson79"],
   "reviewers": ["mrjson79"],
+  "ignorePaths": [
+    "fluxcd/01-infrastructure/external-dns/**",
+    "talos/**"
+  ],
   "vulnerabilityAlerts": {
     "labels": ["security", "dependencies"],
     "assignees": ["mrjson79"],
     "reviewers": ["mrjson79"],
     "schedule": ["at any time"]
   },
-  "kubernetes": {
-    "managerFilePatterns": ["/\\.ya?ml$/"]
-  },
   "flux": {
-    "managerFilePatterns": ["/fluxcd/.+\\.ya?ml$/"]
+    "fileMatch": ["fluxcd/.+\\.ya?ml$"]
   },
-  "helm-values": {
-    "managerFilePatterns": ["/values\\.ya?ml$/", "/values/.+\\.ya?ml$/"]
+  "kubernetes": {
+    "fileMatch": ["fluxcd/.+\\.ya?ml$"]
   },
   "packageRules": [
     {
@@ -43,29 +44,41 @@
     },
     {
       "description": "Critical security components - require manual review",
-      "matchPackageNames": ["cert-manager", "argo-cd", "longhorn"],
+      "matchPackageNames": ["cert-manager", "external-secrets"],
       "automerge": false,
-      "labels": ["security-critical"],
-      "reviewers": ["mrjson79"],
-      "assignees": ["mrjson79"]
+      "labels": ["security-critical"]
     },
     {
       "description": "Networking components",
-      "matchPackageNames": ["cilium", "ingress-nginx", "traefik"],
+      "matchPackageNames": ["cilium", "ingress-nginx"],
       "labels": ["networking"],
       "automerge": false,
       "groupName": "Networking Stack"
     },
     {
       "description": "Monitoring stack",
-      "matchPackageNames": [
-        "kube-prometheus-stack",
-        "prometheus",
-        "grafana",
-        "alertmanager"
-      ],
+      "matchPackageNames": ["victoria-metrics-k8s-stack"],
       "labels": ["monitoring"],
       "groupName": "Monitoring Stack",
+      "schedule": ["before 6am on saturday"]
+    },
+    {
+      "description": "Storage components",
+      "matchPackageNames": ["rook-ceph", "rook-ceph-cluster"],
+      "labels": ["storage"],
+      "automerge": false,
+      "groupName": "Storage Stack"
+    },
+    {
+      "description": "Home automation",
+      "matchPackageNames": [
+        "home-assistant",
+        "ghcr.io/home-assistant/home-assistant",
+        "zigbee2mqtt",
+        "eclipse-mosquitto"
+      ],
+      "labels": ["home-automation"],
+      "groupName": "Home Automation",
       "schedule": ["before 6am on saturday"]
     },
     {
@@ -80,101 +93,12 @@
       "description": "Major updates require careful review",
       "matchUpdateTypes": ["major"],
       "automerge": false,
-      "labels": ["major-update"],
-      "reviewers": ["mrjson79"],
-      "assignees": ["mrjson79"]
-    },
-    {
-      "description": "Security updates have highest priority",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["alpine", "ubuntu", "debian"],
-      "labels": ["base-images", "security"],
-      "schedule": ["at any time"]
-    }
-  ],
-  "customManagers": [
-    {
-      "customType": "regex",
-      "description": "Update versions in README.md",
-      "managerFilePatterns": ["/^README\\.md$/"],
-      "matchStrings": [
-        "\\| \\*\\*Cilium\\*\\* \\| `(?<currentValue>[^`]+)` \\|"
-      ],
-      "datasourceTemplate": "helm",
-      "depNameTemplate": "cilium",
-      "registryUrlTemplate": "https://helm.cilium.io"
-    },
-    {
-      "customType": "regex",
-      "description": "Update cert-manager version in README.md",
-      "managerFilePatterns": ["/^README\\.md$/"],
-      "matchStrings": [
-        "\\| \\*\\*cert-manager\\*\\* \\| `v?(?<currentValue>[^`]+)` \\|"
-      ],
-      "datasourceTemplate": "helm",
-      "depNameTemplate": "cert-manager",
-      "registryUrlTemplate": "https://charts.jetstack.io"
-    },
-    {
-      "customType": "regex",
-      "description": "Update External Secrets version in README.md",
-      "managerFilePatterns": ["/^README\\.md$/"],
-      "matchStrings": [
-        "\\| \\*\\*External Secrets\\*\\* \\| `(?<currentValue>[^`]+)` \\|"
-      ],
-      "datasourceTemplate": "helm",
-      "depNameTemplate": "external-secrets",
-      "registryUrlTemplate": "https://charts.external-secrets.io"
-    },
-    {
-      "customType": "regex",
-      "description": "Update Ingress NGINX version in README.md",
-      "managerFilePatterns": ["/^README\\.md$/"],
-      "matchStrings": [
-        "\\| \\*\\*Ingress NGINX\\*\\* \\| `(?<currentValue>[^`]+)` \\|"
-      ],
-      "datasourceTemplate": "helm",
-      "depNameTemplate": "ingress-nginx",
-      "registryUrlTemplate": "https://kubernetes.github.io/ingress-nginx"
-    },
-    {
-      "customType": "regex",
-      "description": "Update Longhorn version in README.md",
-      "managerFilePatterns": ["/^README\\.md$/"],
-      "matchStrings": [
-        "\\| \\*\\*Longhorn\\*\\* \\| `(?<currentValue>[^`]+)` \\|"
-      ],
-      "datasourceTemplate": "helm",
-      "depNameTemplate": "longhorn",
-      "registryUrlTemplate": "https://charts.longhorn.io"
-    },
-    {
-      "customType": "regex",
-      "description": "Update kube-prometheus-stack version in README.md",
-      "managerFilePatterns": ["/^README\\.md$/"],
-      "matchStrings": [
-        "\\| \\*\\*kube-prometheus-stack\\*\\* \\| `(?<currentValue>[^`]+)` \\|"
-      ],
-      "datasourceTemplate": "helm",
-      "depNameTemplate": "kube-prometheus-stack",
-      "registryUrlTemplate": "https://prometheus-community.github.io/helm-charts"
+      "labels": ["major-update"]
     }
   ],
   "hostRules": [
     {
       "matchHost": "charts.jetstack.io",
-      "timeout": 30000
-    },
-    {
-      "matchHost": "charts.longhorn.io",
-      "timeout": 30000
-    },
-    {
-      "matchHost": "argoproj.github.io",
-      "timeout": 30000
-    },
-    {
-      "matchHost": "prometheus-community.github.io",
       "timeout": 30000
     },
     {
@@ -187,6 +111,22 @@
     },
     {
       "matchHost": "kubernetes.github.io",
+      "timeout": 30000
+    },
+    {
+      "matchHost": "charts.rook.io",
+      "timeout": 30000
+    },
+    {
+      "matchHost": "victoriametrics.github.io",
+      "timeout": 30000
+    },
+    {
+      "matchHost": "1password.github.io",
+      "timeout": 30000
+    },
+    {
+      "matchHost": "charts.zigbee2mqtt.io",
       "timeout": 30000
     }
   ],

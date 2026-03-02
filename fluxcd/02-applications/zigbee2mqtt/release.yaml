@@ -46,6 +46,17 @@ spec:
         privileged: true
         capabilities:
           add: ["SYS_ADMIN"]
+      extraEnvs:
+        - name: ZIGBEE2MQTT_CONFIG_MQTT_USER
+          valueFrom:
+            secretKeyRef:
+              name: mqtt-credentials-secret
+              key: username
+        - name: ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mqtt-credentials-secret
+              key: password
 
     zigbee2mqtt:
       timezone: Europe/Stockholm
@@ -94,15 +105,3 @@ spec:
     ingress:
       enabled: false
 
-    # Environment variables to override MQTT credentials from secret
-    extraEnvs:
-      - name: ZIGBEE2MQTT_CONFIG_MQTT_USER
-        valueFrom:
-          secretKeyRef:
-            name: mqtt-credentials-secret
-            key: username
-      - name: ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: mqtt-credentials-secret
-            key: password

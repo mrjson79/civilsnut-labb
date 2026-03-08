@@ -20,16 +20,10 @@ on:
       - main
     paths:
       - "renovate.json"
-      - ".renovaterc"
       - ".github/workflows/renovate.yaml"
 
 env:
   LOG_LEVEL: ${{ inputs.logLevel || 'info' }}
-  RENOVATE_AUTODISCOVER: true
-  RENOVATE_AUTODISCOVER_FILTER: "${{ github.repository }}"
-  RENOVATE_DRY_RUN: false
-  RENOVATE_PLATFORM: github
-  RENOVATE_ONBOARDING: false
 
 jobs:
   renovate:
@@ -44,44 +38,7 @@ jobs:
       - name: Self-hosted Renovate
         uses: renovatebot/github-action@v40.3.2
         env:
-          RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RENOVATE_GIT_AUTHOR: "Renovate Bot <renovate@civilsnut.com>"
-          # Kubernetes and Helm specific configuration
-          RENOVATE_KUBERNETES_API: true
-          RENOVATE_INCLUDE_FORKS: false
-          # Logging configuration
           LOG_LEVEL: ${{ env.LOG_LEVEL }}
         with:
           configurationFile: renovate.json
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Summary
-        if: always()
-        run: |
-          echo "## Renovate Summary" >> $GITHUB_STEP_SUMMARY
-          echo "- **Repository**: ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Log Level**: ${{ env.LOG_LEVEL }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Triggered by**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Configuration**: renovate.json" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Managed Applications:" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ **Cilium** - CNI and networking" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ **Cert-Manager** - Certificate management" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ **External-Secrets** - Secret management operator" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ **Kube-Prometheus-Stack** - Monitoring and alerting" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ **Ingress-NGINX** - Ingress controller" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ **Longhorn** - Distributed storage" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ **1Password Connect** - Secrets integration" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ **Zigbee2MQTT** - IoT device integration" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Update Groups:" >> $GITHUB_STEP_SUMMARY
-          echo "- **Monitoring Stack**: Scheduled for Saturday mornings" >> $GITHUB_STEP_SUMMARY
-          echo "- **External Secrets**: Scheduled for Saturday mornings" >> $GITHUB_STEP_SUMMARY
-          echo "- **Cert Manager**: Scheduled for Saturday mornings" >> $GITHUB_STEP_SUMMARY
-          echo "- **Cilium CNI**: Scheduled for Saturday mornings" >> $GITHUB_STEP_SUMMARY
-          echo "- **Ingress NGINX**: Scheduled for Saturday mornings" >> $GITHUB_STEP_SUMMARY
-          echo "- **Storage & IoT**: Scheduled for Saturday mornings" >> $GITHUB_STEP_SUMMARY
-          echo "- **1Password Connect**: Scheduled for Saturday mornings" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Check the [Dependency Dashboard](https://github.com/${{ github.repository }}/issues?q=is%3Aissue+is%3Aopen+label%3Adependencies) for more details." >> $GITHUB_STEP_SUMMARY
+          token: ${{ secrets.RENOVATE_TOKEN }}

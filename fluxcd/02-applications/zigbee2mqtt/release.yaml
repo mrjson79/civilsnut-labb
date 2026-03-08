@@ -114,7 +114,7 @@ spec:
             0x4e,
             0xb7,
           ]
-        channel: 20
+        channel: 11
         log_level: info
         cache_state: true
         last_seen: "ISO_8601"
@@ -122,4 +122,3 @@ spec:
 
     ingress:
       enabled: false
-

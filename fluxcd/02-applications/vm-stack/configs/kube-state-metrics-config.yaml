@@ -10,10 +10,10 @@ data:
   kube-state-metrics-config.yaml: |
     spec:
       resources:
-        # Gateway API Resources
+        # Gateway API Resources (v1 - stable since Gateway API v1.0)
         - groupVersionKind:
             group: gateway.networking.k8s.io
-            version: "v1beta1"
+            version: "v1"
             kind: "Gateway"
           metricNamePrefix: kube_gateway
           metrics:
@@ -26,10 +26,25 @@ data:
                     gateway: [metadata, name]
                     namespace: [metadata, namespace]
                     gateway_class: [spec, gatewayClassName]
+            - name: "status_conditions"
+              help: "The status conditions of a Gateway"
+              each:
+                type: StateSet
+                stateSet:
+                  labelsFromPath:
+                    gateway: [metadata, name]
+                    namespace: [metadata, namespace]
+                    type: [type]
+                  list: [status, conditions]
+                  valueFrom: [status]
+                  states:
+                    - "True"
+                    - "False"
+                    - "Unknown"
 
         - groupVersionKind:
             group: gateway.networking.k8s.io
-            version: "v1beta1"
+            version: "v1"
             kind: "HTTPRoute"
           metricNamePrefix: kube_httproute
           metrics:
@@ -41,10 +56,25 @@ data:
                   labelsFromPath:
                     httproute: [metadata, name]
                     namespace: [metadata, namespace]
+            - name: "status_conditions"
+              help: "The status conditions of an HTTPRoute"
+              each:
+                type: StateSet
+                stateSet:
+                  labelsFromPath:
+                    httproute: [metadata, name]
+                    namespace: [metadata, namespace]
+                    type: [type]
+                  list: [status, conditions]
+                  valueFrom: [status]
+                  states:
+                    - "True"
+                    - "False"
+                    - "Unknown"
 
         - groupVersionKind:
             group: gateway.networking.k8s.io
-            version: "v1beta1"
+            version: "v1"
             kind: "GatewayClass"
           metricNamePrefix: kube_gatewayclass
           metrics:
@@ -56,6 +86,20 @@ data:
                   labelsFromPath:
                     gatewayclass: [metadata, name]
                     controller: [spec, controllerName]
+            - name: "status_conditions"
+              help: "The status conditions of a GatewayClass"
+              each:
+                type: StateSet
+                stateSet:
+                  labelsFromPath:
+                    gatewayclass: [metadata, name]
+                    type: [type]
+                  list: [status, conditions]
+                  valueFrom: [status]
+                  states:
+                    - "True"
+                    - "False"
+                    - "Unknown"
 
         # FluxCD Resources - GitRepository
         - groupVersionKind:

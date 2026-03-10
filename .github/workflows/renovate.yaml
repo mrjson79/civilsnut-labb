@@ -41,6 +41,7 @@ jobs:
         uses: renovatebot/github-action@v40.3.2
         env:
           LOG_LEVEL: ${{ env.LOG_LEVEL }}
+          RENOVATE_REPOSITORIES: ${{ github.repository }}
           # When triggered manually, bypass all schedules so all pending updates are created immediately
           RENOVATE_FORCE: ${{ github.event_name == 'workflow_dispatch' && '{"schedule":[]}' || '' }}
         with:

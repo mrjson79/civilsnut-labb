@@ -8,7 +8,6 @@
     ":automergeBranch"
   ],
   "timezone": "Europe/Stockholm",
-  "schedule": ["before 6am on monday"],
   "prConcurrentLimit": 5,
   "prHourlyLimit": 3,
   "platformAutomerge": true,

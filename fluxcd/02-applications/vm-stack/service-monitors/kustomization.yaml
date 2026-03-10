@@ -14,4 +14,5 @@ resources:
   - gateway-api-crs-config.yaml
   - gateway-api-servicemonitor.yaml
   - httproute-dashboard.yaml
+  - hubble-metrics-servicemonitor.yaml
   - hubble-relay-servicemonitor.yaml

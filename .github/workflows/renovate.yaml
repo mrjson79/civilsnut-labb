@@ -4,6 +4,8 @@ on:
   schedule:
     # Run every Monday at 04:00 UTC (05:00 CET / 06:00 CEST) - before the "before 6am" schedule window
     - cron: "0 4 * * 1"
+    # Run every Saturday at 04:00 UTC for home automation / monitoring updates
+    - cron: "0 4 * * 6"
   workflow_dispatch:
     inputs:
       logLevel:
@@ -39,6 +41,8 @@ jobs:
         uses: renovatebot/github-action@v40.3.2
         env:
           LOG_LEVEL: ${{ env.LOG_LEVEL }}
+          # When triggered manually, bypass all schedules so all pending updates are created immediately
+          RENOVATE_FORCE: ${{ github.event_name == 'workflow_dispatch' && '{"schedule":[]}' || '' }}
         with:
           configurationFile: renovate.json
           token: ${{ secrets.RENOVATE_TOKEN }}

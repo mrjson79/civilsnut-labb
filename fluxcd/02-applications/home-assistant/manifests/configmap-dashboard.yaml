@@ -93,24 +93,15 @@ data:
             stat_types:
               - change
             entities:
-              - entity: sensor.anders_office_desk_shelly_anders_office_desk_energy
-                name: Anders Office Desk
-              - entity: sensor.saras_desk_energy
-                name: Saras Desk
-              - entity: sensor.lab_shelly_lab_energy
-                name: Lab
-              - entity: sensor.lab_2_shelly_lab_2_energy
-                name: Lab 2
-              - entity: sensor.master_bedroom_shelly_master_bedroom_energy
-                name: Master Bedroom
-              - entity: sensor.big_freezer_shelly_big_freezer_energy
-                name: Big Freezer
-              - entity: sensor.entertainment_shelly_entertainment_energy
-                name: Entertainment
-              - entity: sensor.cooler_shelly_cooler_energy
-                name: Cooler
-              - entity: sensor.freezer_shelly_freezer_energy
-                name: Freezer
+              - sensor.anders_office_desk_shelly_anders_office_desk_energy
+              - sensor.saras_desk_energy
+              - sensor.lab_shelly_lab_energy
+              - sensor.lab_2_shelly_lab_2_energy
+              - sensor.master_bedroom_shelly_master_bedroom_energy
+              - sensor.big_freezer_shelly_big_freezer_energy
+              - sensor.entertainment_shelly_entertainment_energy
+              - sensor.cooler_shelly_cooler_energy
+              - sensor.freezer_shelly_freezer_energy
 
           # Temperature
           - type: entities

@@ -85,6 +85,33 @@ data:
               - entity: sensor.freezer_shelly_freezer_energy
                 name: Freezer
 
+          # Energy Last 24h
+          - type: statistics-graph
+            title: Energy Last 24h
+            period: day
+            days_to_show: 1
+            stat_types:
+              - change
+            entities:
+              - entity: sensor.anders_office_desk_shelly_anders_office_desk_energy
+                name: Anders Office Desk
+              - entity: sensor.saras_desk_energy
+                name: Saras Desk
+              - entity: sensor.lab_shelly_lab_energy
+                name: Lab
+              - entity: sensor.lab_2_shelly_lab_2_energy
+                name: Lab 2
+              - entity: sensor.master_bedroom_shelly_master_bedroom_energy
+                name: Master Bedroom
+              - entity: sensor.big_freezer_shelly_big_freezer_energy
+                name: Big Freezer
+              - entity: sensor.entertainment_shelly_entertainment_energy
+                name: Entertainment
+              - entity: sensor.cooler_shelly_cooler_energy
+                name: Cooler
+              - entity: sensor.freezer_shelly_freezer_energy
+                name: Freezer
+
           # Temperature
           - type: entities
             title: Device Temperatures

@@ -1,20 +1,55 @@
-apiVersion: cilium.io/v2alpha1
-kind: CiliumBGPPeeringPolicy
+---
+apiVersion: cilium.io/v2
+kind: CiliumBGPClusterConfig
 metadata:
-  name: unifi-bgp-policy
-  namespace: kube-system
+  name: unifi-bgp
 spec:
-  virtualRouters:
-  - exportPodCIDR: false
+  nodeSelector:
+    matchLabels: {}
+  bgpInstances:
+  - name: unifi
     localASN: 65512
-    neighbors:
-    - connectRetryTimeSeconds: 120
-      eBGPMultihopTTL: 1
-      holdTimeSeconds: 90
-      keepAliveTimeSeconds: 30
+    peers:
+    - name: unifi-router
       peerASN: 65510
-      peerAddress: 192.168.1.1/32
-      peerPort: 179
-    serviceSelector:
+      peerAddress: 192.168.1.1
+      peerConfigRef:
+        name: unifi-peer-config
+---
+apiVersion: cilium.io/v2
+kind: CiliumBGPPeerConfig
+metadata:
+  name: unifi-peer-config
+spec:
+  transport:
+    peerPort: 179
+  timers:
+    holdTimeSeconds: 90
+    keepAliveTimeSeconds: 30
+    connectRetryTimeSeconds: 120
+  ebgpMultihop: 1
+  families:
+  - afi: ipv4
+    safi: unicast
+    advertisements:
+      matchLabels:
+        advertise: "true"
+---
+apiVersion: cilium.io/v2
+kind: CiliumBGPAdvertisement
+metadata:
+  name: unifi-advertisement
+  labels:
+    advertise: "true"
+spec:
+  advertisements:
+  - advertisementType: Service
+    service:
+      addresses:
+      - LoadBalancerIP
+    selector:
       matchExpressions:
-      - {key: somekey, operator: NotIn, values: ['never-used-value']}
+      - key: somekey
+        operator: NotIn
+        values:
+        - never-used-value

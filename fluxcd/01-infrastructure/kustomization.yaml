@@ -14,7 +14,7 @@ resources:
   # Infrastructure components - deployed after foundation
   - shared-gateway
   - rook-ceph
-  - external-dns
+  #- external-dns
   - tailscale
   - tsidp
 

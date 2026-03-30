@@ -1,0 +1,55 @@
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: allow-home-assistant
+  namespace: tailscale
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: home-assistant
+  to:
+    - group: ""
+      kind: Gateway
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: allow-zigbee2mqtt
+  namespace: tailscale
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: zigbee2mqtt
+  to:
+    - group: ""
+      kind: Gateway
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: allow-monitoring
+  namespace: tailscale
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: monitoring
+  to:
+    - group: ""
+      kind: Gateway
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: allow-mqtt
+  namespace: tailscale
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: mqtt
+  to:
+    - group: ""
+      kind: Gateway

@@ -1,0 +1,27 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: tailscale-operator
+  namespace: tailscale
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: tailscale-operator
+      version: "1.82.x"
+      sourceRef:
+        kind: HelmRepository
+        name: tailscale
+        namespace: tailscale
+  values:
+    operatorConfig:
+      hostname: tailscale-operator
+      defaultTags:
+        - "tag:k8s-operator"
+      logging: info
+
+    proxyConfig:
+      defaultTags: "tag:k8s"
+      firewallMode: auto
+
+    installCRDs: true

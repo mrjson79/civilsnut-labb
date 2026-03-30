@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tsidp
+  namespace: tailscale
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: tsidp
+  template:
+    metadata:
+      labels:
+        app: tsidp
+    spec:
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+      containers:
+        - name: tsidp
+          image: ghcr.io/tailscale/tsidp:v0.0.9
+          env:
+            - name: TAILSCALE_USE_WIP_CODE
+              value: "1"
+            - name: TS_STATE_DIR
+              value: /data
+            - name: TS_HOSTNAME
+              value: idp
+            - name: TSIDP_ENABLE_STS
+              value: "1"
+            - name: TSIDP_LOG
+              value: info
+            - name: TS_AUTHKEY
+              valueFrom:
+                secretKeyRef:
+                  name: tsidp-authkey
+                  key: authkey
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: tsidp-data

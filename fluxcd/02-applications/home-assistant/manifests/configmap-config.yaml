@@ -50,8 +50,15 @@ data:
     scene: !include scenes.yaml
 
   automations.yaml: |
-    # Automations will be created via the UI
-    []
+    - alias: "Growatt poll every 5 minutes"
+      id: growatt_poll_5min
+      trigger:
+        - platform: time_pattern
+          minutes: "/5"
+      action:
+        - service: homeassistant.update_entity
+          target:
+            entity_id: "{{ integration_entities('growatt_server') }}"
 
   scripts.yaml: |
     # Scripts will be created via the UI

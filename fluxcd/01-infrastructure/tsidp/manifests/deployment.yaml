@@ -34,6 +34,8 @@ spec:
               value: "1"
             - name: TSIDP_LOG
               value: info
+            - name: TSNET_FORCE_LOGIN
+              value: "1"
             - name: TS_AUTHKEY
               valueFrom:
                 secretKeyRef:

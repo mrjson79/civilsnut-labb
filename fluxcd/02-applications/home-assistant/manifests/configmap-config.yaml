@@ -54,7 +54,7 @@ data:
       id: growatt_poll_5min
       trigger:
         - platform: time_pattern
-          minutes: "/5"
+          minutes: "/15"
       action:
         - service: homeassistant.update_entity
           target:

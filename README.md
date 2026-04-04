@@ -10,7 +10,7 @@ A production-ready Kubernetes homelab cluster running on Talos Linux, managed wi
 - **Certificate Management**: cert-manager with Let's Encrypt (Cloudflare DNS-01)
 - **Storage**: Rook-Ceph
 - **Monitoring**: Victoria Metrics + Grafana
-- **Ingress**: Cilium Gateway API + NGINX Ingress Controller
+- **Ingress**: Cilium Gateway API
 - **Secret Management**: External Secrets Operator + 1Password Connect
 
 ## Current Application Versions
@@ -28,12 +28,14 @@ A production-ready Kubernetes homelab cluster running on Talos Linux, managed wi
 |-------------|---------|---------|
 | **Rook-Ceph** | operator + cluster | Distributed Block Storage |
 | **Shared Gateway** | - | Cilium Gateway API |
+| **Tailscale Operator** | - | Tailscale Kubernetes Operator |
+| **tsidp** | `v0.0.9` | Tailscale Identity Provider |
+| **External DNS** | - | DNS Record Management |
 
 ### Applications (02-applications)
 | Application | Version | Purpose |
 |-------------|---------|---------|
 | **Victoria Metrics** | `0.70.0` | Monitoring & Observability |
-| **Ingress NGINX** | `4.14.1` | HTTP(S) Ingress Controller |
 | **Home Assistant** | `2026.2.3` | Home Automation Platform |
 | **Zigbee2MQTT** | `2.9.1` | Zigbee to MQTT Bridge |
 | **Mosquitto MQTT** | `2.0.22` | MQTT Broker |

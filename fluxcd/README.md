@@ -1,86 +1,83 @@
-# FluxCD Infrastructure
+# FluxCD GitOps
 
-This directory contains FluxCD manifests for managing core infrastructure applications on the Kubernetes cluster. This is a migration from ArgoCD to FluxCD for better GitOps workflow.
+This directory contains FluxCD manifests for managing the Kubernetes cluster, organized in three deployment phases.
 
 ## Structure
 
-Each application is organized in its own directory with the following pattern:
-
 ```
 fluxcd/
-├── cert-manager/
-│   ├── namespace.yaml          # Namespace definition
-│   ├── repository.yaml         # HelmRepository for chart source
-│   ├── release.yaml           # HelmRelease for the application
-│   ├── kustomization.yaml     # Kustomization for applying resources
-│   └── manifests/             # Additional manifests (copied from ArgoCD)
-├── ingress-nginx/
-├── shared-gateway/
-├── longhorn/
-└── infrastructure.yaml        # Main kustomization that orchestrates everything
+├── 00-foundation/          # Core platform components
+│   ├── cert-manager/
+│   ├── cilium/
+│   ├── external-secrets/
+│   ├── gateway-api/
+│   ├── onepassword-connect/
+│   └── victoria-metrics-crds/
+├── 01-infrastructure/      # Infrastructure services
+│   ├── external-dns/
+│   ├── rook-ceph/
+│   ├── shared-gateway/
+│   ├── tailscale/
+│   └── tsidp/
+└── 02-applications/        # User-facing applications
+    ├── home-assistant/
+    ├── mqtt/
+    ├── vm-stack/
+    └── zigbee2mqtt/
 ```
 
-## Applications
+Each application follows a common pattern:
 
-### 1. cert-manager
-- **Purpose**: Certificate management for TLS certificates
-- **Chart**: jetstack/cert-manager v1.19.1
-- **Dependencies**: None (base infrastructure)
-- **Namespace**: cert-manager
-- **Features**:
-  - Wildcard certificate management
-  - Cloudflare DNS challenge
-  - Prometheus monitoring enabled
+```
+application/
+├── namespace.yaml
+├── repository.yaml         # HelmRepository (if Helm-based)
+├── release.yaml            # HelmRelease (if Helm-based)
+├── kustomization.yaml      # Kustomization for applying resources
+└── manifests/              # Additional raw manifests
+```
 
-### 2. ingress-nginx
-- **Purpose**: Ingress controller for HTTP/HTTPS traffic
-- **Chart**: kubernetes/ingress-nginx v4.13.3
-- **Dependencies**: cert-manager (for wildcard certificates)
-- **Namespace**: ingress-nginx
-- **Features**:
-  - NodePort service (ports 30080/30443)
-  - Automatic wildcard certificate usage
-  - Resource limits for virtual nodes
+## Deployment Phases
 
-### 3. shared-gateway
-- **Purpose**: Gateway API resources for traffic routing
-- **Type**: Pure manifests (no Helm chart)
-- **Dependencies**: ingress-nginx
-- **Namespace**: gateway-system
-- **Features**:
-  - Gateway API implementation
-  - RBAC configurations
-  - Reference grants for cross-namespace access
+### 00-foundation
+Core platform components that everything else depends on.
 
-### 4. longhorn
-- **Purpose**: Distributed block storage for persistent volumes
-- **Chart**: longhorn/longhorn v1.10.0
-- **Dependencies**: shared-gateway (for UI access)
-- **Namespace**: longhorn-system
-- **Features**:
-  - Custom data path: /var/mnt/storage
-  - Node selection: has-disk="yes"
-  - UI access via Gateway API
+| Component | Purpose |
+|-----------|---------|
+| **Cilium** | CNI, Load Balancing, Gateway API, BGP |
+| **cert-manager** | TLS certificates via Let's Encrypt (Cloudflare DNS-01) |
+| **External Secrets** | Kubernetes secret management |
+| **1Password Connect** | Secret synchronization from 1Password |
+| **Gateway API CRDs** | Gateway API custom resource definitions |
+| **Victoria Metrics CRDs** | Victoria Metrics custom resource definitions |
 
-## Deployment Order
+### 01-infrastructure
+Infrastructure services that build on the foundation.
 
-The applications are deployed in the following order through FluxCD dependencies:
+| Component | Purpose |
+|-----------|---------|
+| **Rook-Ceph** | Distributed block storage |
+| **Shared Gateway** | Cilium Gateway API gateway |
+| **Tailscale Operator** | Tailscale Kubernetes integration |
+| **tsidp** | Tailscale identity provider |
+| **External DNS** | Automatic DNS record management |
 
-1. **cert-manager** (base dependency)
-2. **cert-manager config** (depends on cert-manager release)
-3. **ingress-nginx** (depends on cert-manager config)
-4. **ingress-nginx config** (depends on ingress-nginx release)
-5. **shared-gateway** (depends on ingress-nginx config)
-6. **longhorn** (depends on cert-manager config, can run parallel with gateway)
+### 02-applications
+User-facing applications.
+
+| Component | Purpose |
+|-----------|---------|
+| **Home Assistant** | Home automation platform |
+| **Mosquitto MQTT** | MQTT broker |
+| **Victoria Metrics Stack** | Monitoring and observability |
+| **Zigbee2MQTT** | Zigbee to MQTT bridge |
 
 ## Usage
 
-### Deploy All Infrastructure
 ```bash
-# Apply the main infrastructure kustomization
-kubectl apply -f infrastructure.yaml
+# Check FluxCD reconciliation status
+flux get kustomizations
 
-# Or if using Flux CLI
-flux create kustomization infrastructure \
-  --source=flux-system \
-  --path="./fluxcd"
+# Force reconciliation
+flux reconcile kustomization flux-system --with-source
+```

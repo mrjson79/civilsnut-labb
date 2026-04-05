@@ -151,8 +151,8 @@ spec:
           client_secret: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET}
           scopes: openid email profile
           auth_url: https://idp.tail79231e.ts.net/authorize
-          token_url: https://tsidp.monitoring.svc.cluster.local/token
-          api_url: https://tsidp.monitoring.svc.cluster.local/userinfo
+          token_url: https://idp.tail79231e.ts.net/token
+          api_url: https://idp.tail79231e.ts.net/userinfo
           tls_skip_verify_insecure: true
         auth.basic:
           enabled: false

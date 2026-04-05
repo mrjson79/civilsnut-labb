@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tsidp
+  namespace: monitoring
+  annotations:
+    tailscale.com/tailnet-fqdn: idp.tail79231e.ts.net
+spec:
+  type: ClusterIP
+  ports:
+    - port: 443
+      protocol: TCP
+      targetPort: 443

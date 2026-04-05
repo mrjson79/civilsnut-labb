@@ -20,5 +20,6 @@ resources:
   - vlogs-single-node-dashboard.yaml
   - httproute.yaml
   - referencegrant.yaml
+  - grafana-oidc-externalsecret.yaml
   - configs
   - service-monitors

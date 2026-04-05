@@ -7,3 +7,4 @@ resources:
   - helmrelease.yaml
   - gateway.yaml
   - referencegrants.yaml
+  - connector.yaml

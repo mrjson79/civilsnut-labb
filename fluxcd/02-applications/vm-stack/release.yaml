@@ -137,6 +137,24 @@ spec:
           enabled: true
         datasources:
           enabled: true
+      envFromSecrets:
+        - name: grafana-oidc
+      grafana.ini:
+        server:
+          root_url: https://grafana.civilsnut.se
+        auth.generic_oauth:
+          enabled: true
+          name: Tailscale
+          allow_sign_up: true
+          auto_login: true
+          client_id: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_ID}
+          client_secret: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET}
+          scopes: openid email profile
+          auth_url: https://idp.tail79231e.ts.net/authorize
+          token_url: https://idp.tail79231e.ts.net/token
+          api_url: https://idp.tail79231e.ts.net/userinfo
+        auth.basic:
+          enabled: false
 
     # Node Exporter configuration
     nodeExporter:

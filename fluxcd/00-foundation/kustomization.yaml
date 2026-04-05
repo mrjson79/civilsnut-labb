@@ -18,6 +18,7 @@ resources:
   - cert-manager
   - cilium
   - onepassword-connect
+  - coredns
 
 # Ensure consistent labeling across foundation components
 commonLabels:

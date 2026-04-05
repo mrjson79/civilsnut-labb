@@ -9,9 +9,10 @@ A production-ready Kubernetes homelab cluster running on Talos Linux, managed wi
 - **GitOps**: FluxCD
 - **Certificate Management**: cert-manager with Let's Encrypt (Cloudflare DNS-01)
 - **Storage**: Rook-Ceph
-- **Monitoring**: Victoria Metrics + Grafana
-- **Ingress**: Cilium Gateway API
+- **Monitoring**: Victoria Metrics + Grafana (with tsidp OIDC SSO)
+- **Ingress**: Cilium Gateway API (shared-gateway at 192.168.4.10)
 - **Secret Management**: External Secrets Operator + 1Password Connect
+- **Remote Access**: Tailscale Operator + subnet router (192.168.4.0/24)
 
 ## Current Application Versions
 
@@ -22,23 +23,33 @@ A production-ready Kubernetes homelab cluster running on Talos Linux, managed wi
 | **cert-manager** | `v1.19.1` | TLS Certificate Management |
 | **External Secrets** | `1.1.1` | Kubernetes Secret Management |
 | **1Password Connect** | `2.0.5` | Secret Synchronization |
+| **CoreDNS patch** | - | ts.net hostname resolution for OIDC |
 
 ### Infrastructure (01-infrastructure)
 | Application | Version | Purpose |
 |-------------|---------|---------|
 | **Rook-Ceph** | operator + cluster | Distributed Block Storage |
 | **Shared Gateway** | - | Cilium Gateway API |
-| **Tailscale Operator** | - | Tailscale Kubernetes Operator |
-| **tsidp** | `v0.0.9` | Tailscale Identity Provider |
-| **External DNS** | - | DNS Record Management |
+| **Tailscale Operator** | `1.94.2` | Tailscale Kubernetes Operator + subnet router |
+| **tsidp** | `v0.0.9` | Tailscale OIDC Identity Provider |
+| **External DNS** | - | Automatic DNS record management (Unifi) |
 
 ### Applications (02-applications)
 | Application | Version | Purpose |
 |-------------|---------|---------|
 | **Victoria Metrics** | `0.70.0` | Monitoring & Observability |
+| **Grafana** | - | Dashboards with tsidp OIDC SSO |
 | **Home Assistant** | `2026.2.3` | Home Automation Platform |
 | **Zigbee2MQTT** | `2.9.1` | Zigbee to MQTT Bridge |
 | **Mosquitto MQTT** | `2.0.22` | MQTT Broker |
+
+## Grafana Access
+
+Grafana is available at `https://grafana.civilsnut.se` with automatic SSO via tsidp.
+
+- On LAN: direct via Cilium gateway
+- Remote: via Tailscale subnet router (split DNS for `civilsnut.se` → Unifi)
+- Auth: tsidp OIDC at `https://idp.tail79231e.ts.net`
 
 ## Automated Updates
 

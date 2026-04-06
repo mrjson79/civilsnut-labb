@@ -18,7 +18,7 @@ fluxcd/
 │   ├── external-dns/
 │   ├── rook-ceph/
 │   ├── shared-gateway/
-│   ├── tailscale/          # Operator + subnet router (192.168.4.0/24)
+│   ├── tailscale/          # Operator + subnet router
 │   └── tsidp/              # Tailscale OIDC identity provider
 └── 02-applications/        # User-facing applications
     ├── home-assistant/
@@ -51,7 +51,7 @@ Core platform components that everything else depends on.
 | **1Password Connect** | Secret synchronization from 1Password |
 | **Gateway API CRDs** | Gateway API custom resource definitions |
 | **Victoria Metrics CRDs** | Victoria Metrics custom resource definitions |
-| **CoreDNS** | Patch to rewrite `idp.tail79231e.ts.net` → Tailscale egress proxy for OIDC |
+| **CoreDNS** | Patch to rewrite tailnet hostnames → Tailscale egress proxy for OIDC |
 
 ### 01-infrastructure
 Infrastructure services that build on the foundation.
@@ -59,9 +59,9 @@ Infrastructure services that build on the foundation.
 | Component | Purpose |
 |-----------|---------|
 | **Rook-Ceph** | Distributed block storage |
-| **Shared Gateway** | Cilium Gateway API gateway (192.168.4.10) |
+| **Shared Gateway** | Cilium Gateway API gateway |
 | **Tailscale Operator** | Tailscale Kubernetes integration + subnet router |
-| **tsidp** | Tailscale OIDC identity provider (`idp.tail79231e.ts.net`) |
+| **tsidp** | Tailscale OIDC identity provider |
 | **External DNS** | Automatic DNS record management (Unifi webhook) |
 
 ### 02-applications
@@ -76,11 +76,11 @@ User-facing applications.
 
 ## Grafana OIDC Architecture
 
-Grafana uses tsidp for SSO. The token exchange flow requires the Grafana pod to reach `idp.tail79231e.ts.net` from inside the cluster:
+Grafana uses tsidp for SSO. The token exchange flow requires the Grafana pod to reach the tsidp host from inside the cluster:
 
-1. CoreDNS rewrites `idp.tail79231e.ts.net` → Tailscale egress proxy (`ts-tsidp-q49tg.tailscale.svc.cluster.local`)
+1. CoreDNS rewrites the tsidp tailnet hostname → Tailscale egress proxy
 2. Egress proxy (created by Tailscale operator via `tailscale.com/tailnet-fqdn` annotation on the `tsidp` Service in `monitoring`) bridges cluster → tailnet
-3. `auth_url` uses the public `ts.net` hostname (browser redirect), `token_url`/`api_url` use `idp.tail79231e.ts.net` (resolved via CoreDNS rewrite)
+3. `auth_url` uses the public `ts.net` hostname (browser redirect), `token_url`/`api_url` use the tailnet hostname (resolved via CoreDNS rewrite)
 
 ## Usage
 

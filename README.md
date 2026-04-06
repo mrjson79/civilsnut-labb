@@ -10,9 +10,9 @@ A production-ready Kubernetes homelab cluster running on Talos Linux, managed wi
 - **Certificate Management**: cert-manager with Let's Encrypt (Cloudflare DNS-01)
 - **Storage**: Rook-Ceph
 - **Monitoring**: Victoria Metrics + Grafana (with tsidp OIDC SSO)
-- **Ingress**: Cilium Gateway API (shared-gateway at 192.168.4.10)
+- **Ingress**: Cilium Gateway API
 - **Secret Management**: External Secrets Operator + 1Password Connect
-- **Remote Access**: Tailscale Operator + subnet router (192.168.4.0/24)
+- **Remote Access**: Tailscale Operator + subnet router
 
 ## Current Application Versions
 
@@ -45,11 +45,11 @@ A production-ready Kubernetes homelab cluster running on Talos Linux, managed wi
 
 ## Grafana Access
 
-Grafana is available at `https://grafana.civilsnut.se` with automatic SSO via tsidp.
+Grafana is available via the cluster's custom domain with automatic SSO via tsidp.
 
 - On LAN: direct via Cilium gateway
-- Remote: via Tailscale subnet router (split DNS for `civilsnut.se` → Unifi)
-- Auth: tsidp OIDC at `https://idp.tail79231e.ts.net`
+- Remote: via Tailscale subnet router with split DNS
+- Auth: tsidp OIDC (Tailscale identity provider)
 
 ## Automated Updates
 

@@ -13,6 +13,7 @@ metadata:
 resources:
   # Application components - deployed after infrastructure
   - home-assistant
+  - httpbin
   - mqtt
   - vm-stack # temporarily removed for reinstall
   - zigbee2mqtt

@@ -153,7 +153,6 @@ spec:
           auth_url: https://idp.tail79231e.ts.net/authorize
           token_url: https://idp.tail79231e.ts.net/token
           api_url: https://idp.tail79231e.ts.net/userinfo
-          tls_skip_verify_insecure: true
         auth.basic:
           enabled: false
 

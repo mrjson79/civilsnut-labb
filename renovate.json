@@ -8,6 +8,8 @@
     ":automergeBranch"
   ],
   "timezone": "Europe/Stockholm",
+  "minimumReleaseAge": "3 days",
+  "dependencyDashboardAutoclose": true,
   "prConcurrentLimit": 5,
   "prHourlyLimit": 3,
   "platformAutomerge": true,
@@ -45,11 +47,12 @@
       "description": "Critical security components - require manual review",
       "matchPackageNames": ["cert-manager", "external-secrets"],
       "automerge": false,
-      "labels": ["security-critical"]
+      "labels": ["security-critical"],
+      "groupName": "Security Infrastructure"
     },
     {
       "description": "Networking components",
-      "matchPackageNames": ["cilium", "ingress-nginx"],
+      "matchPackageNames": ["cilium"],
       "labels": ["networking"],
       "automerge": false,
       "groupName": "Networking Stack"
@@ -89,6 +92,24 @@
       "labels": ["container-images", "automerge"]
     },
     {
+      "description": "Non-critical Helm minor/patch - automerge for homelab",
+      "matchDatasources": ["helm"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "excludePackageNames": [
+        "cert-manager", "external-secrets",
+        "cilium",
+        "rook-ceph", "rook-ceph-cluster"
+      ],
+      "automerge": true,
+      "automergeType": "branch"
+    },
+    {
+      "description": "All other minor/patch updates",
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "Other Dependencies",
+      "groupSlug": "other-deps"
+    },
+    {
       "description": "Major updates require careful review",
       "matchUpdateTypes": ["major"],
       "automerge": false,
@@ -97,35 +118,7 @@
   ],
   "hostRules": [
     {
-      "matchHost": "charts.jetstack.io",
-      "timeout": 30000
-    },
-    {
-      "matchHost": "helm.cilium.io",
-      "timeout": 30000
-    },
-    {
-      "matchHost": "charts.external-secrets.io",
-      "timeout": 30000
-    },
-    {
-      "matchHost": "kubernetes.github.io",
-      "timeout": 30000
-    },
-    {
-      "matchHost": "charts.rook.io",
-      "timeout": 30000
-    },
-    {
-      "matchHost": "victoriametrics.github.io",
-      "timeout": 30000
-    },
-    {
-      "matchHost": "1password.github.io",
-      "timeout": 30000
-    },
-    {
-      "matchHost": "charts.zigbee2mqtt.io",
+      "matchHost": "/^(charts\\.(jetstack|external-secrets|rook|zigbee2mqtt)\\.io|helm\\.cilium\\.io|(kubernetes|victoriametrics|1password)\\.github\\.io)$/",
       "timeout": 30000
     }
   ],

@@ -50,3 +50,7 @@ spec:
                 oauth2:
                   provider: OIDC
                   issuerURL: https://idp.tail79231e.ts.net
+                  scopes:
+                    - openid
+                    - email
+                    - profile

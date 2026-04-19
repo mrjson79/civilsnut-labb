@@ -63,9 +63,6 @@ spec:
       l2:
         enabled: true
 
-    operator:
-      replicas: 1
-
     routingMode: tunnel
 
     securityContext:
@@ -88,6 +85,28 @@ spec:
           - SYS_RESOURCE
 
     tunnelProtocol: vxlan
+
+    # Prometheus metrics
+    prometheus:
+      enabled: true
+      port: 9962
+      serviceMonitor:
+        enabled: false  # Using VMServiceScrape instead
+
+    operator:
+      replicas: 1
+      prometheus:
+        enabled: true
+        port: 9963
+        serviceMonitor:
+          enabled: false  # Using VMServiceScrape instead
+
+    envoy:
+      prometheus:
+        enabled: true
+        port: 9964
+        serviceMonitor:
+          enabled: false  # Using VMServiceScrape instead
 
     # Hubble configuration
     hubble:

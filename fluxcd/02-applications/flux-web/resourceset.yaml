@@ -54,3 +54,6 @@ spec:
                     - openid
                     - email
                     - profile
+                  impersonation:
+                    username: "claims.email"
+                    groups: "['flux-web-users']"

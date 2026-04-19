@@ -6,6 +6,7 @@ resources:
   - resourceset.yaml
   - httproute.yaml
   - allow-gateway-ingress.yaml
+  - rbac.yaml
 patches:
   - target:
       kind: NetworkPolicy

@@ -6,3 +6,12 @@ resources:
   - resourceset.yaml
   - httproute.yaml
   - allow-gateway-ingress.yaml
+patches:
+  - target:
+      kind: NetworkPolicy
+      name: flux-web-allow-gateway
+    patch: |
+      - op: replace
+        path: /spec/podSelector/matchLabels
+        value:
+          app.kubernetes.io/instance: flux-web

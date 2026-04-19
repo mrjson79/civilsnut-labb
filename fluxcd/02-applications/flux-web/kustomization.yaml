@@ -12,6 +12,5 @@ patches:
       name: flux-web-allow-gateway
     patch: |
       - op: replace
-        path: /spec/podSelector/matchLabels
-        value:
-          app.kubernetes.io/instance: flux-web
+        path: /spec/podSelector
+        value: {}

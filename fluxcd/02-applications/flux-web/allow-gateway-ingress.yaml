@@ -4,9 +4,7 @@ metadata:
   name: flux-web-allow-gateway
   namespace: flux-system
 spec:
-  podSelector:
-    matchLabels:
-      app.kubernetes.io/instance: flux-web
+  podSelector: {}
   policyTypes:
     - Ingress
   ingress:

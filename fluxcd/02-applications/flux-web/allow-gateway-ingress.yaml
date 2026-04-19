@@ -1,0 +1,15 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: flux-web-allow-gateway
+  namespace: flux-system
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: flux-web
+  policyTypes:
+    - Ingress
+  ingress:
+    - ports:
+        - port: 9080
+          protocol: TCP

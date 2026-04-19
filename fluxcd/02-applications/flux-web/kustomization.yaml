@@ -5,3 +5,4 @@ resources:
   - flux-web-oidc-externalsecret.yaml
   - resourceset.yaml
   - httproute.yaml
+  - allow-gateway-ingress.yaml

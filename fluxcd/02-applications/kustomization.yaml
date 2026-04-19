@@ -12,6 +12,7 @@ metadata:
 
 resources:
   # Application components - deployed after infrastructure
+  - flux-web
   - home-assistant
   #- httpbin
   - mqtt

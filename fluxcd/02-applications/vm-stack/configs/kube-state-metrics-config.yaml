@@ -65,7 +65,7 @@ data:
                     httproute: [metadata, name]
                     namespace: [metadata, namespace]
                     type: [type]
-                  list: [status, conditions]
+                  list: [status, parents, "0", conditions]
                   valueFrom: [status]
                   states:
                     - "True"

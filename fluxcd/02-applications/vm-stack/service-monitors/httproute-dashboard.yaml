@@ -30,7 +30,7 @@ data:
       "links": [],
       "panels": [
         {
-          "datasource": "Prometheus",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -111,7 +111,7 @@ data:
           "type": "timeseries"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -169,7 +169,7 @@ data:
           "type": "stat"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -231,7 +231,7 @@ data:
           "type": "stat"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -318,7 +318,7 @@ data:
           "type": "timeseries"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -411,7 +411,7 @@ data:
           "type": "timeseries"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -492,7 +492,7 @@ data:
           "type": "timeseries"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -573,7 +573,7 @@ data:
           "type": "timeseries"
         },
         {
-          "datasource": "Prometheus",
+          "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -664,7 +664,22 @@ data:
         "networking"
       ],
       "templating": {
-        "list": []
+        "list": [
+          {
+            "current": {},
+            "hide": 0,
+            "includeAll": false,
+            "label": "Datasource",
+            "multi": false,
+            "name": "DS_PROMETHEUS",
+            "options": [],
+            "query": "prometheus",
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "type": "datasource"
+          }
+        ]
       },
       "time": {
         "from": "now-1h",

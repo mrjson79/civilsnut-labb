@@ -118,7 +118,35 @@
   ],
   "hostRules": [
     {
-      "matchHost": "/^(charts\\.(jetstack|external-secrets|rook|zigbee2mqtt)\\.io|helm\\.cilium\\.io|(kubernetes|victoriametrics|1password)\\.github\\.io)$/",
+      "matchHost": "charts.jetstack.io",
+      "timeout": 30000
+    },
+    {
+      "matchHost": "charts.external-secrets.io",
+      "timeout": 30000
+    },
+    {
+      "matchHost": "charts.rook.io",
+      "timeout": 30000
+    },
+    {
+      "matchHost": "charts.zigbee2mqtt.io",
+      "timeout": 30000
+    },
+    {
+      "matchHost": "helm.cilium.io",
+      "timeout": 30000
+    },
+    {
+      "matchHost": "kubernetes.github.io",
+      "timeout": 30000
+    },
+    {
+      "matchHost": "victoriametrics.github.io",
+      "timeout": 30000
+    },
+    {
+      "matchHost": "1password.github.io",
       "timeout": 30000
     }
   ],

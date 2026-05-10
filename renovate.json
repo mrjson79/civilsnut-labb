@@ -4,14 +4,13 @@
   "extends": [
     "config:recommended",
     ":dependencyDashboard",
-    ":semanticCommits",
-    ":automergeBranch"
+    ":semanticCommits"
   ],
   "timezone": "Europe/Stockholm",
   "minimumReleaseAge": "3 days",
   "dependencyDashboardAutoclose": true,
-  "prConcurrentLimit": 5,
-  "prHourlyLimit": 3,
+  "prConcurrentLimit": 10,
+  "prHourlyLimit": 5,
   "platformAutomerge": true,
   "gitAuthor": "Renovate Bot <renovate@civilsnut.com>",
   "commitMessagePrefix": "chore:",
@@ -41,7 +40,7 @@
       "description": "Automerge digest updates",
       "matchUpdateTypes": ["digest"],
       "automerge": true,
-      "automergeType": "branch"
+      "automergeType": "pr"
     },
     {
       "description": "Critical security components - require manual review",
@@ -62,7 +61,7 @@
       "matchPackageNames": ["victoria-metrics-k8s-stack"],
       "labels": ["monitoring"],
       "groupName": "Monitoring Stack",
-      "schedule": ["before 6am on saturday"]
+      "schedule": ["before 7am on saturday"]
     },
     {
       "description": "Storage components",
@@ -81,14 +80,14 @@
       ],
       "labels": ["home-automation"],
       "groupName": "Home Automation",
-      "schedule": ["before 6am on saturday"]
+      "schedule": ["before 7am on saturday"]
     },
     {
       "description": "Container images - patch updates can be auto-merged",
       "matchDatasources": ["docker"],
       "matchUpdateTypes": ["patch", "digest"],
       "automerge": true,
-      "automergeType": "branch",
+      "automergeType": "pr",
       "labels": ["container-images", "automerge"]
     },
     {
@@ -101,7 +100,7 @@
         "rook-ceph", "rook-ceph-cluster"
       ],
       "automerge": true,
-      "automergeType": "branch"
+      "automergeType": "pr"
     },
     {
       "description": "All other minor/patch updates",

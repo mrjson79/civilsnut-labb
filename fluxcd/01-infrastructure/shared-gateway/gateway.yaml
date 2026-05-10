@@ -24,10 +24,7 @@ spec:
         kinds:
           - kind: HTTPRoute
         namespaces:
-          from: Selector
-          selector:
-            matchLabels:
-              gateway.networking.k8s.io/allowed: "true"
+          from: All
     - name: https
       port: 443
       protocol: HTTPS
@@ -41,7 +38,4 @@ spec:
         kinds:
           - kind: HTTPRoute
         namespaces:
-          from: Selector
-          selector:
-            matchLabels:
-              gateway.networking.k8s.io/allowed: "true"
+          from: All

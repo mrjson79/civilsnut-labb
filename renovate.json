@@ -20,6 +20,7 @@
   "assignees": ["mrjson79"],
   "reviewers": ["mrjson79"],
   "ignorePaths": [
+    ".github/workflows/**",
     "fluxcd/01-infrastructure/external-dns/**",
     "talos/**"
   ],
@@ -60,8 +61,7 @@
       "description": "Monitoring stack",
       "matchPackageNames": ["victoria-metrics-k8s-stack"],
       "labels": ["monitoring"],
-      "groupName": "Monitoring Stack",
-      "schedule": ["before 7am on saturday"]
+      "groupName": "Monitoring Stack"
     },
     {
       "description": "Storage components",
@@ -79,8 +79,7 @@
         "eclipse-mosquitto"
       ],
       "labels": ["home-automation"],
-      "groupName": "Home Automation",
-      "schedule": ["before 7am on saturday"]
+      "groupName": "Home Automation"
     },
     {
       "description": "Container images - patch updates can be auto-merged",

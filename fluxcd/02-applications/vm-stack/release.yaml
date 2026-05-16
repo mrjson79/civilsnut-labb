@@ -5,7 +5,7 @@ metadata:
   namespace: monitoring
 spec:
   interval: 5m
-  timeout: 20m
+  timeout: 35m
   chart:
     spec:
       chart: victoria-metrics-k8s-stack
@@ -159,6 +159,10 @@ spec:
     # Node Exporter configuration
     nodeExporter:
       enabled: true
+      updateStrategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxUnavailable: 4
       resources:
         requests:
           memory: 64Mi

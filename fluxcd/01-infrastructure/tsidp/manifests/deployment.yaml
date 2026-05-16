@@ -23,6 +23,8 @@ spec:
       containers:
         - name: tsidp
           image: ghcr.io/tailscale/tsidp:v0.0.12
+          args:
+            - -funnel
           env:
             - name: TAILSCALE_USE_WIP_CODE
               value: "1"

@@ -104,6 +104,11 @@
     {
       "description": "All other minor/patch updates",
       "matchUpdateTypes": ["minor", "patch"],
+      "excludePackageNames": [
+        "cert-manager", "external-secrets",
+        "cilium",
+        "rook-ceph", "rook-ceph-cluster"
+      ],
       "groupName": "Other Dependencies",
       "groupSlug": "other-deps"
     },

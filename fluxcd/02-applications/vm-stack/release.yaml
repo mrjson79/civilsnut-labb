@@ -250,6 +250,8 @@ spec:
     # VM Operator configuration
     victoria-metrics-operator:
       enabled: true
+      operator:
+        disable_prometheus_converter: true
       resources:
         requests:
           memory: 256Mi

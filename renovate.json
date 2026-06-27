@@ -20,7 +20,6 @@
   "assignees": ["mrjson79"],
   "reviewers": ["mrjson79"],
   "ignorePaths": [
-    ".github/workflows/**",
     "talos/**"
   ],
   "vulnerabilityAlerts": {
@@ -60,6 +59,7 @@
       "description": "Monitoring stack",
       "matchPackageNames": ["victoria-metrics-k8s-stack", "victoria-logs-single"],
       "labels": ["monitoring"],
+      "automerge": false,
       "groupName": "Monitoring Stack"
     },
     {
@@ -78,6 +78,7 @@
         "eclipse-mosquitto"
       ],
       "labels": ["home-automation"],
+      "automerge": false,
       "groupName": "Home Automation"
     },
     {

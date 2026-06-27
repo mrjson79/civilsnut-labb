@@ -5,6 +5,6 @@ metadata:
   namespace: tinkerbell
 spec:
   templateRef: flatcar-amd64
-  hardwareRef: flatcar-ctrl-01
+  hardwareRef: flatcar-ctrl-1
   hardwareMap:
     device_1: "e8:6a:64:57:e3:fc"

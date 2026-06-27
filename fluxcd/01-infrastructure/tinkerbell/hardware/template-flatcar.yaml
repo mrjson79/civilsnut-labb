@@ -7,24 +7,26 @@ spec:
   data: |
     version: "0.1"
     name: flatcar-amd64
-    global_timeout: 1800
+    global_timeout: 3600
     tasks:
       - name: flatcar-install
         worker: "{{.device_1}}"
         volumes:
           - /dev:/dev
         actions:
-          # 1) Stream the Flatcar amd64 production image to disk.
-          #    COMPRESSED=true lets image2disk decompress the .bin.bz2 inline.
-          #    Pulled from the official mirror over the LAN (box has internet via
-          #    the gateway while in HookOS). Pin to a version for reproducibility.
+          # 1) Stream the local Flatcar generic image (raw, uncompressed 7.9GB)
+          #    to disk. Served over HTTP from the workstation at 192.168.1.241
+          #    (~/flatcar-images) — the box pulls it over the LAN during the run.
+          #    NOTE: that HTTP server must be running for the duration of this
+          #    action (see the python http.server command in the runbook). The
+          #    IP is the workstation's transient LAN address, used only here.
           - name: stream-flatcar-to-disk
             image: quay.io/tinkerbell/actions/image2disk:latest
-            timeout: 900
+            timeout: 1800
             environment:
               DEST_DISK: /dev/sda
-              IMG_URL: "https://stable.release.flatcar-linux.net/amd64-usr/current/flatcar_production_image.bin.bz2"
-              COMPRESSED: "true"
+              IMG_URL: "http://192.168.1.241:8080/flatcar_production_generic_image.bin"
+              COMPRESSED: "false"
 
           # 2) Write the Ignition config to the Flatcar OEM partition (/dev/sda6,
           #    LABEL=OEM, ext4) as /config.ign — the documented location Flatcar

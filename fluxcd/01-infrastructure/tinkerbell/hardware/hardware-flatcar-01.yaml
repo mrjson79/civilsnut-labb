@@ -11,11 +11,11 @@ spec:
       facility_code: lab
     instance:
       id: "e8:6a:64:57:e3:fc"
-      hostname: flatcar-01
+      hostname: flatcar-ctrl-01
   interfaces:
     - dhcp:
         mac: "e8:6a:64:57:e3:fc"
-        hostname: flatcar-01
+        hostname: flatcar-ctrl-1
         arch: x86_64
         # UEFI assumed (modern amd64). If the box is legacy BIOS, set false.
         uefi: true
@@ -24,5 +24,5 @@ spec:
       # Provisioned 2026-06-27. allowPXE=false so the box boots Flatcar from
       # disk instead of re-netbooting. Flip both true to re-provision.
       netboot:
-        allowPXE: false
-        allowWorkflow: false
+        allowPXE: true
+        allowWorkflow: true

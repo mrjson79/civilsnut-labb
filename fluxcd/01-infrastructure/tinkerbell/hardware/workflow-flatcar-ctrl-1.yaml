@@ -1,7 +1,7 @@
 apiVersion: tinkerbell.org/v1alpha1
 kind: Workflow
 metadata:
-  name: flatcar-ctrl01
+  name: flatcar-ctrl-1
   namespace: tinkerbell
 spec:
   templateRef: flatcar-amd64

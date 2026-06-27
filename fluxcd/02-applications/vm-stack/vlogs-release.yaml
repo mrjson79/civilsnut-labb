@@ -24,12 +24,17 @@ spec:
           - ReadWriteOnce
         size: 20Gi
       resources:
+        # Bumped from 256Mi/512Mi: the server holds ~3.3GB of logs and was
+        # GC-thrashing under the 512Mi cap (cache limited to ~307Mi), causing
+        # the /health readiness probe to time out and flap NotReady — which in
+        # turn emptied the headless Service's endpoints and broke vector's DNS
+        # ("Name or service not known"), stopping all log ingestion.
         requests:
-          memory: 256Mi
-          cpu: 100m
+          memory: 1Gi
+          cpu: 250m
         limits:
-          memory: 512Mi
-          cpu: 500m
+          memory: 2Gi
+          cpu: "1"
       nodeSelector:
         has-disk: "yes"
       vmServiceScrape:

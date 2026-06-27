@@ -1,0 +1,6 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - hardware-flatcar-01.yaml
+  - template-flatcar.yaml
+  - workflow-flatcar-01.yaml

@@ -1,0 +1,10 @@
+apiVersion: tinkerbell.org/v1alpha1
+kind: Workflow
+metadata:
+  name: flatcar-01
+  namespace: tinkerbell
+spec:
+  templateRef: flatcar-amd64
+  hardwareRef: flatcar-01
+  hardwareMap:
+    device_1: "e8:6a:6a:57:e3:fc"

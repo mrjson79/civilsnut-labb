@@ -1,0 +1,46 @@
+apiVersion: tinkerbell.org/v1alpha1
+kind: Template
+metadata:
+  name: flatcar-amd64
+  namespace: tinkerbell
+spec:
+  data: |
+    version: "0.1"
+    name: flatcar-amd64
+    global_timeout: 1800
+    tasks:
+      - name: flatcar-install
+        worker: "{{.device_1}}"
+        volumes:
+          - /dev:/dev
+        actions:
+          # 1) Stream the Flatcar amd64 production image to disk.
+          #    COMPRESSED=true lets image2disk decompress the .bin.bz2 inline.
+          #    Pulled from the official mirror over the LAN (box has internet via
+          #    the gateway while in HookOS). Pin to a version for reproducibility.
+          - name: stream-flatcar-to-disk
+            image: quay.io/tinkerbell/actions/image2disk:latest
+            timeout: 900
+            environment:
+              DEST_DISK: /dev/sda
+              IMG_URL: "https://stable.release.flatcar-linux.net/amd64-usr/current/flatcar_production_image.bin.bz2"
+              COMPRESSED: "true"
+
+          # 2) Write the Ignition config to the Flatcar OEM partition (/dev/sda6,
+          #    LABEL=OEM, ext4) as /config.ign — the documented location Flatcar
+          #    reads on first boot (same file `flatcar-install -i` writes).
+          #    VALIDATE on first boot: if SSH access doesn't work, the fallback is
+          #    running `flatcar-install -d /dev/sda -i config.ign` via a container.
+          - name: write-ignition-to-oem
+            image: quay.io/tinkerbell/actions/writefile:latest
+            timeout: 120
+            environment:
+              DEST_DISK: /dev/sda6
+              FS_TYPE: ext4
+              DEST_PATH: /config.ign
+              UID: "0"
+              GID: "0"
+              MODE: "0644"
+              DIRMODE: "0755"
+              CONTENTS: |
+                {"ignition":{"version":"3.4.0"},"passwd":{"users":[{"name":"core","sshAuthorizedKeys":["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKN1Pr9CO7RsbiITN4Kp9hyPSmyqT0bCteVzKv6qabqn flatcar"]}]}}

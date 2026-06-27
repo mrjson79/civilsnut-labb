@@ -6,5 +6,4 @@ resources:
   - repository.yaml
   - hookos-pvc.yaml
   - release.yaml
-  # Phase 2 (added once the stack is healthy and a machine's details are known):
-  # - hardware/
+  - hardware/

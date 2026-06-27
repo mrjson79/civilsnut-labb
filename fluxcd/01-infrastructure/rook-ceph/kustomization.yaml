@@ -7,6 +7,7 @@ metadata:
 resources:
   - namespace.yaml
   - repository.yaml
+  - csi-driver-rbac.yaml
   - operator-release.yaml
   - cluster-release.yaml
   - httproute.yaml

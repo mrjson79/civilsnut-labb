@@ -5,6 +5,4 @@ resources:
   - externalsecret.yaml
   - helmrepository.yaml
   - helmrelease.yaml
-  - gateway.yaml
-  - referencegrants.yaml
   - connector.yaml

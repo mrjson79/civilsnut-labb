@@ -16,14 +16,15 @@ spec:
         actions:
           # 1) Stream the Flatcar production image (zstd, ~807MB) to disk.
           #    image2disk decompresses zstd inline with COMPRESSED=true.
-          #    Served over HTTP from the workstation at 192.168.1.241
-          #    (~/flatcar-images) — must be running for this action (see runbook).
+          #    Served in-cluster by the osie/HookOS nginx on wrk-01 (the same
+          #    stable host:port the box uses for HookOS); uploaded into the
+          #    hook-artifacts PVC. No dependency on the workstation.
           - name: stream-flatcar-to-disk
             image: quay.io/tinkerbell/actions/image2disk:latest
             timeout: 1800
             environment:
               DEST_DISK: /dev/sda
-              IMG_URL: "http://192.168.1.241:8080/flatcar_production_image_x86-64.bin.zst"
+              IMG_URL: "http://192.168.1.141:7173/flatcar_production_image_x86-64.bin.zst"
               COMPRESSED: "true"
 
           # 2) Write the Ignition config to the Flatcar OEM partition (/dev/sda6,

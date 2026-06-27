@@ -21,6 +21,8 @@ spec:
         uefi: true
         # No ip block on purpose: smee runs in proxy DHCP mode, so UniFi
         # assigns the lease; smee only matches this MAC to serve PXE + workflow.
+      # Provisioned 2026-06-27. allowPXE=false so the box boots Flatcar from
+      # disk instead of re-netbooting. Flip both true to re-provision.
       netboot:
-        allowPXE: true
-        allowWorkflow: true
+        allowPXE: false
+        allowWorkflow: false

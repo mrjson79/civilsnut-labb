@@ -1,0 +1,74 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: tinkerbell
+  namespace: tinkerbell
+spec:
+  interval: 30m
+  timeout: 10m
+  chartRef:
+    kind: OCIRepository
+    name: tinkerbell
+    namespace: tinkerbell
+  install:
+    createNamespace: false
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    # ─────────────────────────────────────────────────────────────────────
+    # SITE-SPECIFIC — fill these three before committing.
+    # publicIP, the host in artifactsFileServer, and deployment.nodeSelector
+    # MUST all reference the SAME Talos node, pinned on 192.168.1.0/24.
+    # publicIP / artifactsFileServer host = that node's LAN IP.
+    # (See README.md in this directory.)
+    # ─────────────────────────────────────────────────────────────────────
+    publicIP: "192.168.1.152"                       # wrk-06 LAN IP
+    artifactsFileServer: "http://192.168.1.152:7173"  # wrk-06 LAN IP
+
+    # X-Forwarded-For trust = cluster pod CIDR (Cilium kubernetes IPAM).
+    trustedProxies:
+      - "10.244.0.0/16"
+
+    # No kube-vip / no LoadBalancer: hostNetwork binds the services to host
+    # ports on the pinned node, and this cluster uses Cilium LB IPAM anyway.
+    service:
+      type: ClusterIP
+      lbClass: ""
+
+    deployment:
+      # Required: proxy DHCP must receive the L2 broadcast DISCOVER from the
+      # bare-metal machine, so smee has to sit on that broadcast domain.
+      hostNetwork: true
+      nodeSelector:
+        kubernetes.io/hostname: "wrk-06"        # pinned node
+      envs:
+        globals:
+          enableRufioController: false   # no BMC/IPMI in this lab
+          enableSecondstar: false        # serial-over-SSH for BMC; not needed
+          enableUI: false                # optional web UI; off to slim footprint
+        smee:
+          # proxy = coexist with the authoritative UniFi DHCP server.
+          # smee only adds PXE boot options; UniFi keeps assigning leases.
+          # Do NOT use "reservation" here — it makes smee a second
+          # authoritative DHCP server and will fight UniFi for leases.
+          dhcpMode: "proxy"
+
+    optional:
+      kubevip:
+        enabled: false
+      hookos:
+        enabled: true
+        arch: x86_64                     # the target machine is amd64
+        persistence:
+          existingClaim: hook-artifacts  # see hookos-pvc.yaml
+      osie:
+        # Serve HookOS artifacts (nginx, :7173) from the same pinned node, so
+        # artifactsFileServer = http://<that node IP>:7173 with no LB needed.
+        hostNetwork: true
+        nodeSelector:
+          kubernetes.io/hostname: "wrk-06"      # same pinned node
+        service:
+          lbClass: ""

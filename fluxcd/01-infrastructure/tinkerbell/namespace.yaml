@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tinkerbell
+  labels:
+    app.kubernetes.io/name: tinkerbell
+    app.kubernetes.io/component: provisioning
+    app.kubernetes.io/part-of: infrastructure
+    # Tinkerbell runs with hostNetwork + a macvlan init container (NET_ADMIN)
+    # to receive DHCP broadcasts, so the namespace must allow privileged pods.
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged

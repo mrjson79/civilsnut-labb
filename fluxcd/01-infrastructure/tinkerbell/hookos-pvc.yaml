@@ -1,0 +1,16 @@
+# Storage for the HookOS artifacts served by the osie (nginx) deployment.
+# The HookOS downloader runs as a SIDECAR in the single-replica osie pod and
+# writes into the same volume nginx serves from — so ReadWriteOnce on the
+# rook-ceph block class is sufficient (no CephFS/RWX required).
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hook-artifacts
+  namespace: tinkerbell
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ceph-block
+  resources:
+    requests:
+      storage: 2Gi

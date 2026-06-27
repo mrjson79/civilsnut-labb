@@ -17,6 +17,7 @@ resources:
   #- external-dns
   - tailscale
   - tsidp
+  - tinkerbell
 
 # Ensure consistent labeling across infrastructure components
 commonLabels:

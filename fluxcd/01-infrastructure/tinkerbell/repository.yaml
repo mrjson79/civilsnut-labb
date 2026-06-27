@@ -1,0 +1,13 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: tinkerbell
+  namespace: tinkerbell
+spec:
+  interval: 1h
+  url: oci://ghcr.io/tinkerbell/charts/tinkerbell
+  ref:
+    tag: v0.23.0
+  layerSelector:
+    mediaType: "application/vnd.cncf.helm.chart.content.v1.tar+gzip"
+    operation: copy

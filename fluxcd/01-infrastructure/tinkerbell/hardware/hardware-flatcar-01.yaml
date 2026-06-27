@@ -10,11 +10,11 @@ spec:
     facility:
       facility_code: lab
     instance:
-      id: "e8:6a:6a:57:e3:fc"
+      id: "e8:6a:64:57:e3:fc"
       hostname: flatcar-01
   interfaces:
     - dhcp:
-        mac: "e8:6a:6a:57:e3:fc"
+        mac: "e8:6a:64:57:e3:fc"
         hostname: flatcar-01
         arch: x86_64
         # UEFI assumed (modern amd64). If the box is legacy BIOS, set false.

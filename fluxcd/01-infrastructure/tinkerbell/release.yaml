@@ -22,11 +22,15 @@ spec:
     # SITE-SPECIFIC — fill these three before committing.
     # publicIP, the host in artifactsFileServer, and deployment.nodeSelector
     # MUST all reference the SAME Talos node, pinned on 192.168.1.0/24.
-    # publicIP / artifactsFileServer host = that node's LAN IP.
-    # (See README.md in this directory.)
+    # Pinned to wrk-01 (arm64, has-disk): it is the only kind of node that is
+    # BOTH on the bare-metal L2 AND runs the RBD CSI nodeplugin (has-disk=yes),
+    # which the ceph-block hook-artifacts PVC requires. amd64 nodes (wrk-05/06)
+    # have no RBD nodeplugin so the PVC can't mount there. The Tinkerbell images
+    # are multi-arch, and the served HookOS/Flatcar artifacts are amd64 for the
+    # amd64 target regardless of this node's arch. (See README.md.)
     # ─────────────────────────────────────────────────────────────────────
-    publicIP: "192.168.1.152"                       # wrk-06 LAN IP
-    artifactsFileServer: "http://192.168.1.152:7173"  # wrk-06 LAN IP
+    publicIP: "192.168.1.141"                       # wrk-01 LAN IP
+    artifactsFileServer: "http://192.168.1.141:7173"  # wrk-01 LAN IP
 
     # X-Forwarded-For trust = cluster pod CIDR (Cilium kubernetes IPAM).
     trustedProxies:
@@ -43,7 +47,7 @@ spec:
       # bare-metal machine, so smee has to sit on that broadcast domain.
       hostNetwork: true
       nodeSelector:
-        kubernetes.io/hostname: "wrk-06"        # pinned node
+        kubernetes.io/hostname: "wrk-01"        # pinned node
       envs:
         globals:
           enableRufioController: false   # no BMC/IPMI in this lab
@@ -69,6 +73,6 @@ spec:
         # artifactsFileServer = http://<that node IP>:7173 with no LB needed.
         hostNetwork: true
         nodeSelector:
-          kubernetes.io/hostname: "wrk-06"      # same pinned node
+          kubernetes.io/hostname: "wrk-01"      # same pinned node
         service:
           lbClass: ""

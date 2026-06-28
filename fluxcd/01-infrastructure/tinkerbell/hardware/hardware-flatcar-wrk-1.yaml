@@ -24,5 +24,5 @@ spec:
       # Provisioned 2026-06-27. allowPXE=false so the box boots Flatcar from
       # disk instead of re-netbooting. Flip both true to re-provision.
       netboot:
-        allowPXE: true
+        allowPXE: false
         allowWorkflow: true

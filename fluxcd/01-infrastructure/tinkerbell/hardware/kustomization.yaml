@@ -4,3 +4,5 @@ resources:
   - hardware-flatcar-ctrl-1.yaml
   - template-flatcar.yaml
   - workflow-flatcar-ctrl-1.yaml
+  - hardware-flatcar-wrk-1.yaml
+  - workflow-flatcar-wrk-1.yaml

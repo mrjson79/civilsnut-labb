@@ -8,3 +8,4 @@ spec:
   hardwareRef: flatcar-ctrl-1
   hardwareMap:
     device_1: "e8:6a:64:57:e3:fc"
+    hostname: "flatcar-ctrl-1"

@@ -28,7 +28,7 @@ spec:
               COMPRESSED: "true"
 
           # 2) Write the Ignition config to the Flatcar OEM partition (/dev/sda6,
-          #    LABEL=OEM, ext4) as /config.ign — the documented location Flatcar
+          #    LABEL=OEM, btrfs) as /config.ign — the documented location Flatcar
           #    reads on first boot (same file `flatcar-install -i` writes).
           #    The OEM partition (/dev/sda6, LABEL=OEM) is btrfs (confirmed from
           #    the image). config.ign here is what `flatcar-install -i` writes.
@@ -44,4 +44,4 @@ spec:
               MODE: "0644"
               DIRMODE: "0755"
               CONTENTS: |
-                {"ignition":{"version":"3.4.0"},"passwd":{"users":[{"name":"core","sshAuthorizedKeys":["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKN1Pr9CO7RsbiITN4Kp9hyPSmyqT0bCteVzKv6qabqn flatcar"]}]}}
+                {"ignition":{"version":"3.4.0"},"storage":{"files":[{"path":"/etc/hostname","contents":{"source":"data:,{{.hostname}}%0A"},"mode":420}]},"passwd":{"users":[{"name":"core","sshAuthorizedKeys":["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKN1Pr9CO7RsbiITN4Kp9hyPSmyqT0bCteVzKv6qabqn flatcar"]}]}}

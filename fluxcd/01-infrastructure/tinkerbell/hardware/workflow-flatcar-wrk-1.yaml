@@ -1,0 +1,11 @@
+apiVersion: tinkerbell.org/v1alpha1
+kind: Workflow
+metadata:
+  name: flatcar-wrk-1
+  namespace: tinkerbell
+spec:
+  templateRef: flatcar-amd64
+  hardwareRef: flatcar-wrk-1
+  hardwareMap:
+    device_1: "e8:6a:64:31:52:d7"
+    hostname: "flatcar-wrk-1"

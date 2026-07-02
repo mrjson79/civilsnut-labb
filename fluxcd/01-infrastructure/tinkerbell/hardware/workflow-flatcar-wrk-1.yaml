@@ -9,3 +9,5 @@ spec:
   hardwareMap:
     device_1: "e8:6a:64:31:52:d7"
     hostname: "flatcar-wrk-1"
+    disk: /dev/sda
+    oem_disk: /dev/sda6

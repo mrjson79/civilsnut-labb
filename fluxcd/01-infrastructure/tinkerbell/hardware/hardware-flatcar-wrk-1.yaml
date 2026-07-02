@@ -10,7 +10,7 @@ spec:
     facility:
       facility_code: lab
     instance:
-      id: e8:6a:64:31:52:d7"
+      id: "e8:6a:64:31:52:d7"
       hostname: flatcar-wrk-1
   interfaces:
     - dhcp:

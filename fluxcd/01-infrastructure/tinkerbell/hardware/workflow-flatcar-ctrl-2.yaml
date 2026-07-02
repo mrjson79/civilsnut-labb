@@ -1,0 +1,11 @@
+apiVersion: tinkerbell.org/v1alpha1
+kind: Workflow
+metadata:
+  name: flatcar-ctrl-2
+  namespace: tinkerbell
+spec:
+  templateRef: flatcar-amd64
+  hardwareRef: flatcar-ctrl-2
+  hardwareMap:
+    device_1: "e8:6a:64:f2:fd:fd"
+    hostname: "flatcar-ctrl-2"

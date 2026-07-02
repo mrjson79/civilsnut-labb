@@ -8,3 +8,5 @@ resources:
   - workflow-flatcar-wrk-1.yaml
   - hardware-flatcar-ctrl-2.yaml
   - workflow-flatcar-ctrl-2.yaml
+  - hardware-flatcar-ctrl-3.yaml
+  - workflow-flatcar-ctrl-3.yaml

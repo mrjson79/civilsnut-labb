@@ -1,0 +1,28 @@
+apiVersion: tinkerbell.org/v1alpha1
+kind: Hardware
+metadata:
+  name: flatcar-ctrl-3
+  namespace: tinkerbell
+spec:
+  disks:
+    - device: /dev/sda
+  metadata:
+    facility:
+      facility_code: lab
+    instance:
+      id: "98:fa:9b:43:0e:73"
+      hostname: flatcar-ctrl-3
+  interfaces:
+    - dhcp:
+        mac: "98:fa:9b:43:0e:73"
+        hostname: flatcar-ctrl-3
+        arch: x86_64
+        # UEFI assumed (modern amd64). If the box is legacy BIOS, set false.
+        uefi: true
+        # No ip block on purpose: smee runs in proxy DHCP mode, so UniFi
+        # assigns the lease; smee only matches this MAC to serve PXE + workflow.
+      # Provisioned 2026-06-27. allowPXE=false so the box boots Flatcar from
+      # disk instead of re-netbooting. Flip both true to re-provision.
+      netboot:
+        allowPXE: true
+        allowWorkflow: true

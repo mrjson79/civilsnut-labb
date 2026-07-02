@@ -23,7 +23,7 @@ spec:
             image: quay.io/tinkerbell/actions/image2disk:latest
             timeout: 1800
             environment:
-              DEST_DISK: /dev/sda
+              DEST_DISK: "{{.disk}}"
               IMG_URL: "http://192.168.1.141:7173/flatcar_production_image_x86-64.bin.zst"
               COMPRESSED: "true"
 
@@ -36,7 +36,7 @@ spec:
             image: quay.io/tinkerbell/actions/writefile:latest
             timeout: 120
             environment:
-              DEST_DISK: /dev/sda6
+              DEST_DISK: "{{.oem_disk}}"
               FS_TYPE: btrfs
               DEST_PATH: /config.ign
               UID: "0"

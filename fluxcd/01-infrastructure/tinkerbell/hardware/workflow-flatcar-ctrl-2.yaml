@@ -9,3 +9,5 @@ spec:
   hardwareMap:
     device_1: "e8:6a:64:f2:fd:fd"
     hostname: "flatcar-ctrl-2"
+    disk: /dev/sda
+    oem_disk: /dev/sda6

@@ -9,3 +9,5 @@ spec:
   hardwareMap:
     device_1: "98:fa:9b:43:0e:73"
     hostname: "flatcar-ctrl-3"
+    disk: /dev/nvme0n1
+    oem_disk: /dev/nvme0n1p6

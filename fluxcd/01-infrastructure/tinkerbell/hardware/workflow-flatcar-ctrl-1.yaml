@@ -1,10 +1,12 @@
+# The cluster seed — provision this node FIRST and wait for its control plane
+# (VIP:6443) before booting the join nodes.
 apiVersion: tinkerbell.org/v1alpha1
 kind: Workflow
 metadata:
-  name: flatcar-ctrl-1
+  name: flatcar-ctrl-1-k8s
   namespace: tinkerbell
 spec:
-  templateRef: flatcar-amd64
+  templateRef: flatcar-k8s-seed
   hardwareRef: flatcar-ctrl-1
   hardwareMap:
     device_1: "e8:6a:64:57:e3:fc"

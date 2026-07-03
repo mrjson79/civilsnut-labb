@@ -1,12 +1,15 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - hardware-flatcar-ctrl-1.yaml
+  # template-flatcar.yaml (stock image, no k8s) kept as the rollback path.
   - template-flatcar.yaml
+  - template-flatcar-seed.yaml
+  - template-flatcar-join.yaml
+  - hardware-flatcar-ctrl-1.yaml
   - workflow-flatcar-ctrl-1.yaml
-  - hardware-flatcar-wrk-1.yaml
-  - workflow-flatcar-wrk-1.yaml
   - hardware-flatcar-ctrl-2.yaml
   - workflow-flatcar-ctrl-2.yaml
   - hardware-flatcar-ctrl-3.yaml
   - workflow-flatcar-ctrl-3.yaml
+  - hardware-flatcar-wrk-1.yaml
+  - workflow-flatcar-wrk-1.yaml

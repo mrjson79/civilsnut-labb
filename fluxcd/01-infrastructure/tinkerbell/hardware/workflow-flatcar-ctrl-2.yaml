@@ -1,13 +1,14 @@
 apiVersion: tinkerbell.org/v1alpha1
 kind: Workflow
 metadata:
-  name: flatcar-ctrl-2
+  name: flatcar-ctrl-2-k8s
   namespace: tinkerbell
 spec:
-  templateRef: flatcar-amd64
+  templateRef: flatcar-k8s-join
   hardwareRef: flatcar-ctrl-2
   hardwareMap:
     device_1: "e8:6a:64:f2:fd:fd"
     hostname: "flatcar-ctrl-2"
+    role: "control-plane"
     disk: /dev/sda
     oem_disk: /dev/sda6

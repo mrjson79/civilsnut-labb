@@ -1,0 +1,81 @@
+# Seed template: installs the flatcarctl-baked image (kubernetes, containerd,
+# flannel, kube-vip sysexts + nodeagent) and arms the nodeagent as the cluster
+# seed. On first boot the nodeagent runs `kubeadm init`, applies Flannel, and
+# starts the kube-vip VIP. acceptPolicy=subnet auto-admits joining nodes from
+# the lab LAN — no manual token handling.
+#
+# ⚠️ Before committing, replace in the config.yaml data URL below:
+#   REPLACE_VIP — unused IP on 192.168.1.0/24 OUTSIDE the UniFi DHCP pool
+#                 (also used in template-flatcar-join.yaml)
+# The seed node (flatcar-ctrl-1) needs a fixed DHCP reservation in UniFi; its
+# IP is the REPLACE_SEED_IP of the join template.
+#
+# Re-provisioning the seed after the cluster exists generates a new CA — treat
+# a seed re-install as a cluster rebuild.
+apiVersion: tinkerbell.org/v1alpha1
+kind: Template
+metadata:
+  name: flatcar-k8s-seed
+  namespace: tinkerbell
+spec:
+  data: |
+    version: "0.1"
+    name: flatcar-k8s-seed
+    global_timeout: 3600
+    tasks:
+      - name: flatcar-install
+        worker: "{{.device_1}}"
+        volumes:
+          - /dev:/dev
+        actions:
+          # Baked image (flatcarctl bake 2026-07-03: kubernetes v1.36.2,
+          # containerd 2.3.2, flannel v0.28.5, kube-vip v1.2.1, nodeagent)
+          # served from the hook-artifacts PVC by the osie nginx on wrk-01.
+          - name: stream-flatcar-to-disk
+            image: quay.io/tinkerbell/actions/image2disk:latest
+            timeout: 1800
+            environment:
+              DEST_DISK: "{{.disk}}"
+              IMG_URL: "http://192.168.1.141:7173/flatcar-andero-k8s.bin.zst"
+              COMPRESSED: "true"
+
+          # Ignition to the OEM partition (partition 6, LABEL=OEM, btrfs) as
+          # /config.ign — read by Flatcar on first boot. File contents are
+          # percent-encoded data URLs (%20 space, %0A newline, %22 quote,
+          # %5B/%5D brackets) so hardwareMap values template into them.
+          - name: write-ignition-to-oem
+            image: quay.io/tinkerbell/actions/writefile:latest
+            timeout: 120
+            environment:
+              DEST_DISK: "{{.oem_disk}}"
+              FS_TYPE: btrfs
+              DEST_PATH: /config.ign
+              UID: "0"
+              GID: "0"
+              MODE: "0644"
+              DIRMODE: "0755"
+              CONTENTS: |
+                {
+                  "ignition": {"version": "3.4.0"},
+                  "storage": {
+                    "files": [
+                      {"path": "/etc/hostname", "mode": 420, "overwrite": true,
+                       "contents": {"source": "data:,{{.hostname}}%0A"}},
+                      {"path": "/etc/nodeagent/config.yaml", "mode": 420, "overwrite": true,
+                       "contents": {"source": "data:,clusterName:%20labb%0Arole:%20seed%0AseedEndpoint:%20%22:9443%22%0AcontrolPlaneEndpoint:%20REPLACE_VIP:6443%0AvipAddress:%20REPLACE_VIP%0ApodCIDR:%2010.244.0.0/16%0AacceptPolicy:%20subnet%0AtrustedSubnet:%20192.168.1.0/24%0A"}},
+                      {"path": "/etc/systemd/network/50-wol.link", "mode": 420, "overwrite": true,
+                       "contents": {"source": "data:,%5BMatch%5D%0AType=ether%0A%0A%5BLink%5D%0AWakeOnLan=magic%0A"}}
+                    ]
+                  },
+                  "passwd": {
+                    "users": [
+                      {"name": "core", "sshAuthorizedKeys": ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKN1Pr9CO7RsbiITN4Kp9hyPSmyqT0bCteVzKv6qabqn flatcar"]}
+                    ]
+                  },
+                  "systemd": {
+                    "units": [
+                      {"name": "nodeagent.service", "enabled": true,
+                       "contents": "[Unit]\nDescription=Flatcar node bootstrap agent (DCUI for Kubernetes)\nAfter=network-online.target flatcarctl-import-images.service\nWants=network-online.target flatcarctl-import-images.service\nStartLimitIntervalSec=300\nStartLimitBurst=5\n\n[Service]\nType=simple\nRestart=on-failure\nRestartSec=10\nEnvironment=FEATURE_KUBEADM_BOOTSTRAP=on\nExecStart=/opt/bin/nodeagent --config /etc/nodeagent/config.yaml\n\n[Install]\nWantedBy=multi-user.target\n"}
+                    ]
+                  }
+                }

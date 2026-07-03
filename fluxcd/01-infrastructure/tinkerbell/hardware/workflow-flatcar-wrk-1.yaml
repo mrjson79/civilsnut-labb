@@ -1,13 +1,14 @@
 apiVersion: tinkerbell.org/v1alpha1
 kind: Workflow
 metadata:
-  name: flatcar-wrk-1
+  name: flatcar-wrk-1-k8s
   namespace: tinkerbell
 spec:
-  templateRef: flatcar-amd64
+  templateRef: flatcar-k8s-join
   hardwareRef: flatcar-wrk-1
   hardwareMap:
     device_1: "e8:6a:64:31:52:d7"
     hostname: "flatcar-wrk-1"
+    role: "worker"
     disk: /dev/sda
     oem_disk: /dev/sda6

@@ -1,0 +1,69 @@
+# Join template: same baked image as the seed, but the nodeagent registers
+# with the seed's enrollment endpoint (:9443) and runs `kubeadm join` — as an
+# extra control plane or a worker depending on the `role` hardwareMap value
+# ("control-plane" | "worker"). The seed's subnet accept-policy admits the node
+# automatically. Boot joiners only after the seed's control plane is up.
+#
+# ⚠️ Before committing, replace in the config.yaml data URL below:
+#   REPLACE_SEED_IP — flatcar-ctrl-1's IP (fixed DHCP reservation in UniFi)
+#   REPLACE_VIP     — same VIP as in template-flatcar-seed.yaml
+apiVersion: tinkerbell.org/v1alpha1
+kind: Template
+metadata:
+  name: flatcar-k8s-join
+  namespace: tinkerbell
+spec:
+  data: |
+    version: "0.1"
+    name: flatcar-k8s-join
+    global_timeout: 3600
+    tasks:
+      - name: flatcar-install
+        worker: "{{.device_1}}"
+        volumes:
+          - /dev:/dev
+        actions:
+          - name: stream-flatcar-to-disk
+            image: quay.io/tinkerbell/actions/image2disk:latest
+            timeout: 1800
+            environment:
+              DEST_DISK: "{{.disk}}"
+              IMG_URL: "http://192.168.1.141:7173/flatcar-andero-k8s.bin.zst"
+              COMPRESSED: "true"
+
+          - name: write-ignition-to-oem
+            image: quay.io/tinkerbell/actions/writefile:latest
+            timeout: 120
+            environment:
+              DEST_DISK: "{{.oem_disk}}"
+              FS_TYPE: btrfs
+              DEST_PATH: /config.ign
+              UID: "0"
+              GID: "0"
+              MODE: "0644"
+              DIRMODE: "0755"
+              CONTENTS: |
+                {
+                  "ignition": {"version": "3.4.0"},
+                  "storage": {
+                    "files": [
+                      {"path": "/etc/hostname", "mode": 420, "overwrite": true,
+                       "contents": {"source": "data:,{{.hostname}}%0A"}},
+                      {"path": "/etc/nodeagent/config.yaml", "mode": 420, "overwrite": true,
+                       "contents": {"source": "data:,clusterName:%20labb%0Arole:%20{{.role}}%0AseedEndpoint:%20REPLACE_SEED_IP:9443%0AcontrolPlaneEndpoint:%20REPLACE_VIP:6443%0AvipAddress:%20REPLACE_VIP%0ApodCIDR:%2010.244.0.0/16%0A"}},
+                      {"path": "/etc/systemd/network/50-wol.link", "mode": 420, "overwrite": true,
+                       "contents": {"source": "data:,%5BMatch%5D%0AType=ether%0A%0A%5BLink%5D%0AWakeOnLan=magic%0A"}}
+                    ]
+                  },
+                  "passwd": {
+                    "users": [
+                      {"name": "core", "sshAuthorizedKeys": ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKN1Pr9CO7RsbiITN4Kp9hyPSmyqT0bCteVzKv6qabqn flatcar"]}
+                    ]
+                  },
+                  "systemd": {
+                    "units": [
+                      {"name": "nodeagent.service", "enabled": true,
+                       "contents": "[Unit]\nDescription=Flatcar node bootstrap agent (DCUI for Kubernetes)\nAfter=network-online.target flatcarctl-import-images.service\nWants=network-online.target flatcarctl-import-images.service\nStartLimitIntervalSec=300\nStartLimitBurst=5\n\n[Service]\nType=simple\nRestart=on-failure\nRestartSec=10\nEnvironment=FEATURE_KUBEADM_BOOTSTRAP=on\nExecStart=/opt/bin/nodeagent --config /etc/nodeagent/config.yaml\n\n[Install]\nWantedBy=multi-user.target\n"}
+                    ]
+                  }
+                }

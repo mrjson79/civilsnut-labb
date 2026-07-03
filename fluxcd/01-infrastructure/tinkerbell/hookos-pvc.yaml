@@ -13,4 +13,6 @@ spec:
   storageClassName: ceph-block
   resources:
     requests:
-      storage: 2Gi
+      # 4Gi: holds the stock Flatcar image plus the flatcarctl-baked
+      # flatcar-andero-k8s image (~813M zst each) alongside HookOS.
+      storage: 4Gi

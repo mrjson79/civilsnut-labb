@@ -62,7 +62,7 @@ spec:
                       {"path": "/etc/hostname", "mode": 420, "overwrite": true,
                        "contents": {"source": "data:,{{.hostname}}%0A"}},
                       {"path": "/etc/nodeagent/config.yaml", "mode": 420, "overwrite": true,
-                       "contents": {"source": "data:,clusterName:%20labb%0Arole:%20seed%0AseedEndpoint:%20%22:9443%22%0AcontrolPlaneEndpoint:%20REPLACE_VIP:6443%0AvipAddress:%20REPLACE_VIP%0ApodCIDR:%2010.244.0.0/16%0AacceptPolicy:%20subnet%0AtrustedSubnet:%20192.168.1.0/24%0A"}},
+                       "contents": {"source": "data:,clusterName:%20labb%0Arole:%20seed%0AseedEndpoint:%20%22:9443%22%0AcontrolPlaneEndpoint:%20192.168.1.150:6443%0AvipAddress:%20192.168.1.150%0ApodCIDR:%2010.244.0.0/16%0AacceptPolicy:%20subnet%0AtrustedSubnet:%20192.168.1.0/24%0A"}},
                       {"path": "/etc/systemd/network/50-wol.link", "mode": 420, "overwrite": true,
                        "contents": {"source": "data:,%5BMatch%5D%0AType=ether%0A%0A%5BLink%5D%0AWakeOnLan=magic%0A"}}
                     ]

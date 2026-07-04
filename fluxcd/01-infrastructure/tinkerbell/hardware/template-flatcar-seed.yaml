@@ -1,8 +1,9 @@
 # Seed template: installs the flatcarctl-baked image (kubernetes, containerd,
-# flannel, kube-vip sysexts + nodeagent) and arms the nodeagent as the cluster
-# seed. On first boot the nodeagent runs `kubeadm init`, applies Flannel, and
-# starts the kube-vip VIP. acceptPolicy=subnet auto-admits joining nodes from
-# the lab LAN — no manual token handling.
+# cilium, kube-vip sysexts + nodeagent) and arms the nodeagent as the cluster
+# seed. On first boot the nodeagent runs `kubeadm init` (skipping the
+# kube-proxy addon — Cilium replaces it), applies Cilium with the VIP as
+# k8sServiceHost, and starts the kube-vip VIP. acceptPolicy=subnet auto-admits
+# joining nodes from the lab LAN — no manual token handling.
 #
 # ⚠️ Before committing, replace in the config.yaml data URL below:
 #   REPLACE_VIP — unused IP on 192.168.1.0/24 OUTSIDE the UniFi DHCP pool
@@ -28,15 +29,15 @@ spec:
         volumes:
           - /dev:/dev
         actions:
-          # Baked image (flatcarctl bake 2026-07-03: kubernetes v1.36.2,
-          # containerd 2.3.2, flannel v0.28.5, kube-vip v1.2.1, nodeagent)
-          # served from the hook-artifacts PVC by the osie nginx on wrk-01.
+          # Baked image (flatcarctl bake 2026-07-04: kubernetes v1.36.2,
+          # containerd 2.3.2, cilium v1.19.5 kube-proxy-free, kube-vip v1.2.1,
+          # nodeagent) served from the hook-artifacts PVC by osie on wrk-01.
           - name: stream-flatcar-to-disk
             image: quay.io/tinkerbell/actions/image2disk:latest
             timeout: 1800
             environment:
               DEST_DISK: "{{.disk}}"
-              IMG_URL: "http://192.168.1.141:7173/flatcar-andero-k8s.bin.zst"
+              IMG_URL: "http://192.168.1.141:7173/flatcar-andero-k8s-cilium.bin.zst"
               COMPRESSED: "true"
 
           # Ignition to the OEM partition (partition 6, LABEL=OEM, btrfs) as
@@ -62,7 +63,7 @@ spec:
                       {"path": "/etc/hostname", "mode": 420, "overwrite": true,
                        "contents": {"source": "data:,{{.hostname}}%0A"}},
                       {"path": "/etc/nodeagent/config.yaml", "mode": 420, "overwrite": true,
-                       "contents": {"source": "data:,clusterName:%20labb%0Arole:%20seed%0AseedEndpoint:%20%22:9443%22%0AcontrolPlaneEndpoint:%20192.168.1.150:6443%0AvipAddress:%20192.168.1.150%0ApodCIDR:%2010.244.0.0/16%0AacceptPolicy:%20subnet%0AtrustedSubnet:%20192.168.1.0/24%0A"}},
+                       "contents": {"source": "data:,clusterName:%20labb%0Arole:%20seed%0AseedEndpoint:%20%22:9443%22%0AcontrolPlaneEndpoint:%20192.168.1.150:6443%0AvipAddress:%20192.168.1.150%0ApodCIDR:%2010.244.0.0/16%0Acni:%20cilium%0AacceptPolicy:%20subnet%0AtrustedSubnet:%20192.168.1.0/24%0A"}},
                       {"path": "/etc/systemd/network/50-wol.link", "mode": 420, "overwrite": true,
                        "contents": {"source": "data:,%5BMatch%5D%0AType=ether%0A%0A%5BLink%5D%0AWakeOnLan=magic%0A"}}
                     ]

@@ -28,7 +28,7 @@ spec:
             timeout: 1800
             environment:
               DEST_DISK: "{{.disk}}"
-              IMG_URL: "http://192.168.1.141:7173/flatcar-andero-k8s.bin.zst"
+              IMG_URL: "http://192.168.1.141:7173/flatcar-andero-k8s-cilium.bin.zst"
               COMPRESSED: "true"
 
           - name: write-ignition-to-oem
@@ -50,7 +50,7 @@ spec:
                       {"path": "/etc/hostname", "mode": 420, "overwrite": true,
                        "contents": {"source": "data:,{{.hostname}}%0A"}},
                       {"path": "/etc/nodeagent/config.yaml", "mode": 420, "overwrite": true,
-                       "contents": {"source": "data:,clusterName:%20labb%0Arole:%20{{.role}}%0AseedEndpoint:%20192.168.1.219:9443%0AcontrolPlaneEndpoint:%20192.168.1.150:6443%0AvipAddress:%20192.168.1.150%0ApodCIDR:%2010.244.0.0/16%0A"}},
+                       "contents": {"source": "data:,clusterName:%20labb%0Arole:%20{{.role}}%0AseedEndpoint:%20192.168.1.219:9443%0AcontrolPlaneEndpoint:%20192.168.1.150:6443%0AvipAddress:%20192.168.1.150%0ApodCIDR:%2010.244.0.0/16%0Acni:%20cilium%0A"}},
                       {"path": "/etc/systemd/network/50-wol.link", "mode": 420, "overwrite": true,
                        "contents": {"source": "data:,%5BMatch%5D%0AType=ether%0A%0A%5BLink%5D%0AWakeOnLan=magic%0A"}}
                     ]

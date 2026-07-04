@@ -8,15 +8,9 @@ metadata:
 data:
   loki-datasource.yaml: |
     apiVersion: 1
-    # The old VictoriaMetrics datasources were imported into grafana.db during
-    # the vm-stack migration window (uninstall hook failure); provisioned
-    # datasources are never auto-removed when their file disappears, so they
-    # are deleted explicitly here (no-op once gone).
-    deleteDatasources:
-      - name: VictoriaMetrics
-        orgId: 1
-      - name: VictoriaLogs
-        orgId: 1
+    # NOTE: deleteDatasources is FATAL in Grafana 13 if the named datasource
+    # does not exist (provisioning module fails, pod crashloops) - do not add
+    # entries here without confirming the exact name in grafana.db first.
     datasources:
       - name: Loki
         type: loki

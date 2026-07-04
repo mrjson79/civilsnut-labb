@@ -125,6 +125,11 @@ spec:
           auth_url: https://idp.tail79231e.ts.net/authorize
           token_url: https://idp.tail79231e.ts.net/token
           api_url: https://idp.tail79231e.ts.net/userinfo
+          # tsidp has no role claims - grant every tailnet login full Grafana
+          # server admin (covers datasource, alerting/Alertmanager and
+          # Prometheus rule management from the Grafana UI)
+          role_attribute_path: "'GrafanaAdmin'"
+          allow_assign_grafana_admin: true
         auth.basic:
           enabled: false
       sidecar:

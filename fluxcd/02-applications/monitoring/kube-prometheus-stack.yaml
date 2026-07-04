@@ -107,6 +107,12 @@ spec:
           - ReadWriteOnce
       envFromSecrets:
         - name: grafana-oidc
+      env:
+        # tsidp has no role claims - grant every tailnet login full Grafana
+        # server admin. MUST be an env var: the grafana.ini parser strips the
+        # surrounding quotes, turning the JMESPath string literal into a
+        # claim lookup that returns null (role falls back to Viewer).
+        GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "'GrafanaAdmin'"
       grafana.ini:
         server:
           # Served at the domain root behind the shared gateway - root_url must
@@ -125,10 +131,6 @@ spec:
           auth_url: https://idp.tail79231e.ts.net/authorize
           token_url: https://idp.tail79231e.ts.net/token
           api_url: https://idp.tail79231e.ts.net/userinfo
-          # tsidp has no role claims - grant every tailnet login full Grafana
-          # server admin (covers datasource, alerting/Alertmanager and
-          # Prometheus rule management from the Grafana UI)
-          role_attribute_path: "'GrafanaAdmin'"
           allow_assign_grafana_admin: true
         auth.basic:
           enabled: false

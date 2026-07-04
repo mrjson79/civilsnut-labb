@@ -1,0 +1,85 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: loki
+  namespace: monitoring
+spec:
+  interval: 5m
+  timeout: 15m
+  chart:
+    spec:
+      chart: loki
+      version: "7.0.0"
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: monitoring
+      interval: 1h
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    deploymentMode: SingleBinary
+
+    loki:
+      auth_enabled: false
+      commonConfig:
+        replication_factor: 1
+      storage:
+        type: filesystem
+      schemaConfig:
+        configs:
+          - from: "2026-01-01"
+            store: tsdb
+            object_store: filesystem
+            schema: v13
+            index:
+              prefix: index_
+              period: 24h
+      limits_config:
+        retention_period: 168h # 7d, matches the old VictoriaLogs retention
+      compactor:
+        retention_enabled: true
+        delete_request_store: filesystem
+
+    singleBinary:
+      replicas: 1
+      persistence:
+        enabled: true
+        storageClass: ceph-block
+        size: 20Gi
+      nodeSelector:
+        has-disk: "yes"
+      resources:
+        # Same headroom vlogs needed: 512Mi caused GC-thrashing and probe flaps
+        requests:
+          memory: 1Gi
+          cpu: 250m
+        limits:
+          memory: 2Gi
+          cpu: "1"
+
+    # Zero out the simple-scalable targets
+    backend:
+      replicas: 0
+    read:
+      replicas: 0
+    write:
+      replicas: 0
+
+    # Grafana and Alloy talk straight to loki:3100
+    gateway:
+      enabled: false
+    chunksCache:
+      enabled: false
+    resultsCache:
+      enabled: false
+    lokiCanary:
+      enabled: false
+    test:
+      enabled: false
+    # NOTE: chart 7.x has no monitoring.serviceMonitor - a ServiceMonitor is
+    # provided in service-monitors/loki-servicemonitor.yaml instead

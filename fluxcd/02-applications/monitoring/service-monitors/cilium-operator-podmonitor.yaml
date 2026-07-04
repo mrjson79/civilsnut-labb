@@ -1,11 +1,10 @@
-apiVersion: operator.victoriametrics.com/v1beta1
-kind: VMPodScrape
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
 metadata:
   name: cilium-operator
   namespace: monitoring
   labels:
     app: cilium-operator
-    release: victoria-metrics-k8s-stack
 spec:
   selector:
     matchLabels:

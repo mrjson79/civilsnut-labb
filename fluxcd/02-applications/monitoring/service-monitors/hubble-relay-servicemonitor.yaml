@@ -1,19 +1,18 @@
-apiVersion: operator.victoriametrics.com/v1beta1
-kind: VMPodScrape
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
 metadata:
-  name: cilium-agent
+  name: hubble-relay
   namespace: monitoring
   labels:
-    app: cilium-agent
-    release: victoria-metrics-k8s-stack
+    app: hubble-relay
 spec:
   selector:
     matchLabels:
-      k8s-app: cilium
+      k8s-app: hubble-relay
   namespaceSelector:
     matchNames:
       - kube-system
-  podMetricsEndpoints:
+  endpoints:
     - port: prometheus
       interval: 30s
       path: /metrics

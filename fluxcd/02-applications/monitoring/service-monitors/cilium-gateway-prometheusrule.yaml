@@ -1,11 +1,10 @@
-apiVersion: operator.victoriametrics.com/v1beta1
-kind: VMRule
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
 metadata:
   name: cilium-gateway-alerts
   namespace: monitoring
   labels:
     app: cilium-gateway
-    release: victoria-metrics-k8s-stack
     role: alert-rules
 spec:
   groups:

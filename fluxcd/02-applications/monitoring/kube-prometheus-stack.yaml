@@ -1,0 +1,208 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+  namespace: monitoring
+spec:
+  interval: 5m
+  timeout: 35m
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      version: "87.8.0"
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+        namespace: monitoring
+      interval: 1h
+  install:
+    crds: CreateReplace
+    remediation:
+      retries: 3
+  upgrade:
+    crds: CreateReplace
+    remediation:
+      retries: 3
+  values:
+    prometheusOperator:
+      nodeSelector:
+        has-disk: "yes"
+      resources:
+        requests:
+          memory: 256Mi
+          cpu: 100m
+        limits:
+          memory: 512Mi
+          cpu: 500m
+
+    prometheus:
+      prometheusSpec:
+        # Select ALL ServiceMonitors/PodMonitors/Rules cluster-wide regardless of
+        # helm release labels (replaces VM's selectAllByDefault: true)
+        serviceMonitorSelectorNilUsesHelmValues: false
+        podMonitorSelectorNilUsesHelmValues: false
+        ruleSelectorNilUsesHelmValues: false
+        probeSelectorNilUsesHelmValues: false
+        scrapeConfigSelectorNilUsesHelmValues: false
+        scrapeInterval: 30s
+        externalLabels:
+          cluster: omni-cluster
+        retention: 30d
+        retentionSize: 45GB
+        # Alloy pushes node metrics via remote_write
+        enableRemoteWriteReceiver: true
+        additionalScrapeConfigsSecret:
+          enabled: true
+          name: additional-scrape-configs
+          key: additional-scrape-configs.yaml
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: ceph-block
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 50Gi
+        nodeSelector:
+          has-disk: "yes"
+        resources:
+          requests:
+            memory: 2Gi
+            cpu: 1000m
+          limits:
+            memory: 4Gi
+            cpu: 2000m
+
+    alertmanager:
+      enabled: true
+      alertmanagerSpec:
+        storage:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: ceph-block
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 10Gi
+        nodeSelector:
+          has-disk: "yes"
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
+          limits:
+            memory: 512Mi
+            cpu: 200m
+
+    grafana:
+      enabled: true
+      deploymentStrategy:
+        type: Recreate # RWO PVC - old pod must terminate before the new one mounts
+      persistence:
+        enabled: true
+        storageClassName: ceph-block
+        size: 10Gi
+        accessModes:
+          - ReadWriteOnce
+      envFromSecrets:
+        - name: grafana-oidc
+      grafana.ini:
+        server:
+          # Served at the domain root behind the shared gateway - root_url must
+          # match the public URL or Grafana fails to load its application files.
+          # No subpath in play, so serve_from_sub_path stays false.
+          root_url: https://grafana.civilsnut.se/
+          serve_from_sub_path: false
+        auth.generic_oauth:
+          enabled: true
+          name: Tailscale
+          allow_sign_up: true
+          auto_login: true
+          client_id: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_ID}
+          client_secret: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET}
+          scopes: openid email profile
+          auth_url: https://idp.tail79231e.ts.net/authorize
+          token_url: https://idp.tail79231e.ts.net/token
+          api_url: https://idp.tail79231e.ts.net/userinfo
+        auth.basic:
+          enabled: false
+      sidecar:
+        dashboards:
+          enabled: true
+        datasources:
+          enabled: true
+      nodeSelector:
+        has-disk: "yes"
+      resources:
+        requests:
+          memory: 256Mi
+          cpu: 100m
+        limits:
+          memory: 512Mi
+          cpu: 200m
+
+    # Node metrics come from Alloy's embedded node_exporter (remote_write)
+    nodeExporter:
+      enabled: false
+
+    kubeStateMetrics:
+      enabled: true
+
+    kube-state-metrics:
+      # Standard collectors enabled (unlike vm-stack's custom-resource-state-only
+      # setup) so kube_pod_*/kube_deployment_* metrics exist for the bundled
+      # dashboards and rules; the CRS config adds Gateway API + Flux metrics.
+      extraArgs:
+        - --custom-resource-state-config-file=/etc/customresourcestate/kube-state-metrics-config.yaml
+      rbac:
+        extraRules:
+          - apiGroups: ["gateway.networking.k8s.io"]
+            resources: ["gateways", "httproutes", "grpcroutes", "tcproutes", "tlsroutes", "udproutes", "gatewayclasses"]
+            verbs: ["list", "watch"]
+          - apiGroups: ["source.toolkit.fluxcd.io"]
+            resources: ["gitrepositories", "buckets", "helmrepositories", "helmcharts", "ocirepositories"]
+            verbs: ["list", "watch"]
+          - apiGroups: ["kustomize.toolkit.fluxcd.io"]
+            resources: ["kustomizations"]
+            verbs: ["list", "watch"]
+          - apiGroups: ["helm.toolkit.fluxcd.io"]
+            resources: ["helmreleases"]
+            verbs: ["list", "watch"]
+          - apiGroups: ["notification.toolkit.fluxcd.io"]
+            resources: ["providers", "alerts", "receivers"]
+            verbs: ["list", "watch"]
+          - apiGroups: ["image.toolkit.fluxcd.io"]
+            resources: ["imagepolicies", "imagerepositories", "imageupdateautomations"]
+            verbs: ["list", "watch"]
+      volumeMounts:
+        - name: flux-kube-state-metrics-config
+          mountPath: /etc/customresourcestate
+          readOnly: true
+      volumes:
+        - name: flux-kube-state-metrics-config
+          configMap:
+            name: flux-kube-state-metrics-config
+      nodeSelector:
+        has-disk: "yes"
+
+    # Talos does not expose control-plane component metrics endpoints by default;
+    # keep these scrapes and their rules off to avoid permanent TargetDown alerts.
+    kubeEtcd:
+      enabled: false
+    kubeControllerManager:
+      enabled: false
+    kubeScheduler:
+      enabled: false
+    kubeProxy:
+      enabled: false # kube-proxy replaced by Cilium anyway
+
+    defaultRules:
+      create: true
+      rules:
+        etcd: false
+        kubeControllerManager: false
+        kubeSchedulerAlerting: false
+        kubeSchedulerRecording: false
+        kubeProxy: false
+        windows: false

@@ -15,8 +15,8 @@ resources:
   - flux-web
   - home-assistant
   #- httpbin
+  - monitoring
   - mqtt
-  - vm-stack # temporarily removed for reinstall
   - zigbee2mqtt
 
 # Ensure consistent labeling across application components

@@ -12,5 +12,4 @@ resources:
   - cluster-release.yaml
   - httproute.yaml
   - referencegrant.yaml
-  - vmservicescrape.yaml
   - servicemonitor.yaml

@@ -4,7 +4,7 @@ metadata:
   name: additional-scrape-configs
   namespace: monitoring
   labels:
-    app.kubernetes.io/name: victoria-metrics-k8s-stack
+    app.kubernetes.io/name: kube-prometheus-stack
     app.kubernetes.io/component: monitoring
 stringData:
   additional-scrape-configs.yaml: |

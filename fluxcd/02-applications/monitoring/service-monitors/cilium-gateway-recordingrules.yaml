@@ -1,11 +1,10 @@
-apiVersion: operator.victoriametrics.com/v1beta1
-kind: VMRule
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
 metadata:
   name: cilium-gateway-recording-rules
   namespace: monitoring
   labels:
     app: cilium-gateway
-    release: victoria-metrics-k8s-stack
     role: recording-rules
 spec:
   groups:

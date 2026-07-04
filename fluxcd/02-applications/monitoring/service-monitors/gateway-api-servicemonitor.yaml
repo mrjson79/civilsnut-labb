@@ -1,11 +1,10 @@
-apiVersion: operator.victoriametrics.com/v1beta1
-kind: VMServiceScrape
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
 metadata:
   name: gateway-api-controller
   namespace: monitoring
   labels:
     app: gateway-api-controller
-    release: victoria-metrics-k8s-stack
 spec:
   selector:
     matchLabels:

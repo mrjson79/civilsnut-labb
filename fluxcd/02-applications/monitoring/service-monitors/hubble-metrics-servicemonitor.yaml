@@ -1,11 +1,10 @@
-apiVersion: operator.victoriametrics.com/v1beta1
-kind: VMServiceScrape
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
 metadata:
   name: hubble-metrics
   namespace: monitoring
   labels:
     app: hubble-metrics
-    release: victoria-metrics-k8s-stack
 spec:
   selector:
     matchLabels:

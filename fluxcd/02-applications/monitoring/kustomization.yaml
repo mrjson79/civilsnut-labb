@@ -3,7 +3,7 @@ kind: Kustomization
 
 metadata:
   labels:
-    app.kubernetes.io/name: victoria-metrics-k8s-stack
+    app.kubernetes.io/name: kube-prometheus-stack
     app.kubernetes.io/component: monitoring
     app.kubernetes.io/part-of: infrastructure
   annotations:
@@ -12,15 +12,14 @@ metadata:
 
 resources:
   - namespace.yaml
-  - repository.yaml
-  - release.yaml
-  - vlogs-release.yaml
-  - vlogs-datasource.yaml
-  - vlogs-explorer-dashboard.yaml
-  - vlogs-single-node-dashboard.yaml
-  - httproute.yaml
-  - referencegrant.yaml
+  - repositories.yaml
+  - kube-prometheus-stack.yaml
+  - loki.yaml
+  - alloy.yaml
   - grafana-oidc-externalsecret.yaml
   - tsidp-egress-service.yaml
+  - loki-datasource.yaml
+  - httproute.yaml
+  - referencegrant.yaml
   - configs
   - service-monitors

@@ -1,12 +1,11 @@
-apiVersion: operator.victoriametrics.com/v1beta1
-kind: VMPodScrape
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
 metadata:
   name: flux-system
   namespace: monitoring
   labels:
     app.kubernetes.io/name: flux-system
     app.kubernetes.io/component: monitoring
-    release: victoria-metrics-k8s-stack
 spec:
   namespaceSelector:
     matchNames:
@@ -24,7 +23,7 @@ spec:
     - port: http-prom
       interval: 15s
       path: /metrics
-      relabelConfigs:
+      relabelings:
         - sourceLabels: [__meta_kubernetes_pod_name]
           targetLabel: pod
         - sourceLabels: [__meta_kubernetes_pod_container_name]

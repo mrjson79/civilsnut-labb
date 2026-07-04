@@ -4,7 +4,7 @@ metadata:
   name: flux-kube-state-metrics-config
   namespace: monitoring
   labels:
-    app.kubernetes.io/name: victoria-metrics-k8s-stack
+    app.kubernetes.io/name: kube-prometheus-stack
     app.kubernetes.io/component: monitoring
 data:
   kube-state-metrics-config.yaml: |

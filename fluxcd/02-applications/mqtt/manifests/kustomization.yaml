@@ -13,3 +13,4 @@ resources:
   - httproute.yaml
   - referencegrant.yaml
   - vmservicescrape.yaml
+  - servicemonitor.yaml

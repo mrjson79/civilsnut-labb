@@ -169,10 +169,11 @@ spec:
             url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-coredns.json
           k8s-addons-prometheus:
             url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-addons-prometheus.json
-          # PVC usage/capacity/inodes from kubelet_volume_stats_*
-          persistent-volumes:
-            gnetId: 13646
-            revision: 2
+          # All PVCs with capacity/used/available/% in one table
+          # (kubelet_volume_stats_*)
+          pvc-usage-cluster:
+            gnetId: 11454
+            revision: 14
             datasource: Prometheus
       nodeSelector:
         has-disk: "yes"

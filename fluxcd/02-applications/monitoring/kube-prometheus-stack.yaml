@@ -169,6 +169,11 @@ spec:
             url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-coredns.json
           k8s-addons-prometheus:
             url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-addons-prometheus.json
+          # PVC usage/capacity/inodes from kubelet_volume_stats_*
+          persistent-volumes:
+            gnetId: 13646
+            revision: 2
+            datasource: Prometheus
       nodeSelector:
         has-disk: "yes"
       resources:
@@ -223,10 +228,23 @@ spec:
       nodeSelector:
         has-disk: "yes"
 
-    # Talos does not expose control-plane component metrics endpoints by default;
-    # keep these scrapes and their rules off to avoid permanent TargetDown alerts.
+    # etcd metrics exposed via Omni ConfigPatch (talos/patches/etcd-metrics-omni.yaml):
+    # plain HTTP on :2381 on the control-plane nodes
     kubeEtcd:
-      enabled: false
+      enabled: true
+      endpoints:
+        - 192.168.1.248 # ctlr-01
+        - 192.168.1.250 # ctlr-02
+        - 192.168.1.79 # ctlr-03
+      service:
+        enabled: true
+        port: 2381
+        targetPort: 2381
+      serviceMonitor:
+        enabled: true
+        scheme: http
+    # Talos does not expose these control-plane metrics endpoints; keep the
+    # scrapes and rules off to avoid permanent TargetDown alerts.
     kubeControllerManager:
       enabled: false
     kubeScheduler:
@@ -237,7 +255,7 @@ spec:
     defaultRules:
       create: true
       rules:
-        etcd: false
+        etcd: true
         kubeControllerManager: false
         kubeSchedulerAlerting: false
         kubeSchedulerRecording: false

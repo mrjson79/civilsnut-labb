@@ -1,0 +1,58 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: zitadel
+  namespace: zitadel
+  labels:
+    app.kubernetes.io/name: zitadel
+spec:
+  hostnames:
+    - idp.civilsnut.se
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: shared-gateway
+      namespace: gateway-system
+  rules:
+    # v4 login UI lives in its own deployment; longest-prefix-match gives
+    # this rule precedence over the catch-all below
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /ui/v2/login
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: zitadel-login
+          port: 3000
+          weight: 1
+    # everything else (console, OIDC endpoints, gRPC APIs) -> zitadel core;
+    # the service ships appProtocol kubernetes.io/h2c so Envoy speaks HTTP/2
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: zitadel
+          port: 8080
+          weight: 1
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: zitadel-to-shared-gateway
+  namespace: zitadel
+  labels:
+    app.kubernetes.io/name: zitadel
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: zitadel
+  to:
+    - group: "gateway.networking.k8s.io"
+      kind: Gateway
+      name: shared-gateway

@@ -23,6 +23,17 @@ spec:
   upgrade:
     remediation:
       retries: 3
+  # DB passwords come from the ESO-synced zitadel-postgres secret rather
+  # than plaintext values in git; the chart turns secretConfig into a Secret
+  valuesFrom:
+    - kind: Secret
+      name: zitadel-postgres
+      valuesKey: password
+      targetPath: zitadel.secretConfig.Database.Postgres.User.Password
+    - kind: Secret
+      name: zitadel-postgres
+      valuesKey: postgres-password
+      targetPath: zitadel.secretConfig.Database.Postgres.Admin.Password
   values:
     replicaCount: 1
 
@@ -35,22 +46,27 @@ spec:
         ExternalSecure: true
         TLS:
           Enabled: false
+        # separate single-node Postgres in postgres.yaml - see comment there
+        # for why the bundled subchart cannot work (pre-install hook deadlock)
+        Database:
+          Postgres:
+            Host: zitadel-db
+            Port: 5432
+            Database: zitadel
+            MaxOpenConns: 20
+            MaxIdleConns: 10
+            MaxConnLifetime: 30m
+            MaxConnIdleTime: 5m
+            User:
+              Username: zitadel
+              SSL:
+                Mode: disable
+            Admin:
+              Username: postgres
+              SSL:
+                Mode: disable
 
     # Zitadel v4 login UI is a separate deployment (service zitadel-login:3000)
     login:
       enabled: true
       replicaCount: 1
-
-    postgresql:
-      enabled: true
-      auth:
-        database: zitadel
-        username: zitadel
-        # keys: password, postgres-password
-        existingSecret: zitadel-postgres
-      primary:
-        persistence:
-          # chart default is FALSE - without this the IdP database is ephemeral
-          enabled: true
-          storageClass: ceph-block
-          size: 10Gi

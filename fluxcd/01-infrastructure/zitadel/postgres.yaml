@@ -1,0 +1,87 @@
+# Dedicated Postgres for Zitadel, applied directly by Flux (not helm).
+#
+# Deliberately NOT the chart's bundled postgresql subchart: the chart's
+# init/setup Jobs are pre-install helm hooks that wait for the database,
+# while the subchart's StatefulSet is a regular resource Helm only applies
+# after the hooks succeed - the first install deadlocks by design. The
+# chart's own examples run Postgres as a separate release; this is that,
+# minus the Bitnami dependency. zitadel-init creates the app user/database
+# itself, so Postgres only needs the superuser password.
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zitadel-db
+  namespace: zitadel
+  labels:
+    app.kubernetes.io/name: zitadel-db
+spec:
+  selector:
+    app.kubernetes.io/name: zitadel-db
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zitadel-db
+  namespace: zitadel
+  labels:
+    app.kubernetes.io/name: zitadel-db
+spec:
+  serviceName: zitadel-db
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: zitadel-db
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: zitadel-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:17.10
+          ports:
+            - containerPort: 5432
+              name: postgres
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: zitadel-postgres
+                  key: postgres-password
+            # keep data out of the volume root so the PVC's lost+found
+            # doesn't trip initdb
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "postgres"]
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            exec:
+              command: ["pg_isready", "-U", "postgres"]
+            initialDelaySeconds: 30
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-block
+        resources:
+          requests:
+            storage: 10Gi

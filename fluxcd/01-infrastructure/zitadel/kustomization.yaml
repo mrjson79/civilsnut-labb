@@ -4,5 +4,6 @@ resources:
   - namespace.yaml
   - repository.yaml
   - externalsecrets.yaml
+  - postgres.yaml
   - release.yaml
   - httproute.yaml

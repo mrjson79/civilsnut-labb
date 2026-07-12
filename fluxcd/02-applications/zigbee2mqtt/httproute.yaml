@@ -11,10 +11,37 @@ spec:
     - name: shared-gateway
       namespace: gateway-system
   rules:
-    - backendRefs:
-        - name: zigbee2mqtt
-          port: 8080
-      matches:
+    # oauth2-proxy's own endpoints (sign-in, callback) must stay anonymous -
+    # no ExternalAuth filter here; longest-prefix-match wins over the
+    # catch-all rule below
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /oauth2
+      backendRefs:
+        - name: oauth2-proxy
+          namespace: oauth2-proxy
+          port: 80
+    - matches:
         - path:
             type: PathPrefix
             value: /
+      filters:
+        - type: ExternalAuth
+          externalAuth:
+            protocol: HTTP
+            backendRef:
+              name: oauth2-proxy
+              namespace: oauth2-proxy
+              port: 80
+            http:
+              allowedHeaders:
+                - cookie
+                - accept
+              allowedResponseHeaders:
+                - authorization
+                - x-auth-request-user
+                - x-auth-request-email
+      backendRefs:
+        - name: zigbee2mqtt
+          port: 8080

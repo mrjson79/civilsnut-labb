@@ -108,8 +108,11 @@ spec:
       envFromSecrets:
         - name: grafana-oidc
       env:
-        # tsidp has no role claims - grant every tailnet login full Grafana
-        # server admin. MUST be an env var: the grafana.ini parser strips the
+        # Hardcoded GrafanaAdmin for every Zitadel login (single-admin
+        # homelab). Follow-up: map the Zitadel roles claim
+        # (urn:zitadel:iam:org:project:roles, requires "Assert Roles on
+        # Authentication" on the homelab project) via JMESPath instead.
+        # MUST be an env var: the grafana.ini parser strips the
         # surrounding quotes, turning the JMESPath string literal into a
         # claim lookup that returns null (role falls back to Viewer).
         GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "'GrafanaAdmin'"
@@ -122,15 +125,18 @@ spec:
           serve_from_sub_path: false
         auth.generic_oauth:
           enabled: true
-          name: Tailscale
+          name: Zitadel
           allow_sign_up: true
           auto_login: true
           client_id: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_ID}
           client_secret: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET}
           scopes: openid email profile
-          auth_url: https://idp.tail79231e.ts.net/authorize
-          token_url: https://idp.tail79231e.ts.net/token
-          api_url: https://idp.tail79231e.ts.net/userinfo
+          # userinfo is /oidc/v1/, not /oauth/v2/ - the wrong one makes
+          # Grafana fall back to a GitHub-style /emails URL -> opaque error
+          auth_url: https://idp.civilsnut.se/oauth/v2/authorize
+          token_url: https://idp.civilsnut.se/oauth/v2/token
+          api_url: https://idp.civilsnut.se/oidc/v1/userinfo
+          use_pkce: true
           allow_assign_grafana_admin: true
         auth.basic:
           enabled: false

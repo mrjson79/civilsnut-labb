@@ -49,7 +49,7 @@ spec:
                 type: OAuth2
                 oauth2:
                   provider: OIDC
-                  issuerURL: https://idp.tail79231e.ts.net
+                  issuerURL: https://idp.civilsnut.se
                   scopes:
                     - openid
                     - email

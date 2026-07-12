@@ -18,7 +18,6 @@ fluxcd/
 │   ├── external-dns/
 │   ├── rook-ceph/
 │   ├── shared-gateway/
-│   ├── tailscale/          # Operator + subnet router
 │   ├── zitadel/            # Self-hosted OIDC identity provider
 │   └── oauth2-proxy/       # ext-auth bridge for Gateway API ExternalAuth
 └── 02-applications/        # User-facing applications
@@ -61,7 +60,6 @@ Infrastructure services that build on the foundation.
 |-----------|---------|
 | **Rook-Ceph** | Distributed block storage |
 | **Shared Gateway** | Cilium Gateway API gateway |
-| **Tailscale Operator** | Tailscale Kubernetes integration + subnet router |
 | **Zitadel** | Self-hosted OIDC identity provider (idp.civilsnut.se) |
 | **oauth2-proxy** | ext_authz bridge: Gateway API ExternalAuth filter → Zitadel |
 | **External DNS** | Automatic DNS record management (Unifi webhook) |

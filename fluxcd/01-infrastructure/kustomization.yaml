@@ -15,7 +15,6 @@ resources:
   - shared-gateway
   - rook-ceph
   #- external-dns
-  - tailscale
   - tinkerbell
   - zitadel
   - oauth2-proxy

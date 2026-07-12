@@ -13,7 +13,6 @@ A production-ready Kubernetes homelab cluster running on Talos Linux, managed wi
 - **Identity**: Zitadel (self-hosted OIDC) + oauth2-proxy (Gateway API ExternalAuth)
 - **Ingress**: Cilium Gateway API
 - **Secret Management**: External Secrets Operator + 1Password Connect
-- **Remote Access**: Tailscale Operator + subnet router
 
 ## Current Application Versions
 
@@ -31,7 +30,6 @@ A production-ready Kubernetes homelab cluster running on Talos Linux, managed wi
 |-------------|---------|---------|
 | **Rook-Ceph** | operator + cluster | Distributed Block Storage |
 | **Shared Gateway** | - | Cilium Gateway API |
-| **Tailscale Operator** | `1.94.2` | Tailscale Kubernetes Operator + subnet router |
 | **Zitadel** | `v4.15.3` | Self-hosted OIDC Identity Provider (idp.civilsnut.se) |
 | **oauth2-proxy** | `7.15.3` | ext_authz bridge for Gateway API ExternalAuth (GEP-1494) |
 | **External DNS** | - | Automatic DNS record management (Unifi) |
@@ -50,7 +48,6 @@ A production-ready Kubernetes homelab cluster running on Talos Linux, managed wi
 Grafana is available via the cluster's custom domain with automatic SSO via Zitadel.
 
 - On LAN: direct via Cilium gateway
-- Remote: via Tailscale subnet router with split DNS
 - Auth: Zitadel OIDC (idp.civilsnut.se); apps without native auth
   (Hubble UI, Zigbee2MQTT) are protected at the gateway via the
   ExternalAuth HTTPRoute filter + oauth2-proxy

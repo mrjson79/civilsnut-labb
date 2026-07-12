@@ -9,7 +9,8 @@ A production-ready Kubernetes homelab cluster running on Talos Linux, managed wi
 - **GitOps**: FluxCD
 - **Certificate Management**: cert-manager with Let's Encrypt (Cloudflare DNS-01)
 - **Storage**: Rook-Ceph
-- **Monitoring**: Victoria Metrics + Grafana (with tsidp OIDC SSO)
+- **Monitoring**: Victoria Metrics + Grafana (with Zitadel OIDC SSO)
+- **Identity**: Zitadel (self-hosted OIDC) + oauth2-proxy (Gateway API ExternalAuth)
 - **Ingress**: Cilium Gateway API
 - **Secret Management**: External Secrets Operator + 1Password Connect
 - **Remote Access**: Tailscale Operator + subnet router
@@ -19,11 +20,11 @@ A production-ready Kubernetes homelab cluster running on Talos Linux, managed wi
 ### Foundation (00-foundation)
 | Application | Version | Purpose |
 |-------------|---------|---------|
-| **Cilium** | `1.18.4` | CNI, Load Balancing, Gateway API, BGP |
+| **Cilium** | `1.20.0-pre.4` | CNI, Load Balancing, Gateway API (v1.6.0 experimental), BGP |
 | **cert-manager** | `v1.19.1` | TLS Certificate Management |
 | **External Secrets** | `1.1.1` | Kubernetes Secret Management |
 | **1Password Connect** | `2.0.5` | Secret Synchronization |
-| **CoreDNS patch** | - | ts.net hostname resolution for OIDC |
+| **CoreDNS patch** | - | Corefile customizations |
 
 ### Infrastructure (01-infrastructure)
 | Application | Version | Purpose |
@@ -31,25 +32,28 @@ A production-ready Kubernetes homelab cluster running on Talos Linux, managed wi
 | **Rook-Ceph** | operator + cluster | Distributed Block Storage |
 | **Shared Gateway** | - | Cilium Gateway API |
 | **Tailscale Operator** | `1.94.2` | Tailscale Kubernetes Operator + subnet router |
-| **tsidp** | `v0.0.9` | Tailscale OIDC Identity Provider |
+| **Zitadel** | `v4.15.3` | Self-hosted OIDC Identity Provider (idp.civilsnut.se) |
+| **oauth2-proxy** | `7.15.3` | ext_authz bridge for Gateway API ExternalAuth (GEP-1494) |
 | **External DNS** | - | Automatic DNS record management (Unifi) |
 
 ### Applications (02-applications)
 | Application | Version | Purpose |
 |-------------|---------|---------|
 | **Victoria Metrics** | `0.70.0` | Monitoring & Observability |
-| **Grafana** | - | Dashboards with tsidp OIDC SSO |
+| **Grafana** | - | Dashboards with Zitadel OIDC SSO |
 | **Home Assistant** | `2026.2.3` | Home Automation Platform |
 | **Zigbee2MQTT** | `2.9.1` | Zigbee to MQTT Bridge |
 | **Mosquitto MQTT** | `2.0.22` | MQTT Broker |
 
 ## Grafana Access
 
-Grafana is available via the cluster's custom domain with automatic SSO via tsidp.
+Grafana is available via the cluster's custom domain with automatic SSO via Zitadel.
 
 - On LAN: direct via Cilium gateway
 - Remote: via Tailscale subnet router with split DNS
-- Auth: tsidp OIDC (Tailscale identity provider)
+- Auth: Zitadel OIDC (idp.civilsnut.se); apps without native auth
+  (Hubble UI, Zigbee2MQTT) are protected at the gateway via the
+  ExternalAuth HTTPRoute filter + oauth2-proxy
 
 ## Automated Updates
 

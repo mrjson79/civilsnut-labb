@@ -16,8 +16,6 @@ data:
         }
         prometheus :9153
 
-        rewrite name exact idp.tail79231e.ts.net ts-tsidp-q49tg.tailscale.svc.cluster.local
-
         kubernetes cluster.local in-addr.arpa ip6.arpa {
             pods insecure
             fallthrough in-addr.arpa ip6.arpa

@@ -16,7 +16,6 @@ resources:
   - rook-ceph
   #- external-dns
   - tailscale
-  - tsidp
   - tinkerbell
   - zitadel
   - oauth2-proxy

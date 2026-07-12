@@ -19,11 +19,12 @@ fluxcd/
 │   ├── rook-ceph/
 │   ├── shared-gateway/
 │   ├── tailscale/          # Operator + subnet router
-│   └── tsidp/              # Tailscale OIDC identity provider
+│   ├── zitadel/            # Self-hosted OIDC identity provider
+│   └── oauth2-proxy/       # ext-auth bridge for Gateway API ExternalAuth
 └── 02-applications/        # User-facing applications
     ├── home-assistant/
     ├── mqtt/
-    ├── vm-stack/           # Victoria Metrics + Grafana (tsidp OIDC SSO)
+    ├── vm-stack/           # Victoria Metrics + Grafana (Zitadel OIDC SSO)
     └── zigbee2mqtt/
 ```
 
@@ -51,7 +52,7 @@ Core platform components that everything else depends on.
 | **1Password Connect** | Secret synchronization from 1Password |
 | **Gateway API CRDs** | Gateway API custom resource definitions |
 | **Victoria Metrics CRDs** | Victoria Metrics custom resource definitions |
-| **CoreDNS** | Patch to rewrite tailnet hostnames → Tailscale egress proxy for OIDC |
+| **CoreDNS** | Corefile customizations |
 
 ### 01-infrastructure
 Infrastructure services that build on the foundation.
@@ -61,7 +62,8 @@ Infrastructure services that build on the foundation.
 | **Rook-Ceph** | Distributed block storage |
 | **Shared Gateway** | Cilium Gateway API gateway |
 | **Tailscale Operator** | Tailscale Kubernetes integration + subnet router |
-| **tsidp** | Tailscale OIDC identity provider |
+| **Zitadel** | Self-hosted OIDC identity provider (idp.civilsnut.se) |
+| **oauth2-proxy** | ext_authz bridge: Gateway API ExternalAuth filter → Zitadel |
 | **External DNS** | Automatic DNS record management (Unifi webhook) |
 
 ### 02-applications
@@ -71,16 +73,25 @@ User-facing applications.
 |-----------|---------|
 | **Home Assistant** | Home automation platform |
 | **Mosquitto MQTT** | MQTT broker |
-| **Victoria Metrics Stack** | Monitoring + Grafana with tsidp OIDC SSO |
+| **Victoria Metrics Stack** | Monitoring + Grafana with Zitadel OIDC SSO |
 | **Zigbee2MQTT** | Zigbee to MQTT bridge |
 
-## Grafana OIDC Architecture
+## SSO Architecture (Zitadel)
 
-Grafana uses tsidp for SSO. The token exchange flow requires the Grafana pod to reach the tsidp host from inside the cluster:
+Zitadel at `idp.civilsnut.se` (behind the shared gateway) is the OIDC provider
+for everything:
 
-1. CoreDNS rewrites the tsidp tailnet hostname → Tailscale egress proxy
-2. Egress proxy (created by Tailscale operator via `tailscale.com/tailnet-fqdn` annotation on the `tsidp` Service in `monitoring`) bridges cluster → tailnet
-3. `auth_url` uses the public `ts.net` hostname (browser redirect), `token_url`/`api_url` use the tailnet hostname (resolved via CoreDNS rewrite)
+- **Apps with native OIDC** (Grafana, Flux Web) are confidential clients of
+  the Zitadel `homelab` project. Grafana's userinfo endpoint is
+  `/oidc/v1/userinfo` (not `/oauth/v2/`).
+- **Apps without auth** (Hubble UI, Zigbee2MQTT) are protected at the gateway
+  with the Gateway API `ExternalAuth` HTTPRoute filter (experimental,
+  GEP-1494) pointing at oauth2-proxy: proxy mode, `upstream: static://200`,
+  wildcard `.civilsnut.se` session cookie. Each protected HTTPRoute carries a
+  filterless `/oauth2` rule for the sign-in/callback endpoints, and each
+  protected host is a redirect URI on the `oauth2-proxy` Zitadel app.
+- Logins require a user grant on the `homelab` project (authorization check
+  is enabled on the project).
 
 ## Usage
 

@@ -17,7 +17,6 @@ resources:
   - loki.yaml
   - alloy.yaml
   - grafana-oidc-externalsecret.yaml
-  - tsidp-egress-service.yaml
   - loki-datasource.yaml
   - httproute.yaml
   - referencegrant.yaml

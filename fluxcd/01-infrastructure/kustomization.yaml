@@ -19,6 +19,7 @@ resources:
   - tsidp
   - tinkerbell
   - zitadel
+  - oauth2-proxy
 
 # Ensure consistent labeling across infrastructure components
 commonLabels:

@@ -1,0 +1,20 @@
+# Allow HTTPRoutes in protected-app namespaces to reference the
+# oauth2-proxy Service cross-namespace - needed both for the /oauth2
+# bypass rule's backendRef and for the ExternalAuth filter's backendRef.
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: httproutes-to-oauth2-proxy
+  namespace: oauth2-proxy
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: kube-system
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: zigbee2mqtt
+  to:
+    - group: ""
+      kind: Service
+      name: oauth2-proxy

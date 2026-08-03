@@ -1,3 +1,32 @@
+# flux-web impersonates the logged-in user (username = claims.email,
+# group = flux-web-users) for every Kubernetes read. The built-in "view"
+# role only covers core resources - rendering a Kustomization's inventory
+# needs read on ALL the custom resources Flux manages (HelmReleases,
+# HTTPRoutes, ExternalSecrets, Cilium/Ceph/cert-manager CRs, ...).
+#
+# NOTE: get/list/watch on "*" includes Secrets. Acceptable here because
+# membership in flux-web-users is gated by the Zitadel project grant
+# (single-admin homelab).
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: flux-web-users
+rules:
+  # read everything so inventories render
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["get", "list", "watch"]
+  # let the UI trigger reconciles / suspend / resume (annotation patches)
+  - apiGroups:
+      - source.toolkit.fluxcd.io
+      - kustomize.toolkit.fluxcd.io
+      - helm.toolkit.fluxcd.io
+      - notification.toolkit.fluxcd.io
+      - image.toolkit.fluxcd.io
+      - fluxcd.controlplane.io
+    resources: ["*"]
+    verbs: ["patch"]
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -8,5 +37,5 @@ subjects:
     apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: ClusterRole
-  name: view
+  name: flux-web-users
   apiGroup: rbac.authorization.k8s.io

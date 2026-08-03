@@ -41,6 +41,10 @@ spec:
       labels:
         app.kubernetes.io/name: zitadel-db
     spec:
+      # the rook CSI nodeplugin only runs on has-disk nodes - RBD volumes
+      # cannot attach anywhere else (repo convention for stateful workloads)
+      nodeSelector:
+        has-disk: "yes"
       containers:
         - name: postgres
           image: postgres:17.10

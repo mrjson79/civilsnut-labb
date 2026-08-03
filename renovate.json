@@ -29,10 +29,10 @@
     "schedule": ["at any time"]
   },
   "flux": {
-    "fileMatch": ["fluxcd/.+\\.ya?ml$"]
+    "managerFilePatterns": ["/fluxcd/.+\\.ya?ml$/"]
   },
   "kubernetes": {
-    "fileMatch": ["fluxcd/.+\\.ya?ml$"]
+    "managerFilePatterns": ["/fluxcd/.+\\.ya?ml$/"]
   },
   "packageRules": [
     {
@@ -54,13 +54,6 @@
       "labels": ["networking"],
       "automerge": false,
       "groupName": "Networking Stack"
-    },
-    {
-      "description": "Monitoring stack",
-      "matchPackageNames": ["victoria-metrics-k8s-stack", "victoria-logs-single"],
-      "labels": ["monitoring"],
-      "automerge": false,
-      "groupName": "Monitoring Stack"
     },
     {
       "description": "Storage components",
@@ -93,10 +86,10 @@
       "description": "Non-critical Helm minor/patch - automerge for homelab",
       "matchDatasources": ["helm"],
       "matchUpdateTypes": ["minor", "patch"],
-      "excludePackageNames": [
-        "cert-manager", "external-secrets",
-        "cilium",
-        "rook-ceph", "rook-ceph-cluster"
+      "matchPackageNames": [
+        "!cert-manager", "!external-secrets",
+        "!cilium",
+        "!rook-ceph", "!rook-ceph-cluster"
       ],
       "automerge": true,
       "automergeType": "pr"
@@ -104,10 +97,10 @@
     {
       "description": "All other minor/patch updates",
       "matchUpdateTypes": ["minor", "patch"],
-      "excludePackageNames": [
-        "cert-manager", "external-secrets",
-        "cilium",
-        "rook-ceph", "rook-ceph-cluster"
+      "matchPackageNames": [
+        "!cert-manager", "!external-secrets",
+        "!cilium",
+        "!rook-ceph", "!rook-ceph-cluster"
       ],
       "groupName": "Other Dependencies",
       "groupSlug": "other-deps"
@@ -142,14 +135,6 @@
     },
     {
       "matchHost": "kubernetes.github.io",
-      "timeout": 30000
-    },
-    {
-      "matchHost": "victoriametrics.github.io",
-      "timeout": 30000
-    },
-    {
-      "matchHost": "pkgs.tailscale.com",
       "timeout": 30000
     },
     {

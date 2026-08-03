@@ -47,7 +47,7 @@ spec:
         has-disk: "yes"
       containers:
         - name: postgres
-          image: postgres:18.4
+          image: postgres:17.10
           ports:
             - containerPort: 5432
               name: postgres

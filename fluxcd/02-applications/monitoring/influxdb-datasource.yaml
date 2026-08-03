@@ -11,9 +11,13 @@ data:
     # NOTE: deleteDatasources is FATAL in Grafana 13 if the named datasource
     # does not exist (provisioning module fails, pod crashloops) - do not add
     # entries here without confirming the exact name in grafana.db first.
+    # No explicit uid: Grafana derives the stable uid PF4A97030133A7E89 from
+    # the name for file-provisioned datasources; the energy dashboard
+    # references that uid. Do NOT add a uid now that the datasource exists -
+    # re-provisioning an existing name with a different uid crashloops
+    # Grafana 13 (seen during the vm-stack migration 2026-07-04).
     datasources:
       - name: InfluxDB-HA
-        uid: influxdb-ha # referenced by influxdb-energy-dashboard.yaml
         type: influxdb
         access: proxy
         url: http://influxdb-influxdb2.monitoring.svc:80

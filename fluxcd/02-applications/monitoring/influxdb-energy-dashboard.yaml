@@ -1,4 +1,7 @@
-# Home energy dashboard on the InfluxDB-HA datasource (uid influxdb-ha).
+# Home energy dashboard on the InfluxDB-HA datasource. The uid
+# PF4A97030133A7E89 is Grafana's deterministic uid for the file-provisioned
+# datasource named InfluxDB-HA (see influxdb-datasource.yaml for why no
+# explicit uid is set there).
 # Series colors are fixed per device (never palette-cycled); the 6- and
 # 3-slot sets are CVD-validated for the dark theme. Plug temperature uses
 # the reserved status colors (thresholds), not series colors.
@@ -30,7 +33,7 @@ data:
         {
           "type": "stat", "title": "Plug power now", "id": 1,
           "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
-          "datasource": { "type": "influxdb", "uid": "influxdb-ha" },
+          "datasource": { "type": "influxdb", "uid": "PF4A97030133A7E89" },
           "fieldConfig": {
             "defaults": {
               "unit": "watt", "decimals": 0,
@@ -50,7 +53,7 @@ data:
         {
           "type": "stat", "title": "Solar output now", "id": 2,
           "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
-          "datasource": { "type": "influxdb", "uid": "influxdb-ha" },
+          "datasource": { "type": "influxdb", "uid": "PF4A97030133A7E89" },
           "fieldConfig": {
             "defaults": {
               "unit": "watt", "decimals": 0,
@@ -70,7 +73,7 @@ data:
         {
           "type": "stat", "title": "Plug energy · 24 h", "id": 3,
           "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
-          "datasource": { "type": "influxdb", "uid": "influxdb-ha" },
+          "datasource": { "type": "influxdb", "uid": "PF4A97030133A7E89" },
           "fieldConfig": {
             "defaults": {
               "unit": "kwatth", "decimals": 2,
@@ -90,7 +93,7 @@ data:
         {
           "type": "stat", "title": "Hottest plug", "id": 4,
           "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
-          "datasource": { "type": "influxdb", "uid": "influxdb-ha" },
+          "datasource": { "type": "influxdb", "uid": "PF4A97030133A7E89" },
           "fieldConfig": {
             "defaults": {
               "unit": "celsius", "decimals": 1,
@@ -115,7 +118,7 @@ data:
         {
           "type": "timeseries", "title": "Household power", "id": 5,
           "gridPos": { "h": 9, "w": 15, "x": 0, "y": 4 },
-          "datasource": { "type": "influxdb", "uid": "influxdb-ha" },
+          "datasource": { "type": "influxdb", "uid": "PF4A97030133A7E89" },
           "fieldConfig": {
             "defaults": {
               "unit": "watt", "min": 0,
@@ -147,7 +150,7 @@ data:
         {
           "type": "timeseries", "title": "Cooling power", "id": 6,
           "gridPos": { "h": 9, "w": 9, "x": 15, "y": 4 },
-          "datasource": { "type": "influxdb", "uid": "influxdb-ha" },
+          "datasource": { "type": "influxdb", "uid": "PF4A97030133A7E89" },
           "fieldConfig": {
             "defaults": {
               "unit": "watt", "min": 0,
@@ -176,7 +179,7 @@ data:
         {
           "type": "timeseries", "title": "Solar output", "id": 7,
           "gridPos": { "h": 9, "w": 12, "x": 0, "y": 13 },
-          "datasource": { "type": "influxdb", "uid": "influxdb-ha" },
+          "datasource": { "type": "influxdb", "uid": "PF4A97030133A7E89" },
           "fieldConfig": {
             "defaults": {
               "unit": "watt", "min": 0,
@@ -202,7 +205,7 @@ data:
         {
           "type": "timeseries", "title": "Room temperature", "id": 10,
           "gridPos": { "h": 9, "w": 12, "x": 12, "y": 13 },
-          "datasource": { "type": "influxdb", "uid": "influxdb-ha" },
+          "datasource": { "type": "influxdb", "uid": "PF4A97030133A7E89" },
           "fieldConfig": {
             "defaults": {
               "unit": "celsius", "decimals": 1,
@@ -233,7 +236,7 @@ data:
         {
           "type": "bargauge", "title": "Plug temperature", "id": 8,
           "gridPos": { "h": 9, "w": 12, "x": 0, "y": 22 },
-          "datasource": { "type": "influxdb", "uid": "influxdb-ha" },
+          "datasource": { "type": "influxdb", "uid": "PF4A97030133A7E89" },
           "fieldConfig": {
             "defaults": {
               "unit": "celsius", "decimals": 1, "min": 0, "max": 80,
@@ -260,7 +263,7 @@ data:
         {
           "type": "bargauge", "title": "Plug energy · last 24 h", "id": 9,
           "gridPos": { "h": 9, "w": 12, "x": 12, "y": 22 },
-          "datasource": { "type": "influxdb", "uid": "influxdb-ha" },
+          "datasource": { "type": "influxdb", "uid": "PF4A97030133A7E89" },
           "fieldConfig": {
             "defaults": {
               "unit": "kwatth", "decimals": 2, "min": 0,

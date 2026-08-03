@@ -18,15 +18,19 @@ TOKEN=$(kubectl -n monitoring get secret influxdb-auth -o jsonpath='{.data.admin
 kubectl -n monitoring exec influxdb-influxdb2-0 -- influx query -o home -t "$TOKEN" \
   'import "influxdata/influxdb/schema" schema.measurements(bucket: "home_assistant")'
 
-# 2. Create the stack (ONCE - note the returned stack ID)
+# 2. Create the stack (ONCE - already done 2026-08-03, stack ID 111dadb5ef15d000)
 kubectl -n monitoring exec influxdb-influxdb2-0 -- influx stacks init -o home -t "$TOKEN" \
-  -n ha-downsample --json | jq -r .id
+  --stack-name ha-downsample
 
 # 3. Apply the template to the stack (repeat this step for every future edit)
 kubectl -n monitoring cp downsample-template.yml influxdb-influxdb2-0:/tmp/downsample-template.yml
 kubectl -n monitoring exec influxdb-influxdb2-0 -- influx apply -o home -t "$TOKEN" \
-  --stack-id <STACK_ID> -f /tmp/downsample-template.yml --force yes
+  --stack-id 111dadb5ef15d000 -f /tmp/downsample-template.yml --force yes
 ```
+
+Applied 2026-08-03: bucket + both tasks active. Verified measurements arriving
+from HA: `W`, `V`, `A`, `°C`, `Wh` (Shelly Gen2 energy is Wh, not kWh - the
+energy task filter covers both; Growatt kWh entities also match).
 
 Find the stack ID again later with:
 `kubectl -n monitoring exec influxdb-influxdb2-0 -- influx stacks -o home -t "$TOKEN"`

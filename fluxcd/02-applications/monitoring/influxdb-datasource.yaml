@@ -13,6 +13,7 @@ data:
     # entries here without confirming the exact name in grafana.db first.
     datasources:
       - name: InfluxDB-HA
+        uid: influxdb-ha # referenced by influxdb-energy-dashboard.yaml
         type: influxdb
         access: proxy
         url: http://influxdb-influxdb2.monitoring.svc:80

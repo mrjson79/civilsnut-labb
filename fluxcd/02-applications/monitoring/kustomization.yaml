@@ -21,6 +21,7 @@ resources:
   - influxdb.yaml
   - influxdb-externalsecret.yaml
   - influxdb-datasource.yaml
+  - influxdb-energy-dashboard.yaml
   - influxdb-httproute.yaml
   - httproute.yaml
   - referencegrant.yaml

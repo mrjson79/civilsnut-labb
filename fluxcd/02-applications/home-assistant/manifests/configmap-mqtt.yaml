@@ -188,6 +188,8 @@ data:
 
       - name: "Anders Office Desk Energy"
         state_topic: "shellies/anders_office_desk/relay/0/energy"
+        # Gen1 reports Watt-minutes, not Wh
+        value_template: "{{ (value | float / 60) | round(2) }}"
         unit_of_measurement: "Wh"
         device_class: "energy"
         unique_id: "shelly_anders_office_desk_energy"
@@ -213,6 +215,8 @@ data:
 
       - name: "Saras Desk Energy"
         state_topic: "shellies/saras_desk/relay/0/energy"
+        # Gen1 reports Watt-minutes, not Wh
+        value_template: "{{ (value | float / 60) | round(2) }}"
         unit_of_measurement: "Wh"
         device_class: "energy"
         unique_id: "shelly_saras_desk_energy"
@@ -238,6 +242,8 @@ data:
 
       - name: "Lab Energy"
         state_topic: "shellies/lab/relay/0/energy"
+        # Gen1 reports Watt-minutes, not Wh
+        value_template: "{{ (value | float / 60) | round(2) }}"
         unit_of_measurement: "Wh"
         device_class: "energy"
         unique_id: "shelly_lab_energy"
@@ -263,6 +269,8 @@ data:
 
       - name: "Master Bedroom Energy"
         state_topic: "shellies/master_bedroom/relay/0/energy"
+        # Gen1 reports Watt-minutes, not Wh
+        value_template: "{{ (value | float / 60) | round(2) }}"
         unit_of_measurement: "Wh"
         device_class: "energy"
         unique_id: "shelly_master_bedroom_energy"

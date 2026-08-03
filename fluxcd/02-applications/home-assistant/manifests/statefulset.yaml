@@ -81,6 +81,11 @@ spec:
           env:
             - name: TZ
               value: "UTC"
+            - name: INFLUXDB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: home-assistant-influxdb
+                  key: INFLUXDB_TOKEN
           livenessProbe:
             httpGet:
               path: /

@@ -33,6 +33,39 @@ data:
     # MQTT Configuration
     mqtt: !include mqtt.yaml
 
+    # Long-term energy history -> InfluxDB 2.x in the monitoring namespace.
+    # Raw bucket keeps 30d; hourly downsamples land in home_assistant_long.
+    # hostNetwork pod reaches the ClusterIP via Cilium socket-LB; fallback if
+    # that ever breaks: host influxdb.civilsnut.se, port 443, ssl true.
+    influxdb:
+      api_version: 2
+      host: influxdb-influxdb2.monitoring.svc.cluster.local
+      port: 80
+      ssl: false
+      token: !env_var INFLUXDB_TOKEN
+      organization: home
+      bucket: home_assistant
+      max_retries: 3
+      precision: s
+      tags:
+        source: HA
+      tags_attributes:
+        - friendly_name
+        - device_class
+      default_measurement: units
+      # Strict include - the default "everything" fills the bucket with
+      # binary sensors and device trackers and inflates cardinality
+      include:
+        entity_globs:
+          - sensor.shelly*
+          - sensor.growatt*
+          - sensor.solis* # planned inverter
+          - sensor.*_power
+          - sensor.*_energy
+          - sensor.*_voltage
+          - sensor.*_current
+          - sensor.*_temperature # plug temps (freezer/cooler monitoring)
+
     # Dashboard Configuration
     lovelace:
       mode: storage

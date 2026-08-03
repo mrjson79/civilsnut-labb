@@ -6,6 +6,7 @@ resources:
   - configmap-dashboard.yaml
   - configmap-headers.yaml
   - configmap-mqtt.yaml
+  - influxdb-externalsecret.yaml
   - pvc.yaml
   - service.yaml
   - statefulset.yaml

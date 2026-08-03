@@ -107,6 +107,9 @@ spec:
           - ReadWriteOnce
       envFromSecrets:
         - name: grafana-oidc
+        # INFLUXDB_TOKEN for the InfluxDB-HA datasource ($__env{} expansion
+        # in influxdb-datasource.yaml)
+        - name: grafana-influxdb-token
       env:
         # Hardcoded GrafanaAdmin for every Zitadel login (single-admin
         # homelab). Follow-up: map the Zitadel roles claim

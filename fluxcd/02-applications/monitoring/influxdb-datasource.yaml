@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: influxdb-grafana-datasource
+  namespace: monitoring
+  labels:
+    grafana_datasource: "1"
+data:
+  influxdb-datasource.yaml: |
+    apiVersion: 1
+    # NOTE: deleteDatasources is FATAL in Grafana 13 if the named datasource
+    # does not exist (provisioning module fails, pod crashloops) - do not add
+    # entries here without confirming the exact name in grafana.db first.
+    datasources:
+      - name: InfluxDB-HA
+        type: influxdb
+        access: proxy
+        url: http://influxdb-influxdb2.monitoring.svc:80
+        jsonData:
+          version: Flux
+          organization: home
+          defaultBucket: home_assistant
+          httpMode: POST
+        secureJsonData:
+          # Expanded from the grafana-influxdb-token Secret loaded via
+          # envFromSecrets in kube-prometheus-stack.yaml
+          token: $__env{INFLUXDB_TOKEN}

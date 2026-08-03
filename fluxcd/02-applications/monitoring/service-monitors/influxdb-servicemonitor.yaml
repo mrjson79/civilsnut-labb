@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: influxdb
+  namespace: monitoring
+  labels:
+    app: influxdb
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: influxdb2
+      app.kubernetes.io/instance: influxdb
+  namespaceSelector:
+    matchNames:
+      - monitoring
+  endpoints:
+    - port: http
+      interval: 60s
+      path: /metrics

@@ -1,0 +1,53 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: influxdb
+  namespace: monitoring
+spec:
+  interval: 5m
+  timeout: 10m
+  chart:
+    spec:
+      chart: influxdb2
+      version: "2.1.2"
+      sourceRef:
+        kind: HelmRepository
+        name: influxdata
+        namespace: monitoring
+      interval: 1h
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    adminUser:
+      organization: home
+      bucket: home_assistant
+      user: admin
+      # Raw bucket retention - long-term storage lives in home_assistant_long
+      # (infinite retention, fed by hourly downsampling tasks created in the UI)
+      retention_policy: "30d"
+      # Keys admin-password + admin-token, synced from 1Password by
+      # influxdb-externalsecret.yaml. Only read at first bootstrap of the volume.
+      existingSecret: influxdb-auth
+
+    persistence:
+      enabled: true
+      storageClass: ceph-block
+      size: 50Gi
+
+    nodeSelector:
+      has-disk: "yes"
+
+    # Chart default is minAvailable: 1 on a single replica - blocks node drains
+    pdb:
+      create: false
+
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        memory: 2Gi

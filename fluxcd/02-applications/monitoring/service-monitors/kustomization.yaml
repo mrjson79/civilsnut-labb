@@ -15,4 +15,6 @@ resources:
   - httproute-dashboard.yaml
   - hubble-metrics-servicemonitor.yaml
   - hubble-relay-servicemonitor.yaml
+  - influxdb-prometheusrule.yaml
+  - influxdb-servicemonitor.yaml
   - loki-servicemonitor.yaml

@@ -1,0 +1,49 @@
+# InfluxDB stack template: long-term bucket + hourly downsampling tasks.
+# NOT a Kubernetes manifest - intentionally not listed in the monitoring
+# kustomization. Applied with `influx apply --stack-id` (see README.md);
+# stacks make re-applies idempotent, so this file stays the source of truth.
+#
+# Measurement names are HA units (driven by each entity's unit_of_measurement).
+# Verify against schema.measurements() before first apply - see README.md.
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+  name: home-assistant-long
+spec:
+  name: home_assistant_long
+  description: 1h downsamples of home_assistant; infinite retention
+---
+# Instantaneous readings (power, voltage, current, temperature): hourly mean.
+apiVersion: influxdata.com/v2alpha1
+kind: Task
+metadata:
+  name: downsample-power
+spec:
+  name: downsample_power
+  description: hourly mean of instantaneous readings -> home_assistant_long
+  every: 1h
+  offset: 5m
+  query: |
+    from(bucket: "home_assistant")
+      |> range(start: -2h)
+      |> filter(fn: (r) => r._measurement == "W" or r._measurement == "V" or r._measurement == "A" or r._measurement == "°C")
+      |> aggregateWindow(every: 1h, fn: mean, createEmpty: false)
+      |> to(bucket: "home_assistant_long", org: "home")
+---
+# Cumulative energy counters (kWh/Wh): mean is wrong for monotonic counters,
+# take the last value of each hour instead.
+apiVersion: influxdata.com/v2alpha1
+kind: Task
+metadata:
+  name: downsample-energy
+spec:
+  name: downsample_energy
+  description: hourly last() of cumulative energy counters -> home_assistant_long
+  every: 1h
+  offset: 5m
+  query: |
+    from(bucket: "home_assistant")
+      |> range(start: -2h)
+      |> filter(fn: (r) => r._measurement == "kWh" or r._measurement == "Wh")
+      |> aggregateWindow(every: 1h, fn: last, createEmpty: false)
+      |> to(bucket: "home_assistant_long", org: "home")

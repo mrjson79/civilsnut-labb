@@ -1,0 +1,36 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: influxdb-alerts
+  namespace: monitoring
+  labels:
+    app: influxdb
+    role: alert-rules
+spec:
+  groups:
+    - name: influxdb.writes
+      interval: 60s
+      rules:
+        - alert: InfluxDBWriteErrors
+          expr: rate(http_api_requests_total{path="/api/v2/write", status="4XX"}[5m]) > 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "InfluxDB rejecting writes"
+            description: "InfluxDB has been rejecting /api/v2/write requests (4XX) for more than 10 minutes - Home Assistant energy history is being lost"
+
+        # A dead HA->InfluxDB integration produces no errors, only silence.
+        # Expected to fire until the Home Assistant influxdb integration is
+        # deployed and writing.
+        - alert: InfluxDBNoWrites
+          expr: |
+            sum(rate(http_api_requests_total{path="/api/v2/write", status="2XX"}[30m])) == 0
+              or
+            absent(http_api_requests_total{path="/api/v2/write", status="2XX"})
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: "No successful InfluxDB writes for 30+ minutes"
+            description: "No successful /api/v2/write requests in 30 minutes - the Home Assistant influxdb integration may be dead or misconfigured"

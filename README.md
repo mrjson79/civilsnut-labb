@@ -19,7 +19,7 @@ A production-ready Kubernetes homelab cluster running on Talos Linux, managed wi
 ### Foundation (00-foundation)
 | Application | Version | Purpose |
 |-------------|---------|---------|
-| **Cilium** | `1.20.0-pre.4` | CNI, Load Balancing, Gateway API (v1.6.0 experimental), BGP |
+| **Cilium** | `1.20.0` | CNI, Load Balancing, Gateway API (v1.6.0 experimental), BGP |
 | **cert-manager** | `v1.19.1` | TLS Certificate Management |
 | **External Secrets** | `1.1.1` | Kubernetes Secret Management |
 | **1Password Connect** | `2.0.5` | Secret Synchronization |

@@ -18,11 +18,13 @@ resources:
   - alloy.yaml
   - grafana-oidc-externalsecret.yaml
   - loki-datasource.yaml
+  - ceph-logs-dashboard.yaml
   - influxdb.yaml
   - influxdb-externalsecret.yaml
   - influxdb-datasource.yaml
   - influxdb-energy-dashboard.yaml
   - influxdb-httproute.yaml
+  - signal-api.yaml
   - httproute.yaml
   - referencegrant.yaml
   - configs

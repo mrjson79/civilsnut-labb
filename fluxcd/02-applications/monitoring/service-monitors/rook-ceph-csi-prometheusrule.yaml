@@ -1,0 +1,54 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: rook-ceph-csi-alerts
+  namespace: monitoring
+  labels:
+    app: rook-ceph
+    role: alert-rules
+spec:
+  groups:
+    - name: rook-ceph.csi
+      interval: 60s
+      rules:
+        # Alerts on ceph-csi health using kubelet's own view of the driver, so it
+        # does not depend on rook/ceph-csi-operator object names (which change
+        # between rook releases). This is the signal that was missing when rook
+        # v1.20.1 dropped the CSI ServiceAccounts/RBAC and broke all RBD attach -
+        # see 01-infrastructure/rook-ceph/csi-driver-rbac.yaml.
+        #
+        # Aborted is excluded: ceph-csi returns it for legitimate
+        # "operation already in progress" idempotency retries.
+        - alert: CephCSIRBDOperationFailures
+          expr: |
+            sum by (node, method_name, grpc_status_code) (
+              rate(csi_operations_seconds_count{
+                driver_name=~".*rbd\\.csi\\.ceph\\.com",
+                grpc_status_code!~"OK|Aborted|AlreadyExists|NotFound"
+              }[15m])
+            ) > 0
+          for: 15m
+          labels:
+            severity: critical
+          annotations:
+            summary: "ceph-csi RBD {{ $labels.method_name }} failing on {{ $labels.node }}"
+            description: >-
+              kubelet reports {{ $labels.method_name }} returning
+              {{ $labels.grpc_status_code }} for the ceph RBD CSI driver on
+              {{ $labels.node }}. Pods with ceph-block PVCs will not start.
+              Check the rbd-nodeplugin/rbd-ctrlplugin pods and their
+              ServiceAccounts (01-infrastructure/rook-ceph/csi-driver-rbac.yaml).
+
+        - alert: CephBlockPVCPending
+          expr: |
+            kube_persistentvolumeclaim_status_phase{phase="Pending"} == 1
+              and on (namespace, persistentvolumeclaim)
+            kube_persistentvolumeclaim_info{storageclass="ceph-block"}
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "PVC {{ $labels.namespace }}/{{ $labels.persistentvolumeclaim }} pending 15m"
+            description: >-
+              A ceph-block PVC has been Pending for 15 minutes - the RBD
+              provisioner (rbd-ctrlplugin) is not servicing CreateVolume.

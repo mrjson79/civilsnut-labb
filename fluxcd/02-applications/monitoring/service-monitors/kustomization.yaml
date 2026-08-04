@@ -18,3 +18,4 @@ resources:
   - influxdb-prometheusrule.yaml
   - influxdb-servicemonitor.yaml
   - loki-servicemonitor.yaml
+  - rook-ceph-csi-prometheusrule.yaml

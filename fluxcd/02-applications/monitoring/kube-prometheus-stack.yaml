@@ -162,6 +162,16 @@ spec:
               allowUiUpdates: true
               options:
                 path: /var/lib/grafana/dashboards/dotdc
+            # Official ceph-mixin dashboards, generated from the same source
+            # tree as the running Ceph, so metric names match by construction.
+            - name: ceph
+              orgId: 1
+              folder: Ceph
+              type: file
+              disableDeletion: false
+              allowUiUpdates: true
+              options:
+                path: /var/lib/grafana/dashboards/ceph
       dashboards:
         dotdc:
           k8s-views-global:
@@ -184,6 +194,27 @@ spec:
             gnetId: 11454
             revision: 14
             datasource: Prometheus
+        # Pinned to the running Ceph version (cephImage.tag in
+        # 01-infrastructure/rook-ceph/cluster-release.yaml) - bump both together
+        # or the dashboards drift from the metric names. They require the
+        # cluster="rook-ceph" label that the rook-operator-managed
+        # ServiceMonitors relabel in; do NOT add a `datasource:` key, $datasource
+        # already resolves to the default Prometheus.
+        # Not included: cephfs-overview / radosgw-* (not deployed),
+        # hosts-overview / host-details (duplicate dotdc k8s-views-nodes),
+        # rbd-overview / rbd-details (empty unless mgr/prometheus/rbd_stats_pools
+        # is set, which costs mgr CPU per RBD image).
+        ceph:
+          ceph-cluster:
+            url: https://raw.githubusercontent.com/ceph/ceph/v20.2.2/monitoring/ceph-mixin/dashboards_out/ceph-cluster.json
+          ceph-cluster-advanced:
+            url: https://raw.githubusercontent.com/ceph/ceph/v20.2.2/monitoring/ceph-mixin/dashboards_out/ceph-cluster-advanced.json
+          ceph-osds-overview:
+            url: https://raw.githubusercontent.com/ceph/ceph/v20.2.2/monitoring/ceph-mixin/dashboards_out/osds-overview.json
+          ceph-osd-device-details:
+            url: https://raw.githubusercontent.com/ceph/ceph/v20.2.2/monitoring/ceph-mixin/dashboards_out/osd-device-details.json
+          ceph-pool-overview:
+            url: https://raw.githubusercontent.com/ceph/ceph/v20.2.2/monitoring/ceph-mixin/dashboards_out/pool-overview.json
       nodeSelector:
         has-disk: "yes"
       resources:

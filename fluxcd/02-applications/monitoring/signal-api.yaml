@@ -1,0 +1,94 @@
+# signal-cli-rest-api: REST wrapper around signal-cli, used by signal-relay
+# to deliver Alertmanager notifications to Signal Messenger.
+# The PVC holds the Signal device link (keys/registration) — deleting it
+# means re-linking the account via /v1/qrcodelink.
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: signal-cli-data
+  namespace: monitoring
+  labels:
+    app: signal-api
+spec:
+  storageClassName: ceph-block
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: signal-api
+  namespace: monitoring
+  labels:
+    app: signal-api
+spec:
+  selector:
+    matchLabels:
+      app: signal-api
+  strategy:
+    type: Recreate # RWO PVC - old pod must terminate before the new one mounts
+  template:
+    metadata:
+      labels:
+        app: signal-api
+    spec:
+      nodeSelector:
+        has-disk: "yes"
+      containers:
+        - name: signal-api
+          image: bbernhard/signal-cli-rest-api:0.100
+          env:
+            # normal mode is required for account linking (/v1/qrcodelink).
+            # Switched to json-rpc (persistent daemon, fast sends) once linked.
+            - name: MODE
+              value: normal
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /v1/health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /v1/health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 1Gi
+              cpu: 500m
+          volumeMounts:
+            - name: signal-cli-data
+              mountPath: /home/.local/share/signal-cli
+      volumes:
+        - name: signal-cli-data
+          persistentVolumeClaim:
+            claimName: signal-cli-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: signal-api
+  namespace: monitoring
+  labels:
+    app: signal-api
+spec:
+  selector:
+    app: signal-api
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+      protocol: TCP

@@ -139,7 +139,45 @@ spec:
             csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
             csi.storage.k8s.io/fstype: ext4
     cephFileSystems: []
-    cephObjectStores: []
+    # RGW for in-cluster S3 - first consumer is CNPG WAL archiving/backups
+    # (bucket via ObjectBucketClaim + the ceph-bucket StorageClass below).
+    # NOTE: same ceph cluster as the data it backs up - an offsite mirror is
+    # still the plan for real DR.
+    cephObjectStores:
+      - name: objectstore
+        spec:
+          metadataPool:
+            failureDomain: host
+            replicated:
+              size: 2
+          dataPool:
+            failureDomain: host
+            replicated:
+              size: 2
+          preservePoolsOnDelete: true
+          gateway:
+            port: 80
+            instances: 1
+            placement:
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                    - matchExpressions:
+                        - key: has-disk
+                          operator: In
+                          values: ["yes"]
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+        storageClass:
+          enabled: true
+          name: ceph-bucket
+          reclaimPolicy: Delete
+        ingress:
+          enabled: false
     monitoring:
       enabled: true
       # Sets BOTH the ServiceMonitor scrape interval AND the mgr's own metrics

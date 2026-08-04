@@ -6,5 +6,6 @@ resources:
   - externalsecrets.yaml
   - postgres.yaml
   - cnpg-cluster.yaml
+  - backup-bucket.yaml
   - release.yaml
   - httproute.yaml

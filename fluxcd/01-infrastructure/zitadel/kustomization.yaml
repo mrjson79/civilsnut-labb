@@ -7,5 +7,6 @@ resources:
   - postgres.yaml
   - cnpg-cluster.yaml
   - backup-bucket.yaml
+  - cnpg-backup.yaml
   - release.yaml
   - httproute.yaml

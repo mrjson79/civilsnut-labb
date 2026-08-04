@@ -27,6 +27,13 @@ spec:
     name: zitadel-pg-superuser
   monitoring:
     enablePodMonitor: true
+  # continuous WAL archiving to the RGW bucket via the barman-cloud plugin;
+  # ObjectStore CR + ScheduledBackup live in cnpg-backup.yaml
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: zitadel-pg-store
   resources:
     requests:
       cpu: 100m

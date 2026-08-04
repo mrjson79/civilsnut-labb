@@ -1,0 +1,38 @@
+# Backup wiring for zitadel-pg: continuous WAL archiving + nightly base
+# backups to the in-cluster RGW bucket (see backup-bucket.yaml), via the
+# barman-cloud CNPG plugin. Restore drill: runbooks/cnpg-restore-drill.yaml.
+# NOTE: same ceph cluster as the data - offsite mirror still planned.
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: zitadel-pg-store
+  namespace: zitadel
+spec:
+  retentionPolicy: "14d"
+  configuration:
+    destinationPath: s3://zitadel-pg-backups/zitadel-pg
+    endpointURL: http://rook-ceph-rgw-objectstore.rook-ceph.svc
+    s3Credentials:
+      accessKeyId:
+        name: zitadel-pg-backups
+        key: AWS_ACCESS_KEY_ID
+      secretAccessKey:
+        name: zitadel-pg-backups
+        key: AWS_SECRET_ACCESS_KEY
+    wal:
+      compression: gzip
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: zitadel-pg-nightly
+  namespace: zitadel
+spec:
+  # six-field cron (with seconds): 03:00 every night
+  schedule: "0 0 3 * * *"
+  backupOwnerReference: self
+  cluster:
+    name: zitadel-pg
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io

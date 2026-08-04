@@ -19,10 +19,14 @@ Core infrastructure components that everything else depends on:
 | Component | Purpose | Dependencies |
 |-----------|---------|--------------|
 | `cert-manager` | TLS certificate management | None |
-| `cilium` | CNI and Gateway API CRDs | None |
+| `cilium` | CNI, Gateway API implementation, BGP | gateway-api (CRDs) |
+| `coredns` | Corefile customizations (ts.net rewrite for OIDC) | None |
 | `external-secrets` | Secrets management from external sources | None |
+| `gateway-api` | Gateway API CRDs (experimental channel) | None |
+| `onepassword-connect` | 1Password sync for external-secrets | external-secrets |
+| `prometheus-operator-crds` | Prometheus Operator CRDs (ahead of kube-prometheus-stack) | None |
 
-**Deployment Order**: These components can deploy in parallel as they have no interdependencies.
+**Deployment Order**: These components can mostly deploy in parallel; CRD providers precede their consumers.
 
 ### Phase 1: Infrastructure (`01-infrastructure`)
 
@@ -30,8 +34,12 @@ Platform services that provide foundational capabilities:
 
 | Component | Purpose | Dependencies |
 |-----------|---------|--------------|
-| `shared-gateway` | Gateway API gateway for ingress | cilium (for Gateway CRDs) |
-| `longhorn` | Distributed block storage | cert-manager (for TLS) |
+| `shared-gateway` | Gateway API gateway for ingress | cilium, cert-manager |
+| `rook-ceph` | Distributed block storage + RGW object store | None |
+| `cnpg` | CloudNativePG Postgres operator | rook-ceph (PVCs), external-secrets |
+| `zitadel` | Self-hosted OIDC identity provider | cnpg, shared-gateway, external-secrets |
+| `oauth2-proxy` | ext_authz bridge for Gateway API ExternalAuth | zitadel, shared-gateway |
+| `tinkerbell` | Bare-metal PXE provisioning (Flatcar) | rook-ceph |
 
 **Deployment Order**: Depends on Phase 0 completion.
 
@@ -41,11 +49,12 @@ End-user applications and monitoring services:
 
 | Component | Purpose | Dependencies |
 |-----------|---------|--------------|
-| `home-assistant` | Home automation platform | external-secrets, longhorn, shared-gateway |
-| `ingress-nginx` | NGINX ingress controller | cert-manager, shared-gateway |
+| `flux-web` | Flux Operator web UI | shared-gateway, zitadel (OIDC) |
+| `home-assistant` | Home automation platform | external-secrets, rook-ceph, shared-gateway |
+| `httpbin` | Test / debug endpoint | shared-gateway |
+| `monitoring` | kube-prometheus-stack + Loki + Alloy + InfluxDB + Signal alerting | rook-ceph, shared-gateway |
 | `mqtt` | MQTT message broker | external-secrets |
-| `vm-stack` | Victoria Metrics monitoring | longhorn, shared-gateway |
-| `zigbee2mqtt` | Zigbee to MQTT bridge | external-secrets, longhorn, shared-gateway |
+| `zigbee2mqtt` | Zigbee to MQTT bridge | external-secrets, rook-ceph, shared-gateway |
 
 **Deployment Order**: Depends on Phase 0 and Phase 1 completion.
 
@@ -58,8 +67,8 @@ End-user applications and monitoring services:
 ### Application-Specific Dependencies
 
 - **MQTT applications** (`mqtt`, `zigbee2mqtt`): Require `external-secrets` for credential management
-- **Storage-dependent applications** (`home-assistant`, `vm-stack`, `zigbee2mqtt`): Require `longhorn` for persistent storage
-- **Web applications** (`home-assistant`, `zigbee2mqtt`, `vm-stack`): Require `shared-gateway` for external access
+- **Storage-dependent applications** (`home-assistant`, `monitoring`, `zigbee2mqtt`): Require `rook-ceph` (`ceph-block` StorageClass) for persistent storage
+- **Web applications** (`home-assistant`, `zigbee2mqtt`, `monitoring`, `flux-web`): Require `shared-gateway` for external access
 
 ## FluxCD Integration
 
@@ -79,19 +88,28 @@ Dependencies are managed through:
 
 ```
 Phase 0 (Foundation):
-cert-manager ──┐
-cilium ────────┼── Wait for all Phase 0 to be Ready
-external-secrets ┘
+cert-manager ─────┐
+cilium ───────────┤
+coredns ──────────┤
+external-secrets ─┼── Wait for all Phase 0 to be Ready
+gateway-api ──────┤
+1password-connect ┤
+prom-op-crds ─────┘
 
 Phase 1 (Infrastructure):
-shared-gateway ──┐── Wait for all Phase 1 to be Ready  
-longhorn ────────┘
+shared-gateway ──┐
+rook-ceph ───────┤
+cnpg ────────────┼── Wait for all Phase 1 to be Ready
+zitadel ─────────┤
+oauth2-proxy ────┤
+tinkerbell ──────┘
 
 Phase 2 (Applications):
-home-assistant ──┐
-ingress-nginx ───┤
-mqtt ────────────┼── Deploy in parallel
-vm-stack ────────┤
+flux-web ────────┐
+home-assistant ──┤
+httpbin ─────────┤
+monitoring ──────┼── Deploy in parallel
+mqtt ────────────┤
 zigbee2mqtt ─────┘
 ```
 
@@ -109,9 +127,10 @@ zigbee2mqtt ─────┘
    kubectl get crd | grep -E "(gateway|cilium|external-secrets)"
    ```
 
-3. **Storage issues**: Verify Longhorn is operational
+3. **Storage issues**: Verify Rook-Ceph is operational
    ```bash
-   kubectl get pods -n longhorn-system
+   kubectl get pods -n rook-ceph
+   kubectl -n rook-ceph exec deploy/rook-ceph-tools -- ceph status
    ```
 
 ### Dependency Verification
@@ -125,10 +144,10 @@ kubectl get pods -n external-secrets
 
 # Infrastructure phase  
 kubectl get gateway -n gateway-system
-kubectl get storageclass longhorn
+kubectl get storageclass ceph-block
 
 # Applications phase
-kubectl get pods -n monitoring  # vm-stack
+kubectl get pods -n monitoring  # kube-prometheus-stack, Loki, Alloy, Signal alerting
 kubectl get pods -n mosquitto   # mqtt
 kubectl get pods -n home-assistant
 kubectl get pods -n zigbee2mqtt

@@ -82,7 +82,7 @@ The **monitoring** stack bundles several Helm releases in the `monitoring` names
 
 | Chart | Version | Role |
 |-------|---------|------|
-| **kube-prometheus-stack** | 87.21.0 | Prometheus, Alertmanager, Grafana, kube-state-metrics, prometheus-operator |
+| **kube-prometheus-stack** | 88.0.1 | Prometheus, Alertmanager, Grafana, kube-state-metrics, prometheus-operator |
 | **Loki** | 7.2.0 | Log storage |
 | **Grafana Alloy** | 1.11.0 | Node agent shipping logs → Loki and node metrics → Prometheus |
 | **InfluxDB2** | 2.1.2 | Time-series store for energy metrics |

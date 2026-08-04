@@ -42,10 +42,11 @@ spec:
         - name: signal-api
           image: bbernhard/signal-cli-rest-api:0.100
           env:
-            # normal mode is required for account linking (/v1/qrcodelink).
-            # Switched to json-rpc (persistent daemon, fast sends) once linked.
+            # json-rpc keeps a persistent signal-cli daemon (sub-second sends).
+            # Account linking (/v1/qrcodelink) only works in MODE=normal —
+            # flip back temporarily if the account ever needs re-linking.
             - name: MODE
-              value: normal
+              value: json-rpc
           ports:
             - containerPort: 8080
               name: http

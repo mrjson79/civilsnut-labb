@@ -24,6 +24,19 @@ spec:
   values:
     nodeSelector:
       has-disk: "yes"
+    # Grants the operator RBAC (Role/RoleBinding rook-ceph-monitoring) to manage
+    # the rook-ceph-mgr and rook-ceph-exporter ServiceMonitors. Without this the
+    # operator logs "failed to enable service monitor: ... is forbidden" on every
+    # reconcile (swallowed, so it never blocks the cluster) and the ceph exporter
+    # is never scraped.
+    #
+    # Deliberately NOT setting csi.serviceMonitor.enabled: it selects
+    # app: csi-metrics, a Service rook v1.20 no longer creates (CSI moved to
+    # ceph-csi-operator, see csi-driver-rbac.yaml) - it would render a
+    # ServiceMonitor with zero targets. CSI health is alerted on in
+    # 02-applications/monitoring/service-monitors/rook-ceph-csi-prometheusrule.yaml
+    monitoring:
+      enabled: true
     csi:
       enableRbdDriver: true
       enableCephfsDriver: false

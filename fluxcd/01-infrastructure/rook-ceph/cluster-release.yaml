@@ -11,6 +11,11 @@ spec:
   chart:
     spec:
       chart: rook-ceph-cluster
+      # Pinned to match the operator. Previously unpinned, which let Flux pull
+      # any new chart release - and since cephImage.tag is a chart default that
+      # would silently start a rolling Ceph upgrade, and can silently re-enable
+      # alerts that prometheusRuleOverrides disables by exact name.
+      version: "v1.20.3"
       sourceRef:
         kind: HelmRepository
         name: rook-release
@@ -23,8 +28,40 @@ spec:
     remediation:
       retries: 3
   values:
+    # Pinned explicitly: this is otherwise a chart default, so a chart bump would
+    # roll a Ceph upgrade on a 4-OSD size:2 cluster unattended. Must be bumped
+    # together with the ceph-mixin dashboard URLs in
+    # 02-applications/monitoring/kube-prometheus-stack.yaml.
+    cephImage:
+      repository: quay.io/ceph/ceph
+      tag: v20.2.2
+
+    # Ceph CLI pod for investigating alerts: most ceph-mixin alert descriptions
+    # tell you to run `ceph health detail`, and CephDaemonCrash cannot be cleared
+    # without `ceph crash archive-all`. Note it mounts the client.admin keyring,
+    # so `kubectl exec` into it is full cluster admin.
+    toolbox:
+      enabled: true
+      resources:
+        requests:
+          cpu: 50m
+          memory: 128Mi
+        limits:
+          memory: 512Mi
+
     cephClusterSpec:
       dataDirHostPath: /var/lib/rook
+      # Kept deliberately (chart default, but pinned here so it is a decision):
+      # Loki's PVC is on ceph-block, so if ceph degrades enough to stall RBD I/O
+      # then Loki can neither ingest nor be queried - the logs needed to diagnose
+      # ceph become unavailable exactly when ceph breaks. These on-host files are
+      # readable via talosctl with no ceph, no Loki and no apiserver in the path.
+      # 100M (chart default 500M) bounds the footprint on Talos's EPHEMERAL
+      # partition, which is the system disk, not the OSD NVMe.
+      logCollector:
+        enabled: true
+        periodicity: daily
+        maxLogSize: 100M
       mon:
         count: 3
         allowMultiplePerNode: false
@@ -105,4 +142,11 @@ spec:
     cephObjectStores: []
     monitoring:
       enabled: true
+      # Sets BOTH the ServiceMonitor scrape interval AND the mgr's own metrics
+      # cache TTL (mgr/prometheus/scrape_interval). 15s is the mgr's natural
+      # cache period, so every scrape returns fresh data and no sample is a
+      # duplicate; the operator default of 10s re-reads the same cached payload.
+      # Changing this field also bumps the CephCluster generation, which forces
+      # the operator to reconcile and create both ServiceMonitors immediately.
+      interval: 15s
       createPrometheusRules: false

@@ -12,4 +12,8 @@ resources:
   - cluster-release.yaml
   - httproute.yaml
   - referencegrant.yaml
-  - servicemonitor.yaml
+  # servicemonitor.yaml removed deliberately: the rook operator now owns both the
+  # rook-ceph-mgr and rook-ceph-exporter ServiceMonitors (see monitoring.enabled
+  # in operator-release.yaml). Its versions set honorLabels: true and relabel
+  # cluster="rook-ceph", both of which the ceph-mixin dashboards require. Keeping
+  # a copy here would fight the operator on every reconcile.

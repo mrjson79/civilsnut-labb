@@ -30,6 +30,7 @@ A production-ready Kubernetes homelab cluster running on Talos Linux, managed wi
 |-------------|---------|---------|
 | **Rook-Ceph** | operator + cluster | Distributed Block Storage |
 | **Shared Gateway** | - | Cilium Gateway API |
+| **CloudNativePG** | `1.30` | Postgres operator (zitadel-pg: 2 instances, WAL archiving + nightly backups to RGW) |
 | **Zitadel** | `v4.15.3` | Self-hosted OIDC Identity Provider (idp.civilsnut.se) |
 | **oauth2-proxy** | `7.15.3` | ext_authz bridge for Gateway API ExternalAuth (GEP-1494) |
 | **External DNS** | - | Automatic DNS record management (Unifi) |

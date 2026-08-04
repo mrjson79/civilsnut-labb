@@ -1,0 +1,33 @@
+# Restore drill for zitadel-pg backups - a backup is only real once restored.
+# Bootstraps a throwaway cluster from the newest base backup + WAL in the RGW
+# bucket. Run quarterly (and after any backup-config change):
+#   kubectl apply -f runbooks/cnpg-restore-drill.yaml
+#   kubectl -n zitadel get cluster zitadel-pg-restore -w   # -> healthy
+#   kubectl -n zitadel exec zitadel-pg-restore-1 -c postgres -- \
+#     psql -U postgres -d zitadel -tAc 'select count(*) from eventstore.events2'
+#   # compare against the live cluster, then:
+#   kubectl delete -f runbooks/cnpg-restore-drill.yaml
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: zitadel-pg-restore
+  namespace: zitadel
+spec:
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.10
+  affinity:
+    nodeSelector:
+      has-disk: "yes"
+  storage:
+    size: 10Gi
+    storageClass: ceph-block
+  bootstrap:
+    recovery:
+      source: zitadel-pg-backup
+  externalClusters:
+    - name: zitadel-pg-backup
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: zitadel-pg-store
+          serverName: zitadel-pg

@@ -32,7 +32,9 @@ metadata:
     app.kubernetes.io/name: zitadel-db
 spec:
   serviceName: zitadel-db
-  replicas: 1
+  # scaled to 0 at CNPG cutover (2026-08-04) - kept with its PVC as instant
+  # rollback until the soak period ends, then this whole file goes away
+  replicas: 0
   selector:
     matchLabels:
       app.kubernetes.io/name: zitadel-db

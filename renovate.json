@@ -118,6 +118,11 @@
       "matchPackageNames": ["postgres", "ghcr.io/cloudnative-pg/postgresql"],
       "matchUpdateTypes": ["major"],
       "dependencyDashboardApproval": true
+    },
+    {
+      "description": "alertmanager-webhook-signal moved from calver (22.x, 2022) to semver 1.x - the stale calver tags sort higher and must be blocked",
+      "matchPackageNames": ["docker.io/schlauerlauer/alertmanager-webhook-signal"],
+      "allowedVersions": "<20"
     }
   ],
   "customManagers": [

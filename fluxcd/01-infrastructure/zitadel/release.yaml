@@ -70,3 +70,10 @@ spec:
     login:
       enabled: true
       replicaCount: 1
+
+    # the chart defaults the kubectl helper tag to the cluster's k8s version;
+    # alpine/k8s lags upstream patches (no 1.36.3 tag exists) - pin explicitly
+    tools:
+      kubectl:
+        image:
+          tag: "1.36.2"

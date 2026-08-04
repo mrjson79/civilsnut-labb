@@ -4,3 +4,6 @@ resources:
   - namespace.yaml
   - repository.yaml
   - release.yaml
+  # barman-cloud backup plugin (WAL archiving + base backups to S3);
+  # pinned release manifest, installs into cnpg-system, needs cert-manager
+  - https://github.com/cloudnative-pg/plugin-barman-cloud/releases/download/v0.14.0/manifest.yaml

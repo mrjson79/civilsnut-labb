@@ -149,4 +149,97 @@ spec:
       # Changing this field also bumps the CephCluster generation, which forces
       # the operator to reconcile and create both ServiceMonitors immediately.
       interval: 15s
-      createPrometheusRules: false
+      # Ceph's own ceph-mixin alerts (89). Their thresholds are mostly
+      # ceph_health_detail{name="X"} == 1, i.e. Ceph decides when NEARFULL /
+      # PG_NOT_DEEP_SCRUBBED / MON_DISK_LOW is true using its configured ratios -
+      # which cannot be reproduced faithfully in hand-written PromQL.
+      # 46 are disabled below and 3 retuned, leaving 43.
+      # NOTE: overrides match by EXACT alert name and a typo is silently
+      # ignored, so re-check the rendered rule count after any chart bump:
+      #   kubectl get --raw ".../api/v1/rules?type=alert" | jq '[.data.groups[]
+      #     |select(.file|test("prometheus-ceph-rules"))|.rules[].name]|length'
+      createPrometheusRules: true
+      prometheusRuleOverrides:
+        # --- BROKEN OR GUARANTEED-NOISY IN THIS CLUSTER ---
+        # Cilium's cilium_vxlan (1450) and lxc* veths sit alongside eth0 (1500),
+        # so "MTU differs from the cluster median" is permanently true.
+        CephNodeInconsistentMTU: {disabled: true}
+        # Selector is device!="lo", which includes every lxc* veth; drops and
+        # errors on veth pairs are routine.
+        CephNodeNetworkPacketDrops: {disabled: true}
+        CephNodeNetworkPacketErrors: {disabled: true}
+        # Talos / is a read-only image: either excluded by the exporter's
+        # fs-type filter (dead rule) or reported ~100% used (fires forever).
+        CephNodeRootFilesystemFull: {disabled: true}
+        # Duplicates kube-prometheus-stack's better-tuned
+        # NodeFilesystemSpaceFillingUp, which is already active.
+        CephNodeDiskspaceWarning: {disabled: true}
+        # No bonded interfaces -> node_bonding_* absent -> dead rule.
+        CephNodeNetworkBondDegraded: {disabled: true}
+        # Silently impossible: joins ceph_osd_numpg (job=rook-ceph-exporter) to
+        # ceph_osd_metadata (job=rook-ceph-mgr) on (cluster, job, ceph_daemon),
+        # and those job labels can never match. Low stakes on 4 identical NVMe.
+        CephPGImbalance: {disabled: true}
+
+        # --- DEAD WEIGHT: metric families never emitted here ---
+        # CephFS not deployed (cephFileSystems: [], csi.enableCephfsDriver false)
+        CephFilesystemDamaged: {disabled: true}
+        CephFilesystemOffline: {disabled: true}
+        CephFilesystemDegraded: {disabled: true}
+        CephFilesystemMDSRanksLow: {disabled: true}
+        CephFilesystemInsufficientStandby: {disabled: true}
+        CephFilesystemFailureNoStandby: {disabled: true}
+        CephFilesystemReadOnly: {disabled: true}
+        # No rbd-mirror daemon
+        CephRBDMirrorImagesPerDaemonHigh: {disabled: true}
+        CephRBDMirrorImagesNotInSync: {disabled: true}
+        CephRBDMirrorImagesNotInSyncVeryHigh: {disabled: true}
+        CephRBDMirrorImageTransferBandwidthHigh: {disabled: true}
+        # No NVMe-oF gateway
+        NVMeoFSubsystemNamespaceLimit: {disabled: true}
+        NVMeoFMultipleNamespacesOfRBDImage: {disabled: true}
+        NVMeoFTooManyGateways: {disabled: true}
+        NVMeoFMaxGatewayGroupSize: {disabled: true}
+        NVMeoFMaxGatewayGroups: {disabled: true}
+        NVMeoFSingleGateway: {disabled: true}
+        NVMeoFHighGatewayCPU: {disabled: true}
+        NVMeoFGatewayOpenSecurity: {disabled: true}
+        NVMeoFTooManySubsystems: {disabled: true}
+        NVMeoFTooManyNamespaces: {disabled: true}
+        NVMeoFVersionMismatch: {disabled: true}
+        NVMeoFHighClientCount: {disabled: true}
+        NVMeoFMissingListener: {disabled: true}
+        NVMeoFZeroListenerSubsystem: {disabled: true}
+        NVMeoFHighHostCPU: {disabled: true}
+        NVMeoFInterfaceDown: {disabled: true}
+        NVMeoFInterfaceDuplex: {disabled: true}
+        NVMeoFHighReadLatency: {disabled: true}
+        NVMeoFHighWriteLatency: {disabled: true}
+        NVMeoFHostKeepAliveTimeout: {disabled: true}
+        # HARDWARE_* health checks come from cephadm's node-proxy (Redfish/BMC),
+        # which rook does not deploy - never emitted under rook.
+        HardwareStorageError: {disabled: true}
+        HardwareMemoryError: {disabled: true}
+        HardwareProcessorError: {disabled: true}
+        HardwareNetworkError: {disabled: true}
+        HardwarePowerError: {disabled: true}
+        HardwareFanError: {disabled: true}
+        # CEPHADM_CERT_* - cephadm cert-mgr only
+        CephCertificateError: {disabled: true}
+        CephCertificateWarning: {disabled: true}
+
+        # --- RETUNED, not disabled ---
+        # Upstream expr is up{job="ceph"} == 0, but rook's job label is
+        # rook-ceph-mgr, so this "the metrics pipeline is dead" alert can never
+        # fire as shipped. Worth fixing rather than losing.
+        CephMgrPrometheusModuleInactive:
+          expr: 'up{job="rook-ceph-mgr"} == 0'
+        # Ships with no `for:`, so 1 of 4 OSDs down = 25% >= 10% => instant
+        # critical on every Talos node reboot or OSD restart.
+        CephOSDDownHigh:
+          for: 15m
+        # Catch-all for any HEALTH_WARN, including transient scrub lag and
+        # reboots. Keep it (nothing else nets unclassified warnings) but stop it
+        # paging for every node reboot.
+        CephHealthWarning:
+          for: 1h

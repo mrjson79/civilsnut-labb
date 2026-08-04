@@ -1,0 +1,57 @@
+# CloudNativePG cluster replacing the hand-rolled zitadel-db StatefulSet.
+# bootstrap.initdb.import runs ONCE at cluster creation: it pg_dump/restores
+# the zitadel database from the old StatefulSet (externalClusters: zitadel-db).
+# Cutover procedure (fresh import under write freeze): see runbooks/ and the
+# migration notes - delete this Cluster, let Flux recreate it, repoint the
+# zitadel HelmRelease Host to zitadel-pg-rw.
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: zitadel-pg
+  namespace: zitadel
+spec:
+  instances: 2
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.10
+  primaryUpdateStrategy: unsupervised
+  affinity:
+    nodeSelector:
+      has-disk: "yes"
+  storage:
+    size: 10Gi
+    storageClass: ceph-block
+  # zitadel's helm chart drives its init/setup jobs with the postgres
+  # superuser (Admin.Username) - keep superuser access with the same
+  # password the old StatefulSet used
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: zitadel-pg-superuser
+  monitoring:
+    enablePodMonitor: true
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 1Gi
+  bootstrap:
+    initdb:
+      database: zitadel
+      owner: zitadel
+      secret:
+        name: zitadel-pg-app
+      import:
+        type: microservice
+        databases:
+          - zitadel
+        source:
+          externalCluster: zitadel-db
+  externalClusters:
+    - name: zitadel-db
+      connectionParameters:
+        host: zitadel-db.zitadel.svc
+        user: postgres
+        dbname: zitadel
+        sslmode: disable
+      password:
+        name: zitadel-postgres
+        key: postgres-password

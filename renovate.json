@@ -120,6 +120,15 @@
       "dependencyDashboardApproval": true
     }
   ],
+  "customManagers": [
+    {
+      "description": "CNPG Cluster imageName is a CRD field the kubernetes manager cannot parse",
+      "customType": "regex",
+      "managerFilePatterns": ["/fluxcd/.+\\.ya?ml$/"],
+      "matchStrings": ["imageName: (?<depName>ghcr\\.io/cloudnative-pg/postgresql):(?<currentValue>[\\w.\\-]+)"],
+      "datasourceTemplate": "docker"
+    }
+  ],
   "hostRules": [
     {
       "matchHost": "charts.jetstack.io",

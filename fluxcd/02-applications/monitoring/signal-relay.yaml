@@ -1,0 +1,73 @@
+# alertmanager-webhook-signal: translates Alertmanager/Grafana webhook
+# payloads into signal-cli-rest-api /v2/send calls.
+# Config (with phone numbers) comes from the signal-relay-config Secret,
+# rendered by signal-relay-externalsecret.yaml.
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: signal-relay
+  namespace: monitoring
+  labels:
+    app: signal-relay
+spec:
+  selector:
+    matchLabels:
+      app: signal-relay
+  template:
+    metadata:
+      labels:
+        app: signal-relay
+    spec:
+      containers:
+        - name: signal-relay
+          image: docker.io/schlauerlauer/alertmanager-webhook-signal:1.1.1
+          env:
+            - name: CONFIG_PATH
+              value: /config.yaml
+          ports:
+            - containerPort: 10000
+              name: http
+              protocol: TCP
+          readinessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          resources:
+            requests:
+              memory: 32Mi
+              cpu: 10m
+            limits:
+              memory: 128Mi
+              cpu: 100m
+          volumeMounts:
+            - name: config
+              mountPath: /config.yaml
+              subPath: config.yaml
+              readOnly: true
+      volumes:
+        - name: config
+          secret:
+            secretName: signal-relay-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: signal-relay
+  namespace: monitoring
+  labels:
+    app: signal-relay
+spec:
+  selector:
+    app: signal-relay
+  ports:
+    - name: http
+      port: 10000
+      targetPort: http
+      protocol: TCP

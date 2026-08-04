@@ -25,6 +25,8 @@ resources:
   - influxdb-energy-dashboard.yaml
   - influxdb-httproute.yaml
   - signal-api.yaml
+  - signal-relay.yaml
+  - signal-relay-externalsecret.yaml
   - httproute.yaml
   - referencegrant.yaml
   - configs

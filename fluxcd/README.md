@@ -52,7 +52,7 @@ Core platform components that everything else depends on.
 | **External Secrets** | 2.8.0 <!-- renovate: datasource=helm depName=external-secrets registryUrl=https://charts.external-secrets.io --> | Kubernetes secret management |
 | **1Password Connect** | 2.4.1 <!-- renovate: datasource=helm depName=connect registryUrl=https://1password.github.io/connect-helm-charts --> | Secret synchronization from 1Password |
 | **Gateway API CRDs** | v1.6.0 | Gateway API custom resource definitions (experimental channel, vendored manifest) |
-| **Prometheus Operator CRDs** | v0.92.1 <!-- renovate: datasource=github-releases depName=prometheus-operator/prometheus-operator --> | Prometheus Operator custom resource definitions |
+| **Prometheus Operator CRDs** | v0.93.0 <!-- renovate: datasource=github-releases depName=prometheus-operator/prometheus-operator --> | Prometheus Operator custom resource definitions |
 | **CoreDNS** | — | Corefile customizations (ts.net rewrite for OIDC) |
 
 ### 01-infrastructure
@@ -76,7 +76,7 @@ User-facing applications.
 | **Flux Web** | — | Flux Operator web UI (fluxcd.civilsnut.se); image managed by flux-operator |
 | **Home Assistant** | 2026.2.3 <!-- renovate: datasource=docker depName=ghcr.io/home-assistant/home-assistant --> | Home automation platform |
 | **Mosquitto MQTT** | 2.0.22 <!-- renovate: datasource=docker depName=eclipse-mosquitto --> | MQTT broker |
-| **Zigbee2MQTT** | 2.12.1 <!-- renovate: datasource=helm depName=zigbee2mqtt registryUrl=https://charts.zigbee2mqtt.io --> | Zigbee to MQTT bridge |
+| **Zigbee2MQTT** | 2.13.0 <!-- renovate: datasource=helm depName=zigbee2mqtt registryUrl=https://charts.zigbee2mqtt.io --> | Zigbee to MQTT bridge |
 | **httpbin** | — | Test / debug endpoint (httpbin.civilsnut.se) |
 
 The **monitoring** stack bundles several Helm releases in the `monitoring` namespace:

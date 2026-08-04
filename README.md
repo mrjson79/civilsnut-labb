@@ -30,7 +30,7 @@ per-stack breakdown.
 | **External Secrets** | `2.8.0` <!-- renovate: datasource=helm depName=external-secrets registryUrl=https://charts.external-secrets.io --> | Kubernetes Secret Management |
 | **1Password Connect** | `2.4.1` <!-- renovate: datasource=helm depName=connect registryUrl=https://1password.github.io/connect-helm-charts --> | Secret Synchronization |
 | **Gateway API CRDs** | `v1.6.0` | Gateway API CRDs (experimental channel, vendored manifest) |
-| **Prometheus Operator CRDs** | `v0.92.1` <!-- renovate: datasource=github-releases depName=prometheus-operator/prometheus-operator --> | CRDs installed ahead of kube-prometheus-stack |
+| **Prometheus Operator CRDs** | `v0.93.0` <!-- renovate: datasource=github-releases depName=prometheus-operator/prometheus-operator --> | CRDs installed ahead of kube-prometheus-stack |
 | **CoreDNS patch** | - | Corefile customizations (ts.net rewrite for OIDC) |
 
 ### Infrastructure (01-infrastructure)
@@ -54,7 +54,7 @@ per-stack breakdown.
 | **alertmanager-webhook-signal** | `1.1.1` <!-- renovate: datasource=docker depName=docker.io/schlauerlauer/alertmanager-webhook-signal --> (image) | Alertmanager → signal-cli-rest-api webhook translator |
 | **Flux Web** | - | Flux Operator web UI (fluxcd.civilsnut.se); image managed by flux-operator |
 | **Home Assistant** | `2026.2.3` <!-- renovate: datasource=docker depName=ghcr.io/home-assistant/home-assistant --> (image) | Home Automation Platform |
-| **Zigbee2MQTT** | `2.12.1` <!-- renovate: datasource=helm depName=zigbee2mqtt registryUrl=https://charts.zigbee2mqtt.io --> | Zigbee to MQTT Bridge |
+| **Zigbee2MQTT** | `2.13.0` <!-- renovate: datasource=helm depName=zigbee2mqtt registryUrl=https://charts.zigbee2mqtt.io --> | Zigbee to MQTT Bridge |
 | **Mosquitto MQTT** | `2.0.22` <!-- renovate: datasource=docker depName=eclipse-mosquitto --> (image) | MQTT Broker |
 | **httpbin** | - | Test / debug endpoint |
 

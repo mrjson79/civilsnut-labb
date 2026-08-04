@@ -227,9 +227,14 @@ spec:
               stage.regex {
                 expression = "\\[(?P<ceph_channel_level>INF|WRN|ERR)\\]"
               }
+              // NOTE the odd-looking escapes below. The alloy chart pipes this
+              // whole config through Helm's `tpl`, so a bare Go-template opening
+              // brace pair anywhere in this file - including in a comment - is
+              // parsed as a Helm action and fails the release. Helm renders the
+              // escapes back to plain braces before Alloy ever sees the file.
               stage.template {
                 source   = "level"
-                template = "{{ if eq .ceph_channel_level \"ERR\" }}error{{ else if eq .ceph_channel_level \"WRN\" }}warn{{ else }}info{{ end }}"
+                template = "{{ "{{" }} if eq .ceph_channel_level \"ERR\" }}error{{ "{{" }} else if eq .ceph_channel_level \"WRN\" }}warn{{ "{{" }} else }}info{{ "{{" }} end }}"
               }
               stage.structured_metadata {
                 values = {
@@ -246,9 +251,10 @@ spec:
               }
               // ceph's format-A severity is the message's own debug level:
               // -1 = error, 0 = the normal/notable level, >= 1 = debug detail.
+              // Escaped braces again: see the note above - Helm tpl processes this file.
               stage.template {
                 source   = "level"
-                template = "{{ if eq .ceph_debug_level \"-1\" }}error{{ else if eq .ceph_debug_level \"0\" }}info{{ else }}debug{{ end }}"
+                template = "{{ "{{" }} if eq .ceph_debug_level \"-1\" }}error{{ "{{" }} else if eq .ceph_debug_level \"0\" }}info{{ "{{" }} else }}debug{{ "{{" }} end }}"
               }
               stage.structured_metadata {
                 values = {

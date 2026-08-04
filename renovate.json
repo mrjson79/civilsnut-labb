@@ -89,7 +89,8 @@
       "matchPackageNames": [
         "!cert-manager", "!external-secrets",
         "!cilium",
-        "!rook-ceph", "!rook-ceph-cluster"
+        "!rook-ceph", "!rook-ceph-cluster",
+        "!cloudnative-pg"
       ],
       "automerge": true,
       "automergeType": "pr"
@@ -100,7 +101,8 @@
       "matchPackageNames": [
         "!cert-manager", "!external-secrets",
         "!cilium",
-        "!rook-ceph", "!rook-ceph-cluster"
+        "!rook-ceph", "!rook-ceph-cluster",
+        "!cloudnative-pg"
       ],
       "groupName": "Other Dependencies",
       "groupSlug": "other-deps"
@@ -110,6 +112,12 @@
       "matchUpdateTypes": ["major"],
       "automerge": false,
       "labels": ["major-update"]
+    },
+    {
+      "description": "Postgres majors need pg_upgrade planning - park behind dashboard approval",
+      "matchPackageNames": ["postgres", "ghcr.io/cloudnative-pg/postgresql"],
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
     }
   ],
   "hostRules": [

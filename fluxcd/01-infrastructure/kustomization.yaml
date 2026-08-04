@@ -16,6 +16,7 @@ resources:
   - rook-ceph
   #- external-dns
   - tinkerbell
+  - cnpg
   - zitadel
   - oauth2-proxy
 

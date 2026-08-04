@@ -76,6 +76,45 @@ spec:
 
     alertmanager:
       enabled: true
+      # Replaces the chart's default (null-routed) config wholesale, so the
+      # standard severity inhibit rules are restated below.
+      config:
+        route:
+          receiver: "null"
+          group_by: ["alertname", "namespace"]
+          group_wait: 30s
+          group_interval: 5m
+          repeat_interval: 12h
+          routes:
+            - receiver: "null"
+              matchers:
+                - alertname = "Watchdog"
+            # critical only -> Signal (via signal-relay -> signal-api)
+            - receiver: signal
+              matchers:
+                - severity = "critical"
+        receivers:
+          - name: "null"
+          - name: signal
+            webhook_configs:
+              - url: http://signal-relay.monitoring.svc.cluster.local:10000/api/v3/alertmanager
+                send_resolved: true
+        inhibit_rules:
+          - source_matchers:
+              - severity = "critical"
+            target_matchers:
+              - severity =~ "warning|info"
+            equal: ["namespace", "alertname"]
+          - source_matchers:
+              - severity = "warning"
+            target_matchers:
+              - severity = "info"
+            equal: ["namespace", "alertname"]
+          - source_matchers:
+              - alertname = "InfoInhibitor"
+            target_matchers:
+              - severity = "info"
+            equal: ["namespace"]
       alertmanagerSpec:
         storage:
           volumeClaimTemplate:

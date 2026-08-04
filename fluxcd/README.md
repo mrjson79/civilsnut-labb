@@ -47,12 +47,12 @@ Core platform components that everything else depends on.
 
 | Component | Version | Purpose |
 |-----------|---------|---------|
-| **Cilium** | 1.20.0 | CNI, Load Balancing, Gateway API, BGP |
-| **cert-manager** | v1.21.1 | TLS certificates via Let's Encrypt (Cloudflare DNS-01) |
-| **External Secrets** | 2.8.0 | Kubernetes secret management |
-| **1Password Connect** | 2.4.1 | Secret synchronization from 1Password |
-| **Gateway API CRDs** | v1.6.0 | Gateway API custom resource definitions (experimental channel) |
-| **Prometheus Operator CRDs** | v0.92.1 | Prometheus Operator custom resource definitions |
+| **Cilium** | 1.20.0 <!-- renovate: datasource=helm depName=cilium registryUrl=https://helm.cilium.io --> | CNI, Load Balancing, Gateway API, BGP |
+| **cert-manager** | v1.21.1 <!-- renovate: datasource=helm depName=cert-manager registryUrl=https://charts.jetstack.io --> | TLS certificates via Let's Encrypt (Cloudflare DNS-01) |
+| **External Secrets** | 2.8.0 <!-- renovate: datasource=helm depName=external-secrets registryUrl=https://charts.external-secrets.io --> | Kubernetes secret management |
+| **1Password Connect** | 2.4.1 <!-- renovate: datasource=helm depName=connect registryUrl=https://1password.github.io/connect-helm-charts --> | Secret synchronization from 1Password |
+| **Gateway API CRDs** | v1.6.0 | Gateway API custom resource definitions (experimental channel, vendored manifest) |
+| **Prometheus Operator CRDs** | v0.92.1 <!-- renovate: datasource=github-releases depName=prometheus-operator/prometheus-operator --> | Prometheus Operator custom resource definitions |
 | **CoreDNS** | — | Corefile customizations (ts.net rewrite for OIDC) |
 
 ### 01-infrastructure
@@ -60,11 +60,12 @@ Infrastructure services that build on the foundation.
 
 | Component | Version | Purpose |
 |-----------|---------|---------|
-| **Rook-Ceph** | v1.20.3 | Distributed block storage (operator + cluster) |
+| **Rook-Ceph** | v1.20.3 <!-- renovate: datasource=helm depName=rook-ceph registryUrl=https://charts.rook.io/release --> | Distributed block storage (operator + cluster) |
 | **Shared Gateway** | — | Cilium Gateway API gateway |
-| **Zitadel** | 10.0.4 | Self-hosted OIDC identity provider (idp.civilsnut.se) |
-| **oauth2-proxy** | 10.7.0 | ext_authz bridge: Gateway API ExternalAuth filter → Zitadel |
-| **Tinkerbell** | v0.23.0 | Bare-metal PXE provisioning of Flatcar nodes |
+| **CloudNativePG** | 0.29.0 <!-- renovate: datasource=helm depName=cloudnative-pg registryUrl=https://cloudnative-pg.github.io/charts --> | Postgres operator (zitadel-pg) |
+| **Zitadel** | 10.0.4 <!-- renovate: datasource=helm depName=zitadel registryUrl=https://charts.zitadel.com --> | Self-hosted OIDC identity provider (idp.civilsnut.se) |
+| **oauth2-proxy** | 10.7.0 <!-- renovate: datasource=helm depName=oauth2-proxy registryUrl=https://oauth2-proxy.github.io/manifests --> | ext_authz bridge: Gateway API ExternalAuth filter → Zitadel |
+| **Tinkerbell** | v0.23.0 <!-- renovate: datasource=docker depName=ghcr.io/tinkerbell/charts/tinkerbell --> | Bare-metal PXE provisioning of Flatcar nodes |
 
 ### 02-applications
 User-facing applications.
@@ -72,20 +73,20 @@ User-facing applications.
 | Component | Version | Purpose |
 |-----------|---------|---------|
 | **Monitoring** | see below | Metrics, logs and dashboards |
-| **Flux Web** | latest | Flux Operator web UI (fluxcd.civilsnut.se) |
-| **Home Assistant** | 2026.2.3 | Home automation platform |
-| **Mosquitto MQTT** | 2.0.22 | MQTT broker |
-| **Zigbee2MQTT** | 2.12.1 | Zigbee to MQTT bridge |
+| **Flux Web** | — | Flux Operator web UI (fluxcd.civilsnut.se); image managed by flux-operator |
+| **Home Assistant** | 2026.2.3 <!-- renovate: datasource=docker depName=ghcr.io/home-assistant/home-assistant --> | Home automation platform |
+| **Mosquitto MQTT** | 2.0.22 <!-- renovate: datasource=docker depName=eclipse-mosquitto --> | MQTT broker |
+| **Zigbee2MQTT** | 2.12.1 <!-- renovate: datasource=helm depName=zigbee2mqtt registryUrl=https://charts.zigbee2mqtt.io --> | Zigbee to MQTT bridge |
 | **httpbin** | — | Test / debug endpoint (httpbin.civilsnut.se) |
 
 The **monitoring** stack bundles several Helm releases in the `monitoring` namespace:
 
 | Chart | Version | Role |
 |-------|---------|------|
-| **kube-prometheus-stack** | 88.0.1 | Prometheus, Alertmanager, Grafana, kube-state-metrics, prometheus-operator |
-| **Loki** | 7.2.0 | Log storage |
-| **Grafana Alloy** | 1.11.0 | Node agent shipping logs → Loki and node metrics → Prometheus |
-| **InfluxDB2** | 2.1.2 | Time-series store for energy metrics |
+| **kube-prometheus-stack** | 88.0.1 <!-- renovate: datasource=helm depName=kube-prometheus-stack registryUrl=https://prometheus-community.github.io/helm-charts --> | Prometheus, Alertmanager, Grafana, kube-state-metrics, prometheus-operator |
+| **Loki** | 7.2.0 <!-- renovate: datasource=helm depName=loki registryUrl=https://grafana.github.io/helm-charts --> | Log storage |
+| **Grafana Alloy** | 1.11.0 <!-- renovate: datasource=helm depName=alloy registryUrl=https://grafana.github.io/helm-charts --> | Node agent shipping logs → Loki and node metrics → Prometheus |
+| **InfluxDB2** | 2.1.2 <!-- renovate: datasource=helm depName=influxdb2 registryUrl=https://helm.influxdata.com --> | Time-series store for energy metrics |
 
 ### Alerting → Signal Messenger
 

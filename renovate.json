@@ -127,6 +127,20 @@
       "managerFilePatterns": ["/fluxcd/.+\\.ya?ml$/"],
       "matchStrings": ["imageName: (?<depName>ghcr\\.io/cloudnative-pg/postgresql):(?<currentValue>[\\w.\\-]+)"],
       "datasourceTemplate": "docker"
+    },
+    {
+      "description": "Version tables in the READMEs - rows annotated with '<!-- renovate: ... -->' bump in the same PR as the manifest",
+      "customType": "regex",
+      "managerFilePatterns": ["/^README\\.md$/", "/^fluxcd/README\\.md$/"],
+      "matchStrings": ["`?(?<currentValue>v?\\d[\\w.\\-]*)`? <!-- renovate: datasource=(?<datasource>[a-z-]+) depName=(?<depName>\\S+?)(?: registryUrl=(?<registryUrl>\\S+?))? -->"]
+    },
+    {
+      "description": "prometheus-operator stripped-down CRDs are pulled by release URL in the kustomization",
+      "customType": "regex",
+      "managerFilePatterns": ["/fluxcd/.+\\.ya?ml$/"],
+      "matchStrings": ["https://github\\.com/prometheus-operator/prometheus-operator/releases/download/(?<currentValue>v[\\d.]+)/"],
+      "depNameTemplate": "prometheus-operator/prometheus-operator",
+      "datasourceTemplate": "github-releases"
     }
   ],
   "hostRules": [

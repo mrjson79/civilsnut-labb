@@ -17,43 +17,45 @@ A production-ready Kubernetes homelab cluster running on Talos Linux, managed wi
 
 ## Current Application Versions
 
-Chart versions unless noted; last synced with the manifests 2026-08-04.
-See `fluxcd/README.md` for the detailed per-stack breakdown.
+Chart versions unless noted (image). Kept current by Renovate via the
+docs-version-tables custom manager in `renovate.json` — version bumps here ride
+in the same PR as the manifest change. See `fluxcd/README.md` for the detailed
+per-stack breakdown.
 
 ### Foundation (00-foundation)
 | Application | Version | Purpose |
 |-------------|---------|---------|
-| **Cilium** | `1.20.0` | CNI, Load Balancing, Gateway API, BGP |
-| **cert-manager** | `v1.21.1` | TLS Certificate Management |
-| **External Secrets** | `2.8.0` | Kubernetes Secret Management |
-| **1Password Connect** | `2.4.1` | Secret Synchronization |
-| **Gateway API CRDs** | `v1.6.0` | Gateway API CRDs (experimental channel) |
-| **Prometheus Operator CRDs** | `v0.92.1` | CRDs installed ahead of kube-prometheus-stack |
+| **Cilium** | `1.20.0` <!-- renovate: datasource=helm depName=cilium registryUrl=https://helm.cilium.io --> | CNI, Load Balancing, Gateway API, BGP |
+| **cert-manager** | `v1.21.1` <!-- renovate: datasource=helm depName=cert-manager registryUrl=https://charts.jetstack.io --> | TLS Certificate Management |
+| **External Secrets** | `2.8.0` <!-- renovate: datasource=helm depName=external-secrets registryUrl=https://charts.external-secrets.io --> | Kubernetes Secret Management |
+| **1Password Connect** | `2.4.1` <!-- renovate: datasource=helm depName=connect registryUrl=https://1password.github.io/connect-helm-charts --> | Secret Synchronization |
+| **Gateway API CRDs** | `v1.6.0` | Gateway API CRDs (experimental channel, vendored manifest) |
+| **Prometheus Operator CRDs** | `v0.92.1` <!-- renovate: datasource=github-releases depName=prometheus-operator/prometheus-operator --> | CRDs installed ahead of kube-prometheus-stack |
 | **CoreDNS patch** | - | Corefile customizations (ts.net rewrite for OIDC) |
 
 ### Infrastructure (01-infrastructure)
 | Application | Version | Purpose |
 |-------------|---------|---------|
-| **Rook-Ceph** | `v1.20.3` (Ceph `v20.2.2`) | Distributed block storage + RGW object store |
+| **Rook-Ceph** | `v1.20.3` <!-- renovate: datasource=helm depName=rook-ceph registryUrl=https://charts.rook.io/release --> (Ceph `v20.2.2`) | Distributed block storage + RGW object store |
 | **Shared Gateway** | - | Cilium Gateway API gateway |
-| **CloudNativePG** | `0.29.0` (operator `1.30.0`) | Postgres operator (zitadel-pg: 2 instances, WAL archiving + nightly backups to RGW) |
-| **Zitadel** | `10.0.4` (app `v4.15.3`) | Self-hosted OIDC Identity Provider (idp.civilsnut.se) |
-| **oauth2-proxy** | `10.7.0` (app `v7.15.3`) | ext_authz bridge for Gateway API ExternalAuth (GEP-1494) |
-| **Tinkerbell** | `v0.23.0` | Bare-metal PXE provisioning of Flatcar nodes |
+| **CloudNativePG** | `0.29.0` <!-- renovate: datasource=helm depName=cloudnative-pg registryUrl=https://cloudnative-pg.github.io/charts --> | Postgres operator (zitadel-pg: 2 instances, WAL archiving + nightly backups to RGW) |
+| **Zitadel** | `10.0.4` <!-- renovate: datasource=helm depName=zitadel registryUrl=https://charts.zitadel.com --> | Self-hosted OIDC Identity Provider (idp.civilsnut.se) |
+| **oauth2-proxy** | `10.7.0` <!-- renovate: datasource=helm depName=oauth2-proxy registryUrl=https://oauth2-proxy.github.io/manifests --> | ext_authz bridge for Gateway API ExternalAuth (GEP-1494) |
+| **Tinkerbell** | `v0.23.0` <!-- renovate: datasource=docker depName=ghcr.io/tinkerbell/charts/tinkerbell --> | Bare-metal PXE provisioning of Flatcar nodes |
 
 ### Applications (02-applications)
 | Application | Version | Purpose |
 |-------------|---------|---------|
-| **kube-prometheus-stack** | `88.0.1` | Prometheus, Alertmanager, Grafana (Zitadel OIDC SSO) |
-| **Loki** | `7.2.0` | Log storage (queried from Grafana) |
-| **Grafana Alloy** | `1.11.0` | Node agent shipping logs → Loki, node metrics → Prometheus |
-| **InfluxDB2** | `2.1.2` | Time-series store for energy metrics |
-| **signal-cli-rest-api** | `0.100` (image) | Signal Messenger delivery for critical Alertmanager alerts |
-| **alertmanager-webhook-signal** | `1.1.1` (image) | Alertmanager → signal-cli-rest-api webhook translator |
-| **Flux Web** | flux-operator `v0.57.0` | Flux Operator web UI (fluxcd.civilsnut.se) |
-| **Home Assistant** | `2026.2.3` (image) | Home Automation Platform |
-| **Zigbee2MQTT** | `2.12.1` | Zigbee to MQTT Bridge |
-| **Mosquitto MQTT** | `2.0.22` (image) | MQTT Broker |
+| **kube-prometheus-stack** | `88.0.1` <!-- renovate: datasource=helm depName=kube-prometheus-stack registryUrl=https://prometheus-community.github.io/helm-charts --> | Prometheus, Alertmanager, Grafana (Zitadel OIDC SSO) |
+| **Loki** | `7.2.0` <!-- renovate: datasource=helm depName=loki registryUrl=https://grafana.github.io/helm-charts --> | Log storage (queried from Grafana) |
+| **Grafana Alloy** | `1.11.0` <!-- renovate: datasource=helm depName=alloy registryUrl=https://grafana.github.io/helm-charts --> | Node agent shipping logs → Loki, node metrics → Prometheus |
+| **InfluxDB2** | `2.1.2` <!-- renovate: datasource=helm depName=influxdb2 registryUrl=https://helm.influxdata.com --> | Time-series store for energy metrics |
+| **signal-cli-rest-api** | `0.100` <!-- renovate: datasource=docker depName=bbernhard/signal-cli-rest-api --> (image) | Signal Messenger delivery for critical Alertmanager alerts |
+| **alertmanager-webhook-signal** | `1.1.1` <!-- renovate: datasource=docker depName=docker.io/schlauerlauer/alertmanager-webhook-signal --> (image) | Alertmanager → signal-cli-rest-api webhook translator |
+| **Flux Web** | - | Flux Operator web UI (fluxcd.civilsnut.se); image managed by flux-operator |
+| **Home Assistant** | `2026.2.3` <!-- renovate: datasource=docker depName=ghcr.io/home-assistant/home-assistant --> (image) | Home Automation Platform |
+| **Zigbee2MQTT** | `2.12.1` <!-- renovate: datasource=helm depName=zigbee2mqtt registryUrl=https://charts.zigbee2mqtt.io --> | Zigbee to MQTT Bridge |
+| **Mosquitto MQTT** | `2.0.22` <!-- renovate: datasource=docker depName=eclipse-mosquitto --> (image) | MQTT Broker |
 | **httpbin** | - | Test / debug endpoint |
 
 ## Grafana Access

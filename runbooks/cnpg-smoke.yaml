@@ -1,0 +1,19 @@
+# Ephemeral CNPG smoke test - proves operator <-> ceph-block RBD <-> has-disk
+# scheduling. Apply, verify, delete:
+#   kubectl apply -f runbooks/cnpg-smoke.yaml
+#   kubectl -n cnpg-system get cluster cnpg-smoke      # -> Cluster in healthy state
+#   kubectl -n cnpg-system exec cnpg-smoke-1 -c postgres -- psql -c 'select 1'
+#   kubectl delete -f runbooks/cnpg-smoke.yaml && kubectl -n cnpg-system get pvc
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: cnpg-smoke
+  namespace: cnpg-system
+spec:
+  instances: 1
+  affinity:
+    nodeSelector:
+      has-disk: "yes"
+  storage:
+    size: 1Gi
+    storageClass: ceph-block

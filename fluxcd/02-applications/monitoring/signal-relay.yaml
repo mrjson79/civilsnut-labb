@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: signal-relay
-          image: docker.io/schlauerlauer/alertmanager-webhook-signal:1.1.1
+          image: docker.io/schlauerlauer/alertmanager-webhook-signal:22.12.0
           env:
             - name: CONFIG_PATH
               value: /config.yaml

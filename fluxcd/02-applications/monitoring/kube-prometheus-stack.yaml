@@ -211,6 +211,16 @@ spec:
               allowUiUpdates: true
               options:
                 path: /var/lib/grafana/dashboards/ceph
+            # Official Cilium dashboards, shipped in the cilium repo and pinned
+            # to the deployed version (00-foundation/cilium/release.yaml).
+            - name: cilium
+              orgId: 1
+              folder: Cilium
+              type: file
+              disableDeletion: false
+              allowUiUpdates: true
+              options:
+                path: /var/lib/grafana/dashboards/cilium
       dashboards:
         dotdc:
           k8s-views-global:
@@ -254,6 +264,21 @@ spec:
             url: https://raw.githubusercontent.com/ceph/ceph/v20.2.2/monitoring/ceph-mixin/dashboards_out/osd-device-details.json
           ceph-pool-overview:
             url: https://raw.githubusercontent.com/ceph/ceph/v20.2.2/monitoring/ceph-mixin/dashboards_out/pool-overview.json
+        # Pinned to the deployed cilium chart version - bump together with
+        # 00-foundation/cilium/release.yaml. DS_PROMETHEUS in these is a
+        # datasource-type template var, so it resolves on its own.
+        # Not included: hubble-dns-namespace / hubble-network-overview-namespace /
+        # hubble-l7-http-metrics-by-workload - our hubble metrics carry no
+        # source/destination namespace or workload context labels (would need
+        # labelsContext in the cilium chart's hubble.metrics config), so those
+        # three render entirely empty.
+        cilium:
+          cilium-agent:
+            url: https://raw.githubusercontent.com/cilium/cilium/v1.20.0/install/kubernetes/cilium/files/cilium-agent/dashboards/cilium-dashboard.json
+          cilium-operator:
+            url: https://raw.githubusercontent.com/cilium/cilium/v1.20.0/install/kubernetes/cilium/files/cilium-operator/dashboards/cilium-operator-dashboard.json
+          hubble:
+            url: https://raw.githubusercontent.com/cilium/cilium/v1.20.0/install/kubernetes/cilium/files/hubble/dashboards/hubble-dashboard.json
       nodeSelector:
         has-disk: "yes"
       resources:

@@ -19,6 +19,7 @@ resources:
   - grafana-oidc-externalsecret.yaml
   - loki-datasource.yaml
   - ceph-logs-dashboard.yaml
+  - cilium-logs-dashboard.yaml
   - cluster-logs-dashboard.yaml
   - influxdb.yaml
   - influxdb-externalsecret.yaml

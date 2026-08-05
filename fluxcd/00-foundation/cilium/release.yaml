@@ -94,7 +94,7 @@ spec:
       enabled: true
       port: 9962
       serviceMonitor:
-        enabled: false  # Using VMServiceScrape instead
+        enabled: true  # Using VMServiceScrape instead
 
     operator:
       replicas: 1

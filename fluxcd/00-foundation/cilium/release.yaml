@@ -115,13 +115,24 @@ spec:
     hubble:
       enabled: true
       metrics:
+        # labelsContext adds source/destination namespace (and workload for HTTP)
+        # to the hubble metrics - required by the Hubble namespace/workload
+        # Grafana dashboards. Cardinality cost is bounded: ~13 namespaces and a
+        # few dozen workloads. Deliberately NOT adding source_ip/destination_ip,
+        # which would explode cardinality per pod IP.
+        # httpV2 replaces http (mutually exclusive): responses fold into
+        # hubble_http_requests_total as a status label, which the L7-by-workload
+        # dashboard requires. Costs one panel on the main Hubble dashboard that
+        # still reads hubble_http_responses_total.
+        # NOTE: dns metrics only appear once cilium's DNS proxy actually observes
+        # queries (toFQDNs policy / DNS visibility) - none exist today.
         enabled:
-          - dns:query
-          - drop
-          - tcp
-          - flow
-          - icmp
-          - http
+          - dns:query;labelsContext=source_namespace,destination_namespace
+          - drop:labelsContext=source_namespace,destination_namespace
+          - tcp:labelsContext=source_namespace,destination_namespace
+          - flow:labelsContext=source_namespace,destination_namespace
+          - icmp:labelsContext=source_namespace,destination_namespace
+          - httpV2:labelsContext=source_namespace,source_workload,destination_namespace,destination_workload
       relay:
         enabled: true
         rollOutPods: true

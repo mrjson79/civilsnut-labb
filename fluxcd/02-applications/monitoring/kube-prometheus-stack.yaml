@@ -267,11 +267,10 @@ spec:
         # Pinned to the deployed cilium chart version - bump together with
         # 00-foundation/cilium/release.yaml. DS_PROMETHEUS in these is a
         # datasource-type template var, so it resolves on its own.
-        # Not included: hubble-dns-namespace / hubble-network-overview-namespace /
-        # hubble-l7-http-metrics-by-workload - our hubble metrics carry no
-        # source/destination namespace or workload context labels (would need
-        # labelsContext in the cilium chart's hubble.metrics config), so those
-        # three render entirely empty.
+        # The namespace/workload-scoped hubble dashboards depend on the
+        # labelsContext options set on hubble.metrics in the cilium values;
+        # the DNS one additionally stays empty until cilium's DNS proxy
+        # observes queries (toFQDNs policy / DNS visibility).
         cilium:
           cilium-agent:
             url: https://raw.githubusercontent.com/cilium/cilium/v1.20.0/install/kubernetes/cilium/files/cilium-agent/dashboards/cilium-dashboard.json
@@ -279,6 +278,12 @@ spec:
             url: https://raw.githubusercontent.com/cilium/cilium/v1.20.0/install/kubernetes/cilium/files/cilium-operator/dashboards/cilium-operator-dashboard.json
           hubble:
             url: https://raw.githubusercontent.com/cilium/cilium/v1.20.0/install/kubernetes/cilium/files/hubble/dashboards/hubble-dashboard.json
+          hubble-dns-namespace:
+            url: https://raw.githubusercontent.com/cilium/cilium/v1.20.0/install/kubernetes/cilium/files/hubble/dashboards/hubble-dns-namespace.json
+          hubble-network-overview-namespace:
+            url: https://raw.githubusercontent.com/cilium/cilium/v1.20.0/install/kubernetes/cilium/files/hubble/dashboards/hubble-network-overview-namespace.json
+          hubble-l7-http-metrics-by-workload:
+            url: https://raw.githubusercontent.com/cilium/cilium/v1.20.0/install/kubernetes/cilium/files/hubble/dashboards/hubble-l7-http-metrics-by-workload.json
       nodeSelector:
         has-disk: "yes"
       resources:

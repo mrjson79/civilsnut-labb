@@ -7,6 +7,5 @@ metadata:
     app.kubernetes.io/component: monitoring
 
 resources:
-  - additional-scrape-configs.yaml
   - flux-podmonitor.yaml
   - kube-state-metrics-config.yaml

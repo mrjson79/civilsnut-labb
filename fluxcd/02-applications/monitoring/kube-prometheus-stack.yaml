@@ -51,10 +51,12 @@ spec:
         retentionSize: 45GB
         # Alloy pushes node metrics via remote_write
         enableRemoteWriteReceiver: true
-        additionalScrapeConfigsSecret:
-          enabled: true
-          name: additional-scrape-configs
-          key: additional-scrape-configs.yaml
+        # NOTE: no additionalScrapeConfigs. The old vm-stack-era
+        # "cilium-agent-additional" raw job rewrote every cilium pod port to
+        # 9965 - the hubble metrics port - so it scraped the same endpoint as
+        # the hubble-metrics ServiceMonitor (double-counting every hubble
+        # metric) and permanently fired TargetDown on its 9 dead
+        # non-hubble-port targets.
         storageSpec:
           volumeClaimTemplate:
             spec:

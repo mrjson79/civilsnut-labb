@@ -75,6 +75,7 @@ User-facing applications.
 | **Monitoring** | see below | Metrics, logs and dashboards |
 | **Flux Web** | — | Flux Operator web UI (fluxcd.civilsnut.se); image managed by flux-operator |
 | **Home Assistant** | 2026.2.3 <!-- renovate: datasource=docker depName=ghcr.io/home-assistant/home-assistant --> | Home automation platform |
+| **Fellow Aiden** | v1.3.3 <!-- renovate: datasource=github-releases depName=kristofferR/FellowAiden-HomeAssistant --> | HA custom component for the Fellow Aiden coffee brewer (init container) |
 | **Mosquitto MQTT** | 2.0.22 <!-- renovate: datasource=docker depName=eclipse-mosquitto --> | MQTT broker |
 | **Zigbee2MQTT** | 2.13.0 <!-- renovate: datasource=helm depName=zigbee2mqtt registryUrl=https://charts.zigbee2mqtt.io --> | Zigbee to MQTT bridge |
 | **httpbin** | — | Test / debug endpoint (httpbin.civilsnut.se) |

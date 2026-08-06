@@ -68,7 +68,8 @@
         "home-assistant",
         "ghcr.io/home-assistant/home-assistant",
         "zigbee2mqtt",
-        "eclipse-mosquitto"
+        "eclipse-mosquitto",
+        "kristofferR/FellowAiden-HomeAssistant"
       ],
       "labels": ["home-automation"],
       "automerge": false,
@@ -138,6 +139,14 @@
       "customType": "regex",
       "managerFilePatterns": ["/^README\\.md$/", "/^fluxcd/README\\.md$/"],
       "matchStrings": ["`?(?<currentValue>v?\\d[\\w.\\-]*)`? <!-- renovate: datasource=(?<datasource>[a-z-]+) depName=(?<depName>\\S+?)(?: registryUrl=(?<registryUrl>\\S+?))? -->"]
+    },
+    {
+      "description": "Fellow Aiden HA custom component is pinned in the home-assistant StatefulSet init container",
+      "customType": "regex",
+      "managerFilePatterns": ["/fluxcd/.+\\.ya?ml$/"],
+      "matchStrings": ["VERSION=(?<currentValue>v[\\d.]+)\\n\\s+apk add --no-cache wget tar ca-certificates"],
+      "depNameTemplate": "kristofferR/FellowAiden-HomeAssistant",
+      "datasourceTemplate": "github-releases"
     },
     {
       "description": "prometheus-operator stripped-down CRDs are pulled by release URL in the kustomization",

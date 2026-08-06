@@ -54,6 +54,7 @@ per-stack breakdown.
 | **alertmanager-webhook-signal** | `1.1.1` <!-- renovate: datasource=docker depName=docker.io/schlauerlauer/alertmanager-webhook-signal --> (image) | Alertmanager → signal-cli-rest-api webhook translator |
 | **Flux Web** | - | Flux Operator web UI (fluxcd.civilsnut.se); image managed by flux-operator |
 | **Home Assistant** | `2026.2.3` <!-- renovate: datasource=docker depName=ghcr.io/home-assistant/home-assistant --> (image) | Home Automation Platform |
+| **Fellow Aiden** | `v1.3.3` <!-- renovate: datasource=github-releases depName=kristofferR/FellowAiden-HomeAssistant --> (HA custom component) | Fellow Aiden coffee brewer integration |
 | **Zigbee2MQTT** | `2.13.0` <!-- renovate: datasource=helm depName=zigbee2mqtt registryUrl=https://charts.zigbee2mqtt.io --> | Zigbee to MQTT Bridge |
 | **Mosquitto MQTT** | `2.0.22` <!-- renovate: datasource=docker depName=eclipse-mosquitto --> (image) | MQTT Broker |
 | **httpbin** | - | Test / debug endpoint |

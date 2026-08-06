@@ -65,6 +65,13 @@ data:
           - sensor.*_voltage
           - sensor.*_current
           - sensor.*_temperature # plug temps (freezer/cooler monitoring)
+          # Fellow Aiden brew history. Device-name agnostic - the suffixes are the
+          # integration's translation keys. Numeric only; the binary sensors
+          # (brewing/lid/carafe) are deliberately left out.
+          - sensor.*_total_brews
+          - sensor.*_total_water_volume
+          - sensor.*_last_brew_volume
+          - sensor.*_average_water_per_brew
 
     # Dashboard Configuration
     lovelace:

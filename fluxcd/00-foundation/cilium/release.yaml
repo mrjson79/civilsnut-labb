@@ -89,6 +89,13 @@ spec:
 
     tunnelProtocol: vxlan
 
+    # Restart cilium agents when their ConfigMap changes (adds a config checksum
+    # to the DaemonSet pod template). Without this, hubble/agent config changes
+    # update cilium-config but the running agents keep their old flags until a
+    # manual restart - which is exactly what happened with the hubble
+    # labelsContext rollout.
+    rollOutCiliumPods: true
+
     # Prometheus metrics
     prometheus:
       enabled: true
@@ -98,6 +105,7 @@ spec:
 
     operator:
       replicas: 1
+      rollOutPods: true
       prometheus:
         enabled: true
         port: 9963

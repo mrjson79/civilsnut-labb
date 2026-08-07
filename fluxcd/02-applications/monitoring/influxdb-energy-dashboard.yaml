@@ -17,270 +17,1101 @@ metadata:
 data:
   home-energy.json: |
     {
-      "annotations": { "list": [] },
+      "annotations": {
+        "list": []
+      },
       "editable": true,
       "graphTooltip": 1,
       "id": null,
       "links": [],
       "schemaVersion": 39,
-      "tags": ["home-assistant", "energy"],
+      "tags": [
+        "home-assistant",
+        "energy"
+      ],
       "timezone": "browser",
       "title": "Home Energy",
       "uid": "home-energy",
-      "time": { "from": "now-24h", "to": "now" },
+      "time": {
+        "from": "now-24h",
+        "to": "now"
+      },
       "refresh": "1m",
       "panels": [
         {
-          "type": "stat", "title": "Plug power now", "id": 1,
-          "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
-          "datasource": { "type": "influxdb", "uid": "PF4A97030133A7E89" },
+          "type": "stat",
+          "title": "Plug power now",
+          "id": 1,
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 0,
+            "y": 0
+          },
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF4A97030133A7E89"
+          },
           "fieldConfig": {
             "defaults": {
-              "unit": "watt", "decimals": 0,
-              "color": { "mode": "fixed", "fixedColor": "text" }
+              "unit": "watt",
+              "decimals": 0,
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "text"
+              }
             },
             "overrides": []
           },
           "options": {
-            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-            "colorMode": "none", "graphMode": "none", "textMode": "value"
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "colorMode": "none",
+            "graphMode": "none",
+            "textMode": "value"
           },
-          "targets": [{
-            "refId": "A",
-            "query": "from(bucket: \"home_assistant\")\n  |> range(start: -30m)\n  |> filter(fn: (r) => r._measurement == \"W\" and r._field == \"value\" and r.entity_id != \"solarcells_output_power\")\n  |> last()\n  |> group()\n  |> sum()"
-          }]
+          "targets": [
+            {
+              "refId": "A",
+              "query": "from(bucket: \"home_assistant\")\n  |> range(start: -30m)\n  |> filter(fn: (r) => r._measurement == \"W\" and r._field == \"value\" and r.entity_id != \"solarcells_output_power\" and r.entity_id !~ /^electricity_meter_/)\n  |> last()\n  |> group()\n  |> sum()"
+            }
+          ]
         },
         {
-          "type": "stat", "title": "Solar output now", "id": 2,
-          "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
-          "datasource": { "type": "influxdb", "uid": "PF4A97030133A7E89" },
+          "type": "stat",
+          "title": "Solar output now",
+          "id": 2,
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 6,
+            "y": 0
+          },
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF4A97030133A7E89"
+          },
           "fieldConfig": {
             "defaults": {
-              "unit": "watt", "decimals": 0,
-              "color": { "mode": "fixed", "fixedColor": "text" }
+              "unit": "kwatt",
+              "decimals": 0,
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "text"
+              }
             },
             "overrides": []
           },
           "options": {
-            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-            "colorMode": "none", "graphMode": "none", "textMode": "value"
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "colorMode": "none",
+            "graphMode": "none",
+            "textMode": "value"
           },
-          "targets": [{
-            "refId": "A",
-            "query": "from(bucket: \"home_assistant\")\n  |> range(start: -30m)\n  |> filter(fn: (r) => r._measurement == \"W\" and r._field == \"value\" and r.entity_id == \"solarcells_output_power\")\n  |> last()\n  |> group()\n  |> sum()"
-          }]
+          "targets": [
+            {
+              "refId": "A",
+              "query": "from(bucket: \"home_assistant\")\n  |> range(start: -30m)\n  |> filter(fn: (r) => r._measurement == \"W\" and r._field == \"value\" and r.entity_id == \"solarcells_output_power\")\n  |> last()\n  |> group()\n  |> sum()"
+            }
+          ]
         },
         {
-          "type": "stat", "title": "Plug energy · 24 h", "id": 3,
-          "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
-          "datasource": { "type": "influxdb", "uid": "PF4A97030133A7E89" },
+          "type": "stat",
+          "title": "Plug energy \u00b7 24 h",
+          "id": 3,
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 12,
+            "y": 0
+          },
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF4A97030133A7E89"
+          },
           "fieldConfig": {
             "defaults": {
-              "unit": "kwatth", "decimals": 2,
-              "color": { "mode": "fixed", "fixedColor": "text" }
+              "unit": "kwatth",
+              "decimals": 2,
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "text"
+              }
             },
             "overrides": []
           },
           "options": {
-            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-            "colorMode": "none", "graphMode": "none", "textMode": "value"
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "colorMode": "none",
+            "graphMode": "none",
+            "textMode": "value"
           },
-          "targets": [{
-            "refId": "A",
-            "query": "from(bucket: \"home_assistant\")\n  |> range(start: -24h)\n  |> filter(fn: (r) => r._measurement == \"Wh\" and r._field == \"value\")\n  |> group(columns: [\"entity_id\"])\n  |> spread()\n  |> group()\n  |> sum()\n  |> map(fn: (r) => ({r with _value: r._value / 1000.0}))"
-          }]
+          "targets": [
+            {
+              "refId": "A",
+              "query": "from(bucket: \"home_assistant\")\n  |> range(start: -24h)\n  |> filter(fn: (r) => r._measurement == \"Wh\" and r._field == \"value\" and r.entity_id !~ /^electricity_meter_/)\n  |> group(columns: [\"entity_id\"])\n  |> spread()\n  |> group()\n  |> sum()\n  |> map(fn: (r) => ({r with _value: r._value / 1000.0}))"
+            }
+          ]
         },
         {
-          "type": "stat", "title": "Hottest plug", "id": 4,
-          "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
-          "datasource": { "type": "influxdb", "uid": "PF4A97030133A7E89" },
+          "type": "stat",
+          "title": "Hottest plug",
+          "id": 4,
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 18,
+            "y": 0
+          },
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF4A97030133A7E89"
+          },
           "fieldConfig": {
             "defaults": {
-              "unit": "celsius", "decimals": 1,
-              "color": { "mode": "thresholds" },
-              "thresholds": { "mode": "absolute", "steps": [
-                { "color": "#0ca30c", "value": null },
-                { "color": "#fab219", "value": 55 },
-                { "color": "#d03b3b", "value": 70 }
-              ]}
+              "unit": "celsius",
+              "decimals": 1,
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "#0ca30c",
+                    "value": null
+                  },
+                  {
+                    "color": "#fab219",
+                    "value": 55
+                  },
+                  {
+                    "color": "#d03b3b",
+                    "value": 70
+                  }
+                ]
+              }
             },
             "overrides": []
           },
           "options": {
-            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-            "colorMode": "value", "graphMode": "none", "textMode": "value"
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "value"
           },
-          "targets": [{
-            "refId": "A",
-            "query": "from(bucket: \"home_assistant\")\n  |> range(start: -30m)\n  |> filter(fn: (r) => r._measurement == \"°C\" and r._field == \"value\")\n  |> last()\n  |> group()\n  |> max()"
-          }]
+          "targets": [
+            {
+              "refId": "A",
+              "query": "from(bucket: \"home_assistant\")\n  |> range(start: -30m)\n  |> filter(fn: (r) => r._measurement == \"\u00b0C\" and r._field == \"value\")\n  |> last()\n  |> group()\n  |> max()"
+            }
+          ]
         },
         {
-          "type": "timeseries", "title": "Household power", "id": 5,
-          "gridPos": { "h": 9, "w": 15, "x": 0, "y": 4 },
-          "datasource": { "type": "influxdb", "uid": "PF4A97030133A7E89" },
+          "type": "timeseries",
+          "title": "Household power",
+          "id": 5,
+          "gridPos": {
+            "h": 9,
+            "w": 15,
+            "x": 0,
+            "y": 4
+          },
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF4A97030133A7E89"
+          },
           "fieldConfig": {
             "defaults": {
-              "unit": "watt", "min": 0,
+              "unit": "watt",
+              "min": 0,
               "displayName": "${__field.labels.device}",
               "custom": {
-                "drawStyle": "line", "lineWidth": 2, "fillOpacity": 0,
-                "spanNulls": true, "showPoints": "never",
-                "axisBorderShow": false, "gradientMode": "none"
+                "drawStyle": "line",
+                "lineWidth": 2,
+                "fillOpacity": 0,
+                "spanNulls": true,
+                "showPoints": "never",
+                "axisBorderShow": false,
+                "gradientMode": "none"
               }
             },
             "overrides": [
-              { "matcher": { "id": "byName", "options": "anders_office_desk" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#3987e5" } }] },
-              { "matcher": { "id": "byName", "options": "saras_desk" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#d95926" } }] },
-              { "matcher": { "id": "byName", "options": "lab" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#199e70" } }] },
-              { "matcher": { "id": "byName", "options": "lab_2" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#c98500" } }] },
-              { "matcher": { "id": "byName", "options": "master_bedroom" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#d55181" } }] },
-              { "matcher": { "id": "byName", "options": "entertainment" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#008300" } }] }
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "anders_office_desk"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "#3987e5"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "saras_desk"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "#d95926"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "lab"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "#199e70"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "lab_2"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "#c98500"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "master_bedroom"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "#d55181"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "entertainment"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "#008300"
+                    }
+                  }
+                ]
+              }
             ]
           },
           "options": {
-            "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
-            "tooltip": { "mode": "multi", "sort": "desc" }
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
           },
-          "targets": [{
-            "refId": "A",
-            "query": "import \"regexp\"\nfrom(bucket: \"home_assistant\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"W\" and r._field == \"value\")\n  |> filter(fn: (r) => r.entity_id =~ /^(anders_office_desk|saras_desk|lab|master_bedroom|entertainment)_/)\n  |> map(fn: (r) => ({r with device: regexp.replaceAllString(r: /_shelly_.*$|_power$/, v: r.entity_id, t: \"\")}))\n  |> keep(columns: [\"_time\", \"_value\", \"device\"])\n  |> group(columns: [\"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
-          }]
+          "targets": [
+            {
+              "refId": "A",
+              "query": "import \"regexp\"\nfrom(bucket: \"home_assistant\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"W\" and r._field == \"value\")\n  |> filter(fn: (r) => r.entity_id =~ /^(anders_office_desk|saras_desk|lab|master_bedroom|entertainment)_/)\n  |> map(fn: (r) => ({r with device: regexp.replaceAllString(r: /_shelly_.*$|_power$/, v: r.entity_id, t: \"\")}))\n  |> keep(columns: [\"_time\", \"_value\", \"device\"])\n  |> group(columns: [\"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+            }
+          ]
         },
         {
-          "type": "timeseries", "title": "Cooling power", "id": 6,
-          "gridPos": { "h": 9, "w": 9, "x": 15, "y": 4 },
-          "datasource": { "type": "influxdb", "uid": "PF4A97030133A7E89" },
+          "type": "timeseries",
+          "title": "Cooling power",
+          "id": 6,
+          "gridPos": {
+            "h": 9,
+            "w": 9,
+            "x": 15,
+            "y": 4
+          },
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF4A97030133A7E89"
+          },
           "fieldConfig": {
             "defaults": {
-              "unit": "watt", "min": 0,
+              "unit": "watt",
+              "min": 0,
               "displayName": "${__field.labels.device}",
               "custom": {
-                "drawStyle": "line", "lineWidth": 2, "fillOpacity": 0,
-                "spanNulls": true, "showPoints": "never",
-                "axisBorderShow": false, "gradientMode": "none"
+                "drawStyle": "line",
+                "lineWidth": 2,
+                "fillOpacity": 0,
+                "spanNulls": true,
+                "showPoints": "never",
+                "axisBorderShow": false,
+                "gradientMode": "none"
               }
             },
             "overrides": [
-              { "matcher": { "id": "byName", "options": "big_freezer" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#3987e5" } }] },
-              { "matcher": { "id": "byName", "options": "freezer" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#d95926" } }] },
-              { "matcher": { "id": "byName", "options": "cooler" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#199e70" } }] }
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "big_freezer"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "#3987e5"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "freezer"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "#d95926"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "cooler"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "#199e70"
+                    }
+                  }
+                ]
+              }
             ]
           },
           "options": {
-            "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
-            "tooltip": { "mode": "multi", "sort": "desc" }
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
           },
-          "targets": [{
-            "refId": "A",
-            "query": "import \"regexp\"\nfrom(bucket: \"home_assistant\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"W\" and r._field == \"value\")\n  |> filter(fn: (r) => r.entity_id =~ /^(big_freezer|freezer|cooler)_/)\n  |> map(fn: (r) => ({r with device: regexp.replaceAllString(r: /_shelly_.*$|_power$/, v: r.entity_id, t: \"\")}))\n  |> keep(columns: [\"_time\", \"_value\", \"device\"])\n  |> group(columns: [\"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
-          }]
+          "targets": [
+            {
+              "refId": "A",
+              "query": "import \"regexp\"\nfrom(bucket: \"home_assistant\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"W\" and r._field == \"value\")\n  |> filter(fn: (r) => r.entity_id =~ /^(big_freezer|freezer|cooler)_/)\n  |> map(fn: (r) => ({r with device: regexp.replaceAllString(r: /_shelly_.*$|_power$/, v: r.entity_id, t: \"\")}))\n  |> keep(columns: [\"_time\", \"_value\", \"device\"])\n  |> group(columns: [\"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+            }
+          ]
         },
         {
-          "type": "timeseries", "title": "Solar output", "id": 7,
-          "gridPos": { "h": 9, "w": 12, "x": 0, "y": 13 },
-          "datasource": { "type": "influxdb", "uid": "PF4A97030133A7E89" },
+          "type": "timeseries",
+          "title": "Solar output",
+          "id": 7,
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 0,
+            "y": 13
+          },
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF4A97030133A7E89"
+          },
           "fieldConfig": {
             "defaults": {
-              "unit": "watt", "min": 0,
+              "unit": "kwatt",
+              "min": 0,
               "displayName": "solar output",
-              "color": { "mode": "fixed", "fixedColor": "#c98500" },
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "#c98500"
+              },
               "custom": {
-                "drawStyle": "line", "lineWidth": 2, "fillOpacity": 12,
-                "spanNulls": true, "showPoints": "never",
-                "axisBorderShow": false, "gradientMode": "none"
+                "drawStyle": "line",
+                "lineWidth": 2,
+                "fillOpacity": 12,
+                "spanNulls": true,
+                "showPoints": "never",
+                "axisBorderShow": false,
+                "gradientMode": "none"
               }
             },
             "overrides": []
           },
           "options": {
-            "legend": { "displayMode": "list", "placement": "bottom", "showLegend": false },
-            "tooltip": { "mode": "single", "sort": "none" }
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
           },
-          "targets": [{
-            "refId": "A",
-            "query": "from(bucket: \"home_assistant\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"W\" and r._field == \"value\" and r.entity_id == \"solarcells_output_power\")\n  |> keep(columns: [\"_time\", \"_value\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
-          }]
+          "targets": [
+            {
+              "refId": "A",
+              "query": "from(bucket: \"home_assistant\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"W\" and r._field == \"value\" and r.entity_id == \"solarcells_output_power\")\n  |> keep(columns: [\"_time\", \"_value\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+            }
+          ]
         },
         {
-          "type": "timeseries", "title": "Room temperature", "id": 10,
-          "gridPos": { "h": 9, "w": 12, "x": 12, "y": 13 },
-          "datasource": { "type": "influxdb", "uid": "PF4A97030133A7E89" },
+          "type": "timeseries",
+          "title": "Room temperature",
+          "id": 10,
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 12,
+            "y": 13
+          },
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF4A97030133A7E89"
+          },
           "fieldConfig": {
             "defaults": {
-              "unit": "celsius", "decimals": 1,
+              "unit": "celsius",
+              "decimals": 1,
               "displayName": "${__field.labels.room}",
               "custom": {
-                "drawStyle": "line", "lineWidth": 2, "fillOpacity": 0,
-                "spanNulls": true, "showPoints": "never",
-                "axisBorderShow": false, "gradientMode": "none"
+                "drawStyle": "line",
+                "lineWidth": 2,
+                "fillOpacity": 0,
+                "spanNulls": true,
+                "showPoints": "never",
+                "axisBorderShow": false,
+                "gradientMode": "none"
               }
             },
             "overrides": [
-              { "matcher": { "id": "byName", "options": "anders_office" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#3987e5" } }] },
-              { "matcher": { "id": "byName", "options": "bedroom" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#d95926" } }] },
-              { "matcher": { "id": "byName", "options": "kitchen" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#199e70" } }] },
-              { "matcher": { "id": "byName", "options": "laundry" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#c98500" } }] },
-              { "matcher": { "id": "byName", "options": "livingroom" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#d55181" } }] }
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "anders_office"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "#3987e5"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "bedroom"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "#d95926"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "kitchen"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "#199e70"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "laundry"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "#c98500"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "livingroom"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "#d55181"
+                    }
+                  }
+                ]
+              }
             ]
           },
           "options": {
-            "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
-            "tooltip": { "mode": "multi", "sort": "desc" }
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
           },
-          "targets": [{
-            "refId": "A",
-            "query": "import \"regexp\"\nfrom(bucket: \"home_assistant\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"°C\" and r._field == \"value\")\n  |> filter(fn: (r) => r.entity_id =~ /^(anders_office|bedroom|kitchen|laundry|livingroom)_temperature$/)\n  |> map(fn: (r) => ({r with room: regexp.replaceAllString(r: /_temperature$/, v: r.entity_id, t: \"\")}))\n  |> keep(columns: [\"_time\", \"_value\", \"room\"])\n  |> group(columns: [\"room\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
-          }]
+          "targets": [
+            {
+              "refId": "A",
+              "query": "import \"regexp\"\nfrom(bucket: \"home_assistant\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"\u00b0C\" and r._field == \"value\")\n  |> filter(fn: (r) => r.entity_id =~ /^(anders_office|bedroom|kitchen|laundry|livingroom)_temperature$/)\n  |> map(fn: (r) => ({r with room: regexp.replaceAllString(r: /_temperature$/, v: r.entity_id, t: \"\")}))\n  |> keep(columns: [\"_time\", \"_value\", \"room\"])\n  |> group(columns: [\"room\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+            }
+          ]
         },
         {
-          "type": "bargauge", "title": "Plug temperature", "id": 8,
-          "gridPos": { "h": 9, "w": 12, "x": 0, "y": 22 },
-          "datasource": { "type": "influxdb", "uid": "PF4A97030133A7E89" },
+          "type": "bargauge",
+          "title": "Plug temperature",
+          "id": 8,
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 0,
+            "y": 22
+          },
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF4A97030133A7E89"
+          },
           "fieldConfig": {
             "defaults": {
-              "unit": "celsius", "decimals": 1, "min": 0, "max": 80,
+              "unit": "celsius",
+              "decimals": 1,
+              "min": 0,
+              "max": 80,
               "displayName": "${__field.labels.device}",
-              "color": { "mode": "thresholds" },
-              "thresholds": { "mode": "absolute", "steps": [
-                { "color": "#0ca30c", "value": null },
-                { "color": "#fab219", "value": 55 },
-                { "color": "#d03b3b", "value": 70 }
-              ]}
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "#0ca30c",
+                    "value": null
+                  },
+                  {
+                    "color": "#fab219",
+                    "value": 55
+                  },
+                  {
+                    "color": "#d03b3b",
+                    "value": 70
+                  }
+                ]
+              }
             },
             "overrides": []
           },
           "options": {
-            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-            "orientation": "horizontal", "displayMode": "basic",
-            "showUnfilled": true, "valueMode": "color"
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "orientation": "horizontal",
+            "displayMode": "basic",
+            "showUnfilled": true,
+            "valueMode": "color"
           },
-          "targets": [{
-            "refId": "A",
-            "query": "import \"regexp\"\nfrom(bucket: \"home_assistant\")\n  |> range(start: -30m)\n  |> filter(fn: (r) => r._measurement == \"°C\" and r._field == \"value\")\n  |> filter(fn: (r) => r.entity_id =~ /^(anders_office_desk|saras_desk|lab|master_bedroom|entertainment|big_freezer|freezer|cooler)_/)\n  |> map(fn: (r) => ({r with device: regexp.replaceAllString(r: /_shelly_.*$|_temperature$/, v: r.entity_id, t: \"\")}))\n  |> keep(columns: [\"_time\", \"_value\", \"device\"])\n  |> group(columns: [\"device\"])\n  |> last()"
-          }]
+          "targets": [
+            {
+              "refId": "A",
+              "query": "import \"regexp\"\nfrom(bucket: \"home_assistant\")\n  |> range(start: -30m)\n  |> filter(fn: (r) => r._measurement == \"\u00b0C\" and r._field == \"value\")\n  |> filter(fn: (r) => r.entity_id =~ /^(anders_office_desk|saras_desk|lab|master_bedroom|entertainment|big_freezer|freezer|cooler)_/)\n  |> map(fn: (r) => ({r with device: regexp.replaceAllString(r: /_shelly_.*$|_temperature$/, v: r.entity_id, t: \"\")}))\n  |> keep(columns: [\"_time\", \"_value\", \"device\"])\n  |> group(columns: [\"device\"])\n  |> last()"
+            }
+          ]
         },
         {
-          "type": "bargauge", "title": "Plug energy · last 24 h", "id": 9,
-          "gridPos": { "h": 9, "w": 12, "x": 12, "y": 22 },
-          "datasource": { "type": "influxdb", "uid": "PF4A97030133A7E89" },
+          "type": "bargauge",
+          "title": "Plug energy \u00b7 last 24 h",
+          "id": 9,
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 12,
+            "y": 22
+          },
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF4A97030133A7E89"
+          },
           "fieldConfig": {
             "defaults": {
-              "unit": "kwatth", "decimals": 2, "min": 0,
+              "unit": "kwatth",
+              "decimals": 2,
+              "min": 0,
               "displayName": "${__field.labels.device}",
-              "color": { "mode": "fixed", "fixedColor": "#3987e5" }
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "#3987e5"
+              }
             },
             "overrides": []
           },
           "options": {
-            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-            "orientation": "horizontal", "displayMode": "basic",
-            "showUnfilled": true, "valueMode": "color"
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "orientation": "horizontal",
+            "displayMode": "basic",
+            "showUnfilled": true,
+            "valueMode": "color"
           },
-          "targets": [{
-            "refId": "A",
-            "query": "import \"regexp\"\nfrom(bucket: \"home_assistant\")\n  |> range(start: -24h)\n  |> filter(fn: (r) => r._measurement == \"Wh\" and r._field == \"value\")\n  |> map(fn: (r) => ({r with device: regexp.replaceAllString(r: /_shelly_.*$|_energy$/, v: r.entity_id, t: \"\")}))\n  |> keep(columns: [\"_time\", \"_value\", \"device\"])\n  |> group(columns: [\"device\"])\n  |> spread()\n  |> map(fn: (r) => ({r with _value: r._value / 1000.0}))"
-          }]
+          "targets": [
+            {
+              "refId": "A",
+              "query": "import \"regexp\"\nfrom(bucket: \"home_assistant\")\n  |> range(start: -24h)\n  |> filter(fn: (r) => r._measurement == \"Wh\" and r._field == \"value\" and r.entity_id !~ /^electricity_meter_/)\n  |> map(fn: (r) => ({r with device: regexp.replaceAllString(r: /_shelly_.*$|_energy$/, v: r.entity_id, t: \"\")}))\n  |> keep(columns: [\"_time\", \"_value\", \"device\"])\n  |> group(columns: [\"device\"])\n  |> spread()\n  |> map(fn: (r) => ({r with _value: r._value / 1000.0}))"
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "title": "Grid power now",
+          "type": "stat",
+          "gridPos": {
+            "h": 4,
+            "w": 8,
+            "x": 0,
+            "y": 31
+          },
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF4A97030133A7E89"
+          },
+          "description": "Net grid exchange: positive = importing, negative = exporting to the grid.",
+          "targets": [
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "PF4A97030133A7E89"
+              },
+              "query": "from(bucket: \"home_assistant\")\n  |> range(start: -30m)\n  |> filter(fn: (r) => r._measurement == \"W\" and r._field == \"value\")\n  |> filter(fn: (r) => r.entity_id == \"electricity_meter_grid_import_power\" or r.entity_id == \"electricity_meter_grid_export_power\")\n  |> last()\n  |> group()\n  |> pivot(rowKey: [\"_stop\"], columnKey: [\"entity_id\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({_time: r._stop, _value: r.electricity_meter_grid_import_power - r.electricity_meter_grid_export_power}))",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "watt",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ]
+            },
+            "colorMode": "value",
+            "graphMode": "none"
+          }
+        },
+        {
+          "id": 12,
+          "title": "Grid imported \u00b7 range",
+          "type": "stat",
+          "gridPos": {
+            "h": 4,
+            "w": 8,
+            "x": 8,
+            "y": 31
+          },
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF4A97030133A7E89"
+          },
+          "description": "Energy bought from the grid over the dashboard time range.",
+          "targets": [
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "PF4A97030133A7E89"
+              },
+              "query": "from(bucket: \"home_assistant\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"Wh\" and r._field == \"value\" and r.entity_id == \"electricity_meter_imported_energy\")\n  |> spread()\n  |> map(fn: (r) => ({r with _value: r._value / 1000.0}))",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "kwatth",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "blue",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ]
+            },
+            "colorMode": "value",
+            "graphMode": "none"
+          }
+        },
+        {
+          "id": 13,
+          "title": "Grid exported \u00b7 range",
+          "type": "stat",
+          "gridPos": {
+            "h": 4,
+            "w": 8,
+            "x": 16,
+            "y": 31
+          },
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF4A97030133A7E89"
+          },
+          "description": "Energy sold to the grid over the dashboard time range.",
+          "targets": [
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "PF4A97030133A7E89"
+              },
+              "query": "from(bucket: \"home_assistant\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"Wh\" and r._field == \"value\" and r.entity_id == \"electricity_meter_exported_energy\")\n  |> spread()\n  |> map(fn: (r) => ({r with _value: r._value / 1000.0}))",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "kwatth",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ]
+            },
+            "colorMode": "value",
+            "graphMode": "none"
+          }
+        },
+        {
+          "id": 14,
+          "title": "Grid power vs solar",
+          "type": "timeseries",
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 35
+          },
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF4A97030133A7E89"
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "PF4A97030133A7E89"
+              },
+              "query": "from(bucket: \"home_assistant\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"W\" and r._field == \"value\")\n  |> filter(fn: (r) => r.entity_id == \"electricity_meter_grid_import_power\" or r.entity_id == \"electricity_meter_grid_export_power\" or r.entity_id == \"solarcells_output_power\")\n  |> map(fn: (r) => ({r with\n      _value: if r.entity_id == \"electricity_meter_grid_export_power\" then -r._value\n              else if r.entity_id == \"solarcells_output_power\" then r._value * 1000.0\n              else r._value,\n      series: if r.entity_id == \"electricity_meter_grid_import_power\" then \"grid import\"\n              else if r.entity_id == \"electricity_meter_grid_export_power\" then \"grid export\"\n              else \"solar\"}))\n  |> keep(columns: [\"_time\", \"_value\", \"series\"])\n  |> group(columns: [\"series\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "drawStyle": "line",
+                "fillOpacity": 15,
+                "lineWidth": 1,
+                "showPoints": "never"
+              },
+              "unit": "watt"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "grid import"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "orange"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "grid export"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "green"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "solar"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "yellow"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "right",
+              "calcs": [
+                "mean",
+                "max"
+              ],
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "description": "Grid exchange from the meter (export drawn negative) with solar production overlaid. Solar reports kW and is scaled to W here."
+        },
+        {
+          "id": 15,
+          "title": "Phase voltage",
+          "type": "timeseries",
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 44
+          },
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF4A97030133A7E89"
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "PF4A97030133A7E89"
+              },
+              "query": "import \"regexp\"\nfrom(bucket: \"home_assistant\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"V\" and r._field == \"value\")\n  |> filter(fn: (r) => r.entity_id =~ /^electricity_meter_voltage_/)\n  |> map(fn: (r) => ({r with phase: regexp.replaceAllString(r: /^electricity_meter_voltage_/, v: r.entity_id, t: \"\")}))\n  |> keep(columns: [\"_time\", \"_value\", \"phase\"])\n  |> group(columns: [\"phase\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "drawStyle": "line",
+                "fillOpacity": 15,
+                "lineWidth": 1,
+                "showPoints": "never"
+              },
+              "unit": "volt"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "right",
+              "calcs": [
+                "mean",
+                "max"
+              ],
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "id": 16,
+          "title": "Phase current",
+          "type": "timeseries",
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 44
+          },
+          "datasource": {
+            "type": "influxdb",
+            "uid": "PF4A97030133A7E89"
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "PF4A97030133A7E89"
+              },
+              "query": "import \"regexp\"\nfrom(bucket: \"home_assistant\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"A\" and r._field == \"value\")\n  |> filter(fn: (r) => r.entity_id =~ /^electricity_meter_current_/)\n  |> map(fn: (r) => ({r with phase: regexp.replaceAllString(r: /^electricity_meter_current_/, v: r.entity_id, t: \"\")}))\n  |> keep(columns: [\"_time\", \"_value\", \"phase\"])\n  |> group(columns: [\"phase\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "drawStyle": "line",
+                "fillOpacity": 15,
+                "lineWidth": 1,
+                "showPoints": "never"
+              },
+              "unit": "amp"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "right",
+              "calcs": [
+                "mean",
+                "max"
+              ],
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "description": "Signed per-phase current from the meter: negative = exporting on that phase."
         }
-      ]
+      ],
+      "version": 2
     }

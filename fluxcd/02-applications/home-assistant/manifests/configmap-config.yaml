@@ -57,6 +57,9 @@ data:
       # binary sensors and device trackers and inflates cardinality
       include:
         entity_globs:
+          # Notima EMR grid meter (voltage/current entities end in _l1..3, so
+          # the suffix globs below do not catch them)
+          - sensor.electricity_meter_*
           - sensor.shelly*
           - sensor.growatt*
           - sensor.solis* # planned inverter

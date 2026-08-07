@@ -514,3 +514,126 @@ data:
         unique_id: "shelly_freezer_current"
         device:
           identifiers: ["shelly_freezer"]
+
+      # Electricity Meter - Notima Energy Meter Reader (HAN/P1) on the grid
+      # connection. Publishes raw HAN telemetry to EMR_C26764/Unknown/... -
+      # the "Unknown" segment is the meter identity as the EMR firmware
+      # reports it; a firmware update could change it, which shows up as all
+      # of these going unavailable.
+      # Positive = grid import, Negative = grid export (per HAN convention).
+      - name: "Electricity Meter Grid Import Power"
+        state_topic: "EMR_C26764/Unknown/Power/Instant/Active/Positive/value"
+        unit_of_measurement: "W"
+        device_class: "power"
+        state_class: "measurement"
+        availability_topic: "EMR_C26764/device/status"
+        payload_available: "connected"
+        unique_id: "emr_c26764_grid_import_power"
+        device:
+          identifiers: ["emr_c26764"]
+          name: "Electricity Meter"
+          model: "Energy Meter Reader"
+          manufacturer: "Notima Energy Intelligence"
+          configuration_url: "http://192.168.3.131"
+
+      - name: "Electricity Meter Grid Export Power"
+        state_topic: "EMR_C26764/Unknown/Power/Instant/Active/Negative/value"
+        unit_of_measurement: "W"
+        device_class: "power"
+        state_class: "measurement"
+        availability_topic: "EMR_C26764/device/status"
+        payload_available: "connected"
+        unique_id: "emr_c26764_grid_export_power"
+        device:
+          identifiers: ["emr_c26764"]
+
+      - name: "Electricity Meter Imported Energy"
+        state_topic: "EMR_C26764/Unknown/Energy/Active/Positive/value"
+        unit_of_measurement: "Wh"
+        device_class: "energy"
+        state_class: "total_increasing"
+        availability_topic: "EMR_C26764/device/status"
+        payload_available: "connected"
+        unique_id: "emr_c26764_imported_energy"
+        device:
+          identifiers: ["emr_c26764"]
+
+      - name: "Electricity Meter Exported Energy"
+        state_topic: "EMR_C26764/Unknown/Energy/Active/Negative/value"
+        unit_of_measurement: "Wh"
+        device_class: "energy"
+        state_class: "total_increasing"
+        availability_topic: "EMR_C26764/device/status"
+        payload_available: "connected"
+        unique_id: "emr_c26764_exported_energy"
+        device:
+          identifiers: ["emr_c26764"]
+
+      - name: "Electricity Meter Voltage L1"
+        state_topic: "EMR_C26764/Unknown/Voltage/Instant/L1/value"
+        unit_of_measurement: "V"
+        device_class: "voltage"
+        state_class: "measurement"
+        availability_topic: "EMR_C26764/device/status"
+        payload_available: "connected"
+        unique_id: "emr_c26764_voltage_l1"
+        device:
+          identifiers: ["emr_c26764"]
+
+      - name: "Electricity Meter Voltage L2"
+        state_topic: "EMR_C26764/Unknown/Voltage/Instant/L2/value"
+        unit_of_measurement: "V"
+        device_class: "voltage"
+        state_class: "measurement"
+        availability_topic: "EMR_C26764/device/status"
+        payload_available: "connected"
+        unique_id: "emr_c26764_voltage_l2"
+        device:
+          identifiers: ["emr_c26764"]
+
+      - name: "Electricity Meter Voltage L3"
+        state_topic: "EMR_C26764/Unknown/Voltage/Instant/L3/value"
+        unit_of_measurement: "V"
+        device_class: "voltage"
+        state_class: "measurement"
+        availability_topic: "EMR_C26764/device/status"
+        payload_available: "connected"
+        unique_id: "emr_c26764_voltage_l3"
+        device:
+          identifiers: ["emr_c26764"]
+
+      # Signed: negative = exporting on this phase
+      - name: "Electricity Meter Current L1"
+        state_topic: "EMR_C26764/Unknown/Current/Instant/L1/value"
+        unit_of_measurement: "A"
+        device_class: "current"
+        state_class: "measurement"
+        availability_topic: "EMR_C26764/device/status"
+        payload_available: "connected"
+        unique_id: "emr_c26764_current_l1"
+        device:
+          identifiers: ["emr_c26764"]
+
+      # Signed: negative = exporting on this phase
+      - name: "Electricity Meter Current L2"
+        state_topic: "EMR_C26764/Unknown/Current/Instant/L2/value"
+        unit_of_measurement: "A"
+        device_class: "current"
+        state_class: "measurement"
+        availability_topic: "EMR_C26764/device/status"
+        payload_available: "connected"
+        unique_id: "emr_c26764_current_l2"
+        device:
+          identifiers: ["emr_c26764"]
+
+      # Signed: negative = exporting on this phase
+      - name: "Electricity Meter Current L3"
+        state_topic: "EMR_C26764/Unknown/Current/Instant/L3/value"
+        unit_of_measurement: "A"
+        device_class: "current"
+        state_class: "measurement"
+        availability_topic: "EMR_C26764/device/status"
+        payload_available: "connected"
+        unique_id: "emr_c26764_current_l3"
+        device:
+          identifiers: ["emr_c26764"]

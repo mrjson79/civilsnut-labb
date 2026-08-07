@@ -521,7 +521,7 @@ data:
       # reports it; a firmware update could change it, which shows up as all
       # of these going unavailable.
       # Positive = grid import, Negative = grid export (per HAN convention).
-      - name: "Electricity Meter Grid Import Power"
+      - name: "Grid Import Power"
         state_topic: "EMR_C26764/Unknown/Power/Instant/Active/Positive/value"
         unit_of_measurement: "W"
         device_class: "power"
@@ -536,7 +536,7 @@ data:
           manufacturer: "Notima Energy Intelligence"
           configuration_url: "http://192.168.3.131"
 
-      - name: "Electricity Meter Grid Export Power"
+      - name: "Grid Export Power"
         state_topic: "EMR_C26764/Unknown/Power/Instant/Active/Negative/value"
         unit_of_measurement: "W"
         device_class: "power"
@@ -547,7 +547,7 @@ data:
         device:
           identifiers: ["emr_c26764"]
 
-      - name: "Electricity Meter Imported Energy"
+      - name: "Imported Energy"
         state_topic: "EMR_C26764/Unknown/Energy/Active/Positive/value"
         unit_of_measurement: "Wh"
         device_class: "energy"
@@ -558,7 +558,7 @@ data:
         device:
           identifiers: ["emr_c26764"]
 
-      - name: "Electricity Meter Exported Energy"
+      - name: "Exported Energy"
         state_topic: "EMR_C26764/Unknown/Energy/Active/Negative/value"
         unit_of_measurement: "Wh"
         device_class: "energy"
@@ -569,7 +569,7 @@ data:
         device:
           identifiers: ["emr_c26764"]
 
-      - name: "Electricity Meter Voltage L1"
+      - name: "Voltage L1"
         state_topic: "EMR_C26764/Unknown/Voltage/Instant/L1/value"
         unit_of_measurement: "V"
         device_class: "voltage"
@@ -580,7 +580,7 @@ data:
         device:
           identifiers: ["emr_c26764"]
 
-      - name: "Electricity Meter Voltage L2"
+      - name: "Voltage L2"
         state_topic: "EMR_C26764/Unknown/Voltage/Instant/L2/value"
         unit_of_measurement: "V"
         device_class: "voltage"
@@ -591,7 +591,7 @@ data:
         device:
           identifiers: ["emr_c26764"]
 
-      - name: "Electricity Meter Voltage L3"
+      - name: "Voltage L3"
         state_topic: "EMR_C26764/Unknown/Voltage/Instant/L3/value"
         unit_of_measurement: "V"
         device_class: "voltage"
@@ -603,7 +603,7 @@ data:
           identifiers: ["emr_c26764"]
 
       # Signed: negative = exporting on this phase
-      - name: "Electricity Meter Current L1"
+      - name: "Current L1"
         state_topic: "EMR_C26764/Unknown/Current/Instant/L1/value"
         unit_of_measurement: "A"
         device_class: "current"
@@ -615,7 +615,7 @@ data:
           identifiers: ["emr_c26764"]
 
       # Signed: negative = exporting on this phase
-      - name: "Electricity Meter Current L2"
+      - name: "Current L2"
         state_topic: "EMR_C26764/Unknown/Current/Instant/L2/value"
         unit_of_measurement: "A"
         device_class: "current"
@@ -627,7 +627,7 @@ data:
           identifiers: ["emr_c26764"]
 
       # Signed: negative = exporting on this phase
-      - name: "Electricity Meter Current L3"
+      - name: "Current L3"
         state_topic: "EMR_C26764/Unknown/Current/Instant/L3/value"
         unit_of_measurement: "A"
         device_class: "current"

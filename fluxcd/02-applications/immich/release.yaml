@@ -40,6 +40,14 @@ spec:
             has-disk: "yes"
         containers:
           main:
+            image:
+              # Chart 0.12.0 still pins appVersion v2.6.3 while Immich itself is
+              # on 3.x - the chart's own main branch already defaults to v3, it
+              # just has not been released. immich-kiosk 0.42.0 hard-refuses to
+              # start against anything older than 3.0.3, so the tag is pinned
+              # here rather than waiting for the chart to catch up.
+              # Renovate tracks it via the immich-server-image customManager.
+              tag: v3.0.3
             env:
               # -rw is the CNPG read/write service, i.e. always the primary
               DB_HOSTNAME: immich-pg-rw

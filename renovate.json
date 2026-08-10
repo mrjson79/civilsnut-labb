@@ -16,49 +16,84 @@
   "commitMessagePrefix": "chore:",
   "commitMessageTopic": "{{depName}}",
   "commitMessageExtra": "to {{newVersion}}",
-  "labels": ["dependencies"],
-  "assignees": ["mrjson79"],
-  "reviewers": ["mrjson79"],
+  "labels": [
+    "dependencies"
+  ],
+  "assignees": [
+    "mrjson79"
+  ],
+  "reviewers": [
+    "mrjson79"
+  ],
   "ignorePaths": [
     "talos/**"
   ],
   "vulnerabilityAlerts": {
-    "labels": ["security", "dependencies"],
-    "assignees": ["mrjson79"],
-    "reviewers": ["mrjson79"],
-    "schedule": ["at any time"]
+    "labels": [
+      "security",
+      "dependencies"
+    ],
+    "assignees": [
+      "mrjson79"
+    ],
+    "reviewers": [
+      "mrjson79"
+    ],
+    "schedule": [
+      "at any time"
+    ]
   },
   "flux": {
-    "managerFilePatterns": ["/fluxcd/.+\\.ya?ml$/"]
+    "managerFilePatterns": [
+      "/fluxcd/.+\\.ya?ml$/"
+    ]
   },
   "kubernetes": {
-    "managerFilePatterns": ["/fluxcd/.+\\.ya?ml$/"]
+    "managerFilePatterns": [
+      "/fluxcd/.+\\.ya?ml$/"
+    ]
   },
   "packageRules": [
     {
       "description": "Automerge digest updates",
-      "matchUpdateTypes": ["digest"],
+      "matchUpdateTypes": [
+        "digest"
+      ],
       "automerge": true,
       "automergeType": "pr"
     },
     {
       "description": "Critical security components - require manual review",
-      "matchPackageNames": ["cert-manager", "external-secrets"],
+      "matchPackageNames": [
+        "cert-manager",
+        "external-secrets"
+      ],
       "automerge": false,
-      "labels": ["security-critical"],
+      "labels": [
+        "security-critical"
+      ],
       "groupName": "Security Infrastructure"
     },
     {
       "description": "Networking components",
-      "matchPackageNames": ["cilium"],
-      "labels": ["networking"],
+      "matchPackageNames": [
+        "cilium"
+      ],
+      "labels": [
+        "networking"
+      ],
       "automerge": false,
       "groupName": "Networking Stack"
     },
     {
       "description": "Storage components",
-      "matchPackageNames": ["rook-ceph", "rook-ceph-cluster"],
-      "labels": ["storage"],
+      "matchPackageNames": [
+        "rook-ceph",
+        "rook-ceph-cluster"
+      ],
+      "labels": [
+        "storage"
+      ],
       "automerge": false,
       "groupName": "Storage Stack"
     },
@@ -71,28 +106,46 @@
         "eclipse-mosquitto",
         "kristofferR/FellowAiden-HomeAssistant",
         "immich",
-        "ghcr.io/damongolding/immich-kiosk"
+        "ghcr.io/damongolding/immich-kiosk",
+        "ghcr.io/immich-app/immich-server"
       ],
-      "labels": ["home-automation"],
+      "labels": [
+        "home-automation"
+      ],
       "automerge": false,
       "groupName": "Home Automation"
     },
     {
       "description": "Container images - patch updates can be auto-merged",
-      "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["patch", "digest"],
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchUpdateTypes": [
+        "patch",
+        "digest"
+      ],
       "automerge": true,
       "automergeType": "pr",
-      "labels": ["container-images", "automerge"]
+      "labels": [
+        "container-images",
+        "automerge"
+      ]
     },
     {
       "description": "Non-critical Helm minor/patch - automerge for homelab",
-      "matchDatasources": ["helm"],
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchDatasources": [
+        "helm"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
       "matchPackageNames": [
-        "!cert-manager", "!external-secrets",
+        "!cert-manager",
+        "!external-secrets",
         "!cilium",
-        "!rook-ceph", "!rook-ceph-cluster",
+        "!rook-ceph",
+        "!rook-ceph-cluster",
         "!cloudnative-pg"
       ],
       "automerge": true,
@@ -100,11 +153,16 @@
     },
     {
       "description": "All other minor/patch updates",
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
       "matchPackageNames": [
-        "!cert-manager", "!external-secrets",
+        "!cert-manager",
+        "!external-secrets",
         "!cilium",
-        "!rook-ceph", "!rook-ceph-cluster",
+        "!rook-ceph",
+        "!rook-ceph-cluster",
         "!cloudnative-pg"
       ],
       "groupName": "Other Dependencies",
@@ -112,19 +170,30 @@
     },
     {
       "description": "Major updates require careful review",
-      "matchUpdateTypes": ["major"],
+      "matchUpdateTypes": [
+        "major"
+      ],
       "automerge": false,
-      "labels": ["major-update"]
+      "labels": [
+        "major-update"
+      ]
     },
     {
       "description": "Postgres majors need pg_upgrade planning - park behind dashboard approval",
-      "matchPackageNames": ["postgres", "ghcr.io/cloudnative-pg/postgresql"],
-      "matchUpdateTypes": ["major"],
+      "matchPackageNames": [
+        "postgres",
+        "ghcr.io/cloudnative-pg/postgresql"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
       "dependencyDashboardApproval": true
     },
     {
       "description": "alertmanager-webhook-signal moved from calver (22.x, 2022) to semver 1.x - the stale calver tags sort higher and must be blocked",
-      "matchPackageNames": ["docker.io/schlauerlauer/alertmanager-webhook-signal"],
+      "matchPackageNames": [
+        "docker.io/schlauerlauer/alertmanager-webhook-signal"
+      ],
       "allowedVersions": "<20"
     }
   ],
@@ -132,31 +201,60 @@
     {
       "description": "CNPG Cluster imageName is a CRD field the kubernetes manager cannot parse (cloudnative-pg and the VectorChord variant Immich needs)",
       "customType": "regex",
-      "managerFilePatterns": ["/fluxcd/.+\\.ya?ml$/"],
-      "matchStrings": ["imageName: (?<depName>ghcr\\.io/[\\w.\\-/]+):(?<currentValue>[\\w.\\-]+)"],
+      "managerFilePatterns": [
+        "/fluxcd/.+\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "imageName: (?<depName>ghcr\\.io/[\\w.\\-/]+):(?<currentValue>[\\w.\\-]+)"
+      ],
       "datasourceTemplate": "docker"
     },
     {
       "description": "Version tables in the READMEs - rows annotated with '<!-- renovate: ... -->' bump in the same PR as the manifest",
       "customType": "regex",
-      "managerFilePatterns": ["/^README\\.md$/", "/^fluxcd/README\\.md$/"],
-      "matchStrings": ["`?(?<currentValue>v?\\d[\\w.\\-]*)`? <!-- renovate: datasource=(?<datasource>[a-z-]+) depName=(?<depName>\\S+?)(?: registryUrl=(?<registryUrl>\\S+?))? -->"]
+      "managerFilePatterns": [
+        "/^README\\.md$/",
+        "/^fluxcd/README\\.md$/"
+      ],
+      "matchStrings": [
+        "`?(?<currentValue>v?\\d[\\w.\\-]*)`? <!-- renovate: datasource=(?<datasource>[a-z-]+) depName=(?<depName>\\S+?)(?: registryUrl=(?<registryUrl>\\S+?))? -->"
+      ]
     },
     {
       "description": "Fellow Aiden HA custom component is pinned in the home-assistant StatefulSet init container",
       "customType": "regex",
-      "managerFilePatterns": ["/fluxcd/.+\\.ya?ml$/"],
-      "matchStrings": ["VERSION=(?<currentValue>v[\\d.]+)\\n\\s+apk add --no-cache wget tar ca-certificates"],
+      "managerFilePatterns": [
+        "/fluxcd/.+\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "VERSION=(?<currentValue>v[\\d.]+)\\n\\s+apk add --no-cache wget tar ca-certificates"
+      ],
       "depNameTemplate": "kristofferR/FellowAiden-HomeAssistant",
       "datasourceTemplate": "github-releases"
     },
     {
       "description": "prometheus-operator stripped-down CRDs are pulled by release URL in the kustomization",
       "customType": "regex",
-      "managerFilePatterns": ["/fluxcd/.+\\.ya?ml$/"],
-      "matchStrings": ["https://github\\.com/prometheus-operator/prometheus-operator/releases/download/(?<currentValue>v[\\d.]+)/"],
+      "managerFilePatterns": [
+        "/fluxcd/.+\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "https://github\\.com/prometheus-operator/prometheus-operator/releases/download/(?<currentValue>v[\\d.]+)/"
+      ],
       "depNameTemplate": "prometheus-operator/prometheus-operator",
       "datasourceTemplate": "github-releases"
+    },
+    {
+      "description": "Immich server image tag is pinned in the HelmRelease values because the chart's appVersion lags Immich releases",
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/fluxcd/02-applications/immich/release\\.yaml$/"
+      ],
+      "matchStrings": [
+        "tag: (?<currentValue>v[\\d.]+)"
+      ],
+      "depNameTemplate": "ghcr.io/immich-app/immich-server",
+      "datasourceTemplate": "docker"
     }
   ],
   "hostRules": [
@@ -189,5 +287,9 @@
       "timeout": 30000
     }
   ],
-  "ignoreDeps": ["localhost/**", "*:latest", "*:main"]
+  "ignoreDeps": [
+    "localhost/**",
+    "*:latest",
+    "*:main"
+  ]
 }

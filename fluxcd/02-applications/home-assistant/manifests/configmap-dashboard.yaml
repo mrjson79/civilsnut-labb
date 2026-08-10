@@ -243,24 +243,34 @@ data:
   family.yaml: |
     title: Family
     views:
+      # panel, not sections: a sections view centres its columns inside a max
+      # width, which shrinks the photo on a wide screen. panel stretches its
+      # single card edge to edge, and the vertical-stack does the stacking.
       - title: Family
         path: family
         icon: mdi:account-group
-        type: sections
-        max_columns: 2
-        sections:
-          - type: grid
+        type: panel
+        cards:
+          - type: vertical-stack
             cards:
-              # immich-kiosk slideshow over the Immich library. 4:3 so portrait
-              # shots are not letterboxed into nothing on a wall tablet.
+              # immich-kiosk slideshow - the point of the view, so it goes
+              # first and full width. aspect_ratio is height as a % of width:
+              # 56.25% is 16:9, which fills most of a landscape tablet and
+              # leaves the agenda visible underneath without scrolling. This is
+              # the one number to tune if the split looks wrong on the actual
+              # screen - raise it for a taller photo, lower it for more agenda.
               - type: iframe
                 url: https://frame.civilsnut.se/
-                aspect_ratio: 75%
-          - type: grid
-            cards:
+                aspect_ratio: 56.25%
               # "Våran" - the shared iCloud calendar. Entity id comes from the
               # CalDAV config flow (slug of the calendar name), so it only
               # exists once that integration is set up.
+              #
+              # listWeek is the narrowest built-in view that still shows more
+              # than one day: an agenda list of the coming week. The card's
+              # only other options are dayGridDay (a single day) and
+              # dayGridMonth (a full month grid), so there is no native 3-day
+              # window without pulling in a custom card.
               - type: calendar
                 title: Agenda
                 initial_view: listWeek

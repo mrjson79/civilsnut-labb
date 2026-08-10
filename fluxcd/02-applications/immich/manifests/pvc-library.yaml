@@ -1,0 +1,28 @@
+# The photo library itself. The Immich chart deliberately does not create this
+# volume ("Automatically creating the library volume is not supported by this
+# chart - you have to specify an existing PVC"), so it lives here and is wired
+# in via immich.persistence.library.existingClaim.
+#
+# Sizing: ceph-block is replicated size 2, so every GB here costs 2GB of raw
+# OSD space (~1.9TB free at creation). 300Gi is a starting point, not a
+# ceiling - allowVolumeExpansion is on for this StorageClass, so growing it is
+# an edit to this file plus a rollout. Immich adds 10-20% on top of the
+# originals for thumbnails and transcodes.
+#
+# RWO is fine: immich-server runs a single replica, and the machine-learning
+# pod does NOT mount the library (the server sends it image data over HTTP).
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: immich-library
+  namespace: immich
+  labels:
+    app.kubernetes.io/name: immich
+spec:
+  storageClassName: ceph-block
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 300Gi

@@ -2,16 +2,16 @@
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: ReferenceGrant
 metadata:
-  name: icloud-photos-to-shared-gateway
+  name: immich-to-shared-gateway
   namespace: gateway-system
   labels:
-    app.kubernetes.io/name: icloud-photos
+    app.kubernetes.io/name: immich
     apps.kubernetes.io/managed-by: flux
 spec:
   from:
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
-      namespace: icloud-photos
+      namespace: immich
   to:
     - group: "gateway.networking.k8s.io"
       kind: Gateway

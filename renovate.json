@@ -70,8 +70,8 @@
         "zigbee2mqtt",
         "eclipse-mosquitto",
         "kristofferR/FellowAiden-HomeAssistant",
-        "nginx",
-        "python"
+        "immich",
+        "ghcr.io/damongolding/immich-kiosk"
       ],
       "labels": ["home-automation"],
       "automerge": false,
@@ -130,10 +130,10 @@
   ],
   "customManagers": [
     {
-      "description": "CNPG Cluster imageName is a CRD field the kubernetes manager cannot parse",
+      "description": "CNPG Cluster imageName is a CRD field the kubernetes manager cannot parse (cloudnative-pg and the VectorChord variant Immich needs)",
       "customType": "regex",
       "managerFilePatterns": ["/fluxcd/.+\\.ya?ml$/"],
-      "matchStrings": ["imageName: (?<depName>ghcr\\.io/cloudnative-pg/postgresql):(?<currentValue>[\\w.\\-]+)"],
+      "matchStrings": ["imageName: (?<depName>ghcr\\.io/[\\w.\\-/]+):(?<currentValue>[\\w.\\-]+)"],
       "datasourceTemplate": "docker"
     },
     {

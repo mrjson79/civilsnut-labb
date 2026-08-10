@@ -1,0 +1,65 @@
+# Postgres for Immich. NOT the stock cloudnative-pg image: Immich requires the
+# VectorChord extension (>= 0.3, < 2.0) on top of pgvector for its smart-search
+# embeddings, and needs vchord.so in shared_preload_libraries. The tensorchord
+# image is cloudnative-pg plus VectorChord, tagged <pg version>-<vchord
+# version>, so it stays a drop-in for the operator and for barman backups.
+#
+# The photo library itself is deliberately unbacked (iCloud remains the primary
+# copy - this cluster is the second one), but the DATABASE is not replaceable:
+# it holds albums, faces, and the asset metadata. Losing it means re-importing
+# and rebuilding all of that by hand, so it gets the same barman-cloud wiring
+# as zitadel-pg.
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: immich-pg
+  namespace: immich
+spec:
+  instances: 2
+  imageName: ghcr.io/tensorchord/cloudnative-vectorchord:17.5-0.4.3
+  primaryUpdateStrategy: unsupervised
+  affinity:
+    nodeSelector:
+      has-disk: "yes"
+  storage:
+    size: 10Gi
+    storageClass: ceph-block
+  postgresql:
+    shared_preload_libraries:
+      - vchord.so
+  monitoring:
+    enablePodMonitor: true
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: immich-pg-store
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      memory: 2Gi
+  bootstrap:
+    initdb:
+      database: immich
+      owner: immich
+      secret:
+        name: immich-pg-app
+      # Runs as the superuser against the immich database once, at creation.
+      #
+      # SUPERUSER on the app role is what Immich's own docs prescribe
+      # ("ALTER USER <immichdbusername> WITH SUPERUSER;"). The non-superuser
+      # route exists but upstream warns it "often requires manual intervention
+      # when updating Immich" - every release whose migrations touch an
+      # extension would need hand-holding, which is exactly what Renovate
+      # auto-upgrades must not need.
+      #
+      # The CREATE EXTENSIONs are still explicit so a bootstrap either comes up
+      # complete or fails loudly. CASCADE pulls the dependencies: vchord brings
+      # pgvector, earthdistance brings cube.
+      postInitApplicationSQL:
+        - ALTER ROLE immich WITH SUPERUSER;
+        - CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
+        - CREATE EXTENSION IF NOT EXISTS earthdistance CASCADE;

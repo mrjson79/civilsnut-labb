@@ -251,11 +251,10 @@ data:
         sections:
           - type: grid
             cards:
-              # Slideshow of the shared iCloud album, served by the
-              # icloud-photos app. 4:3 so portrait shots are not letterboxed
-              # into nothing on a wall tablet.
+              # immich-kiosk slideshow over the Immich library. 4:3 so portrait
+              # shots are not letterboxed into nothing on a wall tablet.
               - type: iframe
-                url: https://photos.civilsnut.se/
+                url: https://frame.civilsnut.se/
                 aspect_ratio: 75%
           - type: grid
             cards:

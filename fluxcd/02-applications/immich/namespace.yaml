@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: icloud-photos
+  name: immich
   labels:
-    name: icloud-photos
-    app.kubernetes.io/name: icloud-photos
+    name: immich
+    app.kubernetes.io/name: immich
     app.kubernetes.io/component: photos
     apps.kubernetes.io/managed-by: flux
     gateway.networking.k8s.io/allowed: "true"

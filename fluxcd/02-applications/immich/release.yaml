@@ -1,0 +1,109 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: immich
+  namespace: immich
+spec:
+  interval: 5m
+  # first install pulls the server + machine-learning images (several GB) and
+  # runs the initial DB migrations - the default 5m is not enough
+  timeout: 20m
+  chart:
+    spec:
+      chart: immich
+      version: "0.12.0"
+      sourceRef:
+        kind: HelmRepository
+        name: immich
+        namespace: immich
+      interval: 1h
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    # shared by every Immich component
+    controllers:
+      main:
+        # The chart defaults to RollingUpdate, but immich-server mounts the RWO
+        # immich-library PVC (and machine-learning its RWO cache). A rolling
+        # upgrade starts the new pod before the old one releases the RBD image,
+        # so if the scheduler picks a different node it deadlocks on
+        # Multi-Attach - the same trap that bites Grafana in this cluster.
+        # Recreate makes every Renovate chart bump deterministic.
+        strategy: Recreate
+        pod:
+          nodeSelector:
+            has-disk: "yes"
+        containers:
+          main:
+            env:
+              # -rw is the CNPG read/write service, i.e. always the primary
+              DB_HOSTNAME: immich-pg-rw
+              DB_USERNAME: immich
+              DB_DATABASE_NAME: immich
+              DB_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: immich-pg-app
+                    key: password
+
+    immich:
+      persistence:
+        library:
+          existingClaim: immich-library
+      configuration:
+        # A dated directory tree rather than Immich's opaque default layout.
+        # This library is the second copy of what is already in iCloud, so it
+        # matters that the files stay legible without Immich to interpret them.
+        # Changing this later means running a storage-migration job; setting it
+        # at creation costs nothing.
+        storageTemplate:
+          enabled: true
+          template: "{{y}}/{{y}}-{{MM}}-{{dd}}/{{filename}}"
+
+    valkey:
+      enabled: true
+      # job queues only - losing them on a restart costs a re-queue, not data
+      persistence:
+        data:
+          type: emptyDir
+
+    server:
+      controllers:
+        main:
+          containers:
+            main:
+              resources:
+                requests:
+                  cpu: 200m
+                  memory: 1Gi
+                limits:
+                  # ffmpeg transcodes on import will use everything it is given
+                  cpu: "4"
+                  memory: 4Gi
+
+    machine-learning:
+      controllers:
+        main:
+          containers:
+            main:
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 1Gi
+                limits:
+                  cpu: "2"
+                  memory: 4Gi
+      persistence:
+        cache:
+          # the chart defaults this to emptyDir, which re-downloads the CLIP
+          # models on every restart. RWO, not the chart's suggested RWX -
+          # single replica, and there is no CephFS in this cluster.
+          type: persistentVolumeClaim
+          size: 10Gi
+          accessMode: ReadWriteOnce
+          storageClass: ceph-block

@@ -1,0 +1,39 @@
+# Backup wiring for immich-pg: continuous WAL archiving + nightly base backups
+# to the in-cluster RGW bucket (see backup-bucket.yaml), via the barman-cloud
+# CNPG plugin. Restore drill: runbooks/cnpg-restore-drill.yaml.
+# NOTE: same ceph cluster as the data - offsite mirror still planned.
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: immich-pg-store
+  namespace: immich
+spec:
+  retentionPolicy: "14d"
+  configuration:
+    destinationPath: s3://immich-pg-backups/immich-pg
+    endpointURL: http://rook-ceph-rgw-objectstore.rook-ceph.svc
+    s3Credentials:
+      accessKeyId:
+        name: immich-pg-backups
+        key: AWS_ACCESS_KEY_ID
+      secretAccessKey:
+        name: immich-pg-backups
+        key: AWS_SECRET_ACCESS_KEY
+    wal:
+      compression: gzip
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: immich-pg-nightly
+  namespace: immich
+spec:
+  # six-field cron (with seconds): 03:30 every night - half an hour after
+  # zitadel-pg so the two do not contend on the RGW at once
+  schedule: "0 30 3 * * *"
+  backupOwnerReference: self
+  cluster:
+    name: immich-pg
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io

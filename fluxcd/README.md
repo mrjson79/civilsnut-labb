@@ -76,7 +76,8 @@ User-facing applications.
 | **Flux Web** | — | Flux Operator web UI (fluxcd.civilsnut.se); image managed by flux-operator |
 | **Home Assistant** | 2026.2.3 <!-- renovate: datasource=docker depName=ghcr.io/home-assistant/home-assistant --> | Home automation platform |
 | **Fellow Aiden** | v1.3.3 <!-- renovate: datasource=github-releases depName=kristofferR/FellowAiden-HomeAssistant --> | HA custom component for the Fellow Aiden coffee brewer (init container) |
-| **iCloud Photos** | 1.29-alpine <!-- renovate: datasource=docker depName=nginx --> / 3.13-alpine <!-- renovate: datasource=docker depName=python --> | Mirrors a public iCloud Shared Album and serves a slideshow (photos.civilsnut.se) for the HA Family dashboard |
+| **Immich** | 0.12.0 <!-- renovate: datasource=helm depName=immich registryUrl=https://immich-app.github.io/immich-charts --> | Self-hosted photo library (photos.civilsnut.se); CNPG cluster `immich-pg` on a VectorChord image |
+| **Immich Kiosk** | 0.42.0 <!-- renovate: datasource=docker depName=ghcr.io/damongolding/immich-kiosk --> | Fullscreen slideshow over the Immich API (frame.civilsnut.se), iframed by the HA Family dashboard |
 | **Mosquitto MQTT** | 2.0.22 <!-- renovate: datasource=docker depName=eclipse-mosquitto --> | MQTT broker |
 | **Zigbee2MQTT** | 2.13.0 <!-- renovate: datasource=helm depName=zigbee2mqtt registryUrl=https://charts.zigbee2mqtt.io --> | Zigbee to MQTT bridge |
 | **httpbin** | — | Test / debug endpoint (httpbin.civilsnut.se) |

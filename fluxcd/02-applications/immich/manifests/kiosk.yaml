@@ -1,0 +1,106 @@
+# immich-kiosk: a fullscreen slideshow driven by the Immich API. This is what
+# the Home Assistant Family dashboard iframes - HA's own Immich integration
+# only exposes sensors, an update entity and a media source, so it can browse
+# albums but cannot render a photo frame.
+#
+# Stateless: no volume, no database. It reads assets from immich-server over
+# the cluster network with an API key and streams them to the browser.
+#
+# The API key ships as a placeholder (see externalsecrets.yaml) - until it is
+# replaced in 1Password the pod runs but every request 401s.
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: immich-kiosk
+  namespace: immich
+  labels:
+    app: immich-kiosk
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: immich-kiosk
+  template:
+    metadata:
+      labels:
+        app: immich-kiosk
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: kiosk
+          image: ghcr.io/damongolding/immich-kiosk:0.42.0
+          # distroless, already USER nonroot - so it clears the "restricted"
+          # PodSecurity profile even though this namespace only enforces
+          # baseline. Nothing in a read-only slideshow needs capabilities.
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          env:
+            # In-cluster, so plain http and no round trip through the gateway
+            - name: KIOSK_IMMICH_URL
+              value: http://immich-server.immich.svc.cluster.local:2283
+            - name: KIOSK_PORT
+              value: "3000"
+            # Seconds per photo. 60 is the upstream default and far too slow
+            # for something you walk past.
+            - name: KIOSK_DURATION
+              value: "20"
+            - name: KIOSK_SHOW_TIME
+              value: "true"
+            - name: KIOSK_TIME_FORMAT
+              value: "24"
+            - name: KIOSK_SHOW_DATE
+              value: "true"
+            - name: KIOSK_DATE_FORMAT
+              value: "YYYY-MM-DD"
+            # Leaving KIOSK_ALBUMS unset shows the whole library. Set it to a
+            # comma-separated list of Immich album IDs to pin the frame to a
+            # shared family album once one exists.
+          envFrom:
+            - secretRef:
+                name: immich-kiosk
+          resources:
+            requests:
+              memory: 64Mi
+              cpu: 20m
+            limits:
+              memory: 256Mi
+              cpu: 500m
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: immich-kiosk
+  namespace: immich
+  labels:
+    app: immich-kiosk
+spec:
+  selector:
+    app: immich-kiosk
+  ports:
+    - name: http
+      port: 3000
+      targetPort: http
+      protocol: TCP

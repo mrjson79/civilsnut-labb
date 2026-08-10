@@ -15,7 +15,7 @@ resources:
   - flux-web
   - home-assistant
   #- httpbin
-  - icloud-photos
+  - immich
   - monitoring
   - mqtt
   - zigbee2mqtt

@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  annotations:
+    # external-secrets for the DB password and the kiosk API key, rook-ceph for
+    # the library volume and the RGW backup bucket, cnpg for the Postgres
+    # operator, shared-gateway for ingress
+    flux.weave.works/depends-on: "external-secrets,rook-ceph,cnpg,shared-gateway"
+
+resources:
+  - namespace.yaml
+  - repository.yaml
+  - manifests
+  - release.yaml
+  - httproute.yaml
+  - referencegrant.yaml

@@ -55,15 +55,17 @@ spec:
       persistence:
         library:
           existingClaim: immich-library
-      configuration:
-        # A dated directory tree rather than Immich's opaque default layout.
-        # This library is the second copy of what is already in iCloud, so it
-        # matters that the files stay legible without Immich to interpret them.
-        # Changing this later means running a storage-migration job; setting it
-        # at creation costs nothing.
-        storageTemplate:
-          enabled: true
-          template: "{{y}}/{{y}}-{{MM}}-{{dd}}/{{filename}}"
+      # The system config lives in the immich-config Secret, rendered by an
+      # ExternalSecret so the OIDC client secret never enters git. It also
+      # carries storageTemplate: a dated directory tree rather than Immich's
+      # opaque default layout, because this library is the second copy of what
+      # is already in iCloud and the files should stay legible without Immich
+      # to interpret them.
+      #
+      # Consequence worth knowing: with a config file in play, these settings
+      # are owned by git and the Immich admin UI will not let you edit them.
+      configurationKind: Secret
+      existingConfiguration: immich-config
 
     valkey:
       enabled: true

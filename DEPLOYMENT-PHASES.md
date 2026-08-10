@@ -52,7 +52,7 @@ End-user applications and monitoring services:
 | `flux-web` | Flux Operator web UI | shared-gateway, zitadel (OIDC) |
 | `home-assistant` | Home automation platform | external-secrets, rook-ceph, shared-gateway |
 | `httpbin` | Test / debug endpoint | shared-gateway |
-| `immich` | Self-hosted photo library + kiosk slideshow for the HA Family dashboard | external-secrets, rook-ceph, cnpg, shared-gateway |
+| `immich` | Self-hosted photo library (Zitadel OIDC) + kiosk slideshow for the HA Family dashboard | external-secrets, rook-ceph, cnpg, shared-gateway, zitadel |
 | `monitoring` | kube-prometheus-stack + Loki + Alloy + InfluxDB + Signal alerting | rook-ceph, shared-gateway |
 | `mqtt` | MQTT message broker | external-secrets |
 | `zigbee2mqtt` | Zigbee to MQTT bridge | external-secrets, rook-ceph, shared-gateway |

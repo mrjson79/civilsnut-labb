@@ -3,10 +3,10 @@ kind: Kustomization
 
 metadata:
   annotations:
-    # external-secrets for the DB password and the kiosk API key, rook-ceph for
-    # the library volume and the RGW backup bucket, cnpg for the Postgres
-    # operator, shared-gateway for ingress
-    flux.weave.works/depends-on: "external-secrets,rook-ceph,cnpg,shared-gateway"
+    # external-secrets for the DB password, kiosk API key and OIDC client,
+    # rook-ceph for the library volume and the RGW backup bucket, cnpg for the
+    # Postgres operator, shared-gateway for ingress, zitadel as the OIDC issuer
+    flux.weave.works/depends-on: "external-secrets,rook-ceph,cnpg,shared-gateway,zitadel"
 
 resources:
   - namespace.yaml

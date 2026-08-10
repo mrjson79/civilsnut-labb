@@ -28,6 +28,12 @@ spec:
     spec:
       securityContext:
         runAsNonRoot: true
+        # The image's USER is the string "nonroot", and the kubelet cannot
+        # verify a non-numeric user against runAsNonRoot - it fails the
+        # container with CreateContainerConfigError rather than resolving the
+        # name. 65532 is that user's uid/gid from the image's /etc/passwd.
+        runAsUser: 65532
+        runAsGroup: 65532
         seccompProfile:
           type: RuntimeDefault
       containers:

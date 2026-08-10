@@ -84,9 +84,9 @@ The **monitoring** stack bundles several Helm releases in the `monitoring` names
 
 | Chart | Version | Role |
 |-------|---------|------|
-| **kube-prometheus-stack** | 88.1.3 <!-- renovate: datasource=helm depName=kube-prometheus-stack registryUrl=https://prometheus-community.github.io/helm-charts --> | Prometheus, Alertmanager, Grafana, kube-state-metrics, prometheus-operator |
+| **kube-prometheus-stack** | 88.1.5 <!-- renovate: datasource=helm depName=kube-prometheus-stack registryUrl=https://prometheus-community.github.io/helm-charts --> | Prometheus, Alertmanager, Grafana, kube-state-metrics, prometheus-operator |
 | **Loki** | 7.2.0 <!-- renovate: datasource=helm depName=loki registryUrl=https://grafana.github.io/helm-charts --> | Log storage |
-| **Grafana Alloy** | 1.11.0 <!-- renovate: datasource=helm depName=alloy registryUrl=https://grafana.github.io/helm-charts --> | Node agent shipping logs → Loki and node metrics → Prometheus |
+| **Grafana Alloy** | 1.11.1 <!-- renovate: datasource=helm depName=alloy registryUrl=https://grafana.github.io/helm-charts --> | Node agent shipping logs → Loki and node metrics → Prometheus |
 | **InfluxDB2** | 2.1.2 <!-- renovate: datasource=helm depName=influxdb2 registryUrl=https://helm.influxdata.com --> | Time-series store for energy metrics |
 
 ### Alerting → Signal Messenger

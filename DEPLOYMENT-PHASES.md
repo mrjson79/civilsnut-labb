@@ -52,6 +52,7 @@ End-user applications and monitoring services:
 | `flux-web` | Flux Operator web UI | shared-gateway, zitadel (OIDC) |
 | `home-assistant` | Home automation platform | external-secrets, rook-ceph, shared-gateway |
 | `httpbin` | Test / debug endpoint | shared-gateway |
+| `immich` | Self-hosted photo library + kiosk slideshow for the HA Family dashboard | external-secrets, rook-ceph, cnpg, shared-gateway |
 | `monitoring` | kube-prometheus-stack + Loki + Alloy + InfluxDB + Signal alerting | rook-ceph, shared-gateway |
 | `mqtt` | MQTT message broker | external-secrets |
 | `zigbee2mqtt` | Zigbee to MQTT bridge | external-secrets, rook-ceph, shared-gateway |
@@ -67,8 +68,8 @@ End-user applications and monitoring services:
 ### Application-Specific Dependencies
 
 - **MQTT applications** (`mqtt`, `zigbee2mqtt`): Require `external-secrets` for credential management
-- **Storage-dependent applications** (`home-assistant`, `monitoring`, `zigbee2mqtt`): Require `rook-ceph` (`ceph-block` StorageClass) for persistent storage
-- **Web applications** (`home-assistant`, `zigbee2mqtt`, `monitoring`, `flux-web`): Require `shared-gateway` for external access
+- **Storage-dependent applications** (`home-assistant`, `immich`, `monitoring`, `zigbee2mqtt`): Require `rook-ceph` (`ceph-block` StorageClass) for persistent storage
+- **Web applications** (`home-assistant`, `immich`, `zigbee2mqtt`, `monitoring`, `flux-web`): Require `shared-gateway` for external access
 
 ## FluxCD Integration
 
@@ -108,6 +109,7 @@ Phase 2 (Applications):
 flux-web ────────┐
 home-assistant ──┤
 httpbin ─────────┤
+immich ──────────┤
 monitoring ──────┼── Deploy in parallel
 mqtt ────────────┤
 zigbee2mqtt ─────┘

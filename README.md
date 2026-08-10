@@ -46,9 +46,9 @@ per-stack breakdown.
 ### Applications (02-applications)
 | Application | Version | Purpose |
 |-------------|---------|---------|
-| **kube-prometheus-stack** | `88.1.3` <!-- renovate: datasource=helm depName=kube-prometheus-stack registryUrl=https://prometheus-community.github.io/helm-charts --> | Prometheus, Alertmanager, Grafana (Zitadel OIDC SSO) |
+| **kube-prometheus-stack** | `88.1.5` <!-- renovate: datasource=helm depName=kube-prometheus-stack registryUrl=https://prometheus-community.github.io/helm-charts --> | Prometheus, Alertmanager, Grafana (Zitadel OIDC SSO) |
 | **Loki** | `7.2.0` <!-- renovate: datasource=helm depName=loki registryUrl=https://grafana.github.io/helm-charts --> | Log storage (queried from Grafana) |
-| **Grafana Alloy** | `1.11.0` <!-- renovate: datasource=helm depName=alloy registryUrl=https://grafana.github.io/helm-charts --> | Node agent shipping logs → Loki, node metrics → Prometheus |
+| **Grafana Alloy** | `1.11.1` <!-- renovate: datasource=helm depName=alloy registryUrl=https://grafana.github.io/helm-charts --> | Node agent shipping logs → Loki, node metrics → Prometheus |
 | **InfluxDB2** | `2.1.2` <!-- renovate: datasource=helm depName=influxdb2 registryUrl=https://helm.influxdata.com --> | Time-series store for energy metrics |
 | **signal-cli-rest-api** | `0.100` <!-- renovate: datasource=docker depName=bbernhard/signal-cli-rest-api --> (image) | Signal Messenger delivery for critical Alertmanager alerts |
 | **alertmanager-webhook-signal** | `1.1.1` <!-- renovate: datasource=docker depName=docker.io/schlauerlauer/alertmanager-webhook-signal --> (image) | Alertmanager → signal-cli-rest-api webhook translator |

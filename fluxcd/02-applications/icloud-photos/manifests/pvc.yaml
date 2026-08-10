@@ -1,0 +1,17 @@
+# Mirror of the iCloud Shared Album. Nothing here is authoritative - the album
+# in iCloud is. Deleting this PVC only costs a full re-download on next sync.
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: icloud-photos-data
+  namespace: icloud-photos
+  labels:
+    app: icloud-photos
+spec:
+  storageClassName: ceph-block
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi

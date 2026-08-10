@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: icloud-photos
+  labels:
+    name: icloud-photos
+    app.kubernetes.io/name: icloud-photos
+    app.kubernetes.io/component: photos
+    apps.kubernetes.io/managed-by: flux
+    gateway.networking.k8s.io/allowed: "true"
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/audit: baseline
+    pod-security.kubernetes.io/warn: baseline

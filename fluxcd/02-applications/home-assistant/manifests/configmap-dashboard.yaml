@@ -240,3 +240,30 @@ data:
                 name: Freezer Voltage
               - entity: sensor.freezer_shelly_freezer_current
                 name: Freezer Current
+  family.yaml: |
+    title: Family
+    views:
+      - title: Family
+        path: family
+        icon: mdi:account-group
+        type: sections
+        max_columns: 2
+        sections:
+          - type: grid
+            cards:
+              # Slideshow of the shared iCloud album, served by the
+              # icloud-photos app. 4:3 so portrait shots are not letterboxed
+              # into nothing on a wall tablet.
+              - type: iframe
+                url: https://photos.civilsnut.se/
+                aspect_ratio: 75%
+          - type: grid
+            cards:
+              # "Våran" - the shared iCloud calendar. Entity id comes from the
+              # CalDAV config flow (slug of the calendar name), so it only
+              # exists once that integration is set up.
+              - type: calendar
+                title: Agenda
+                initial_view: listWeek
+                entities:
+                  - calendar.varan

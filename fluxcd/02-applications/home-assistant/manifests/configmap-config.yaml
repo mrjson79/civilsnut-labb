@@ -10,6 +10,11 @@ data:
     # Loads default set of integrations. Do not remove.
     default_config:
 
+    # Pinned here rather than left to the onboarding-time UI value - the Family
+    # dashboard renders CalDAV events, and an agenda in UTC is useless.
+    homeassistant:
+      time_zone: Europe/Stockholm
+
     # HTTP Configuration for reverse proxy
     http:
       # Trust reverse proxies (nginx ingress)
@@ -86,6 +91,12 @@ data:
           icon: mdi:flash
           show_in_sidebar: true
           filename: dashboards/power.yaml
+        dashboard-family:
+          mode: yaml
+          title: Family
+          icon: mdi:account-group
+          show_in_sidebar: true
+          filename: dashboards/family.yaml
 
     # Basic configuration files (will be managed by UI)
     automation: !include automations.yaml

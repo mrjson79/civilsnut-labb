@@ -1,0 +1,18 @@
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: icloud-photos-to-shared-gateway
+  namespace: gateway-system
+  labels:
+    app.kubernetes.io/name: icloud-photos
+    apps.kubernetes.io/managed-by: flux
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: icloud-photos
+  to:
+    - group: "gateway.networking.k8s.io"
+      kind: Gateway
+      name: shared-gateway

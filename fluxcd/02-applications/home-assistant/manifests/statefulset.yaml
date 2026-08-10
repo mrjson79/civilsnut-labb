@@ -103,9 +103,12 @@ spec:
             - name: ha-dashboard-config
               mountPath: /config/dashboards/power.yaml
               subPath: power.yaml
+            - name: ha-dashboard-config
+              mountPath: /config/dashboards/family.yaml
+              subPath: family.yaml
           env:
             - name: TZ
-              value: "UTC"
+              value: "Europe/Stockholm"
             - name: INFLUXDB_TOKEN
               valueFrom:
                 secretKeyRef:

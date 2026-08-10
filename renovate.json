@@ -69,7 +69,9 @@
         "ghcr.io/home-assistant/home-assistant",
         "zigbee2mqtt",
         "eclipse-mosquitto",
-        "kristofferR/FellowAiden-HomeAssistant"
+        "kristofferR/FellowAiden-HomeAssistant",
+        "nginx",
+        "python"
       ],
       "labels": ["home-automation"],
       "automerge": false,

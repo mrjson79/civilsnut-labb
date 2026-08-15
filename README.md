@@ -27,7 +27,7 @@ per-stack breakdown.
 |-------------|---------|---------|
 | **Cilium** | `1.20.0` <!-- renovate: datasource=helm depName=cilium registryUrl=https://helm.cilium.io --> | CNI, Load Balancing, Gateway API, BGP |
 | **cert-manager** | `v1.21.1` <!-- renovate: datasource=helm depName=cert-manager registryUrl=https://charts.jetstack.io --> | TLS Certificate Management |
-| **External Secrets** | `2.8.0` <!-- renovate: datasource=helm depName=external-secrets registryUrl=https://charts.external-secrets.io --> | Kubernetes Secret Management |
+| **External Secrets** | `2.9.0` <!-- renovate: datasource=helm depName=external-secrets registryUrl=https://charts.external-secrets.io --> | Kubernetes Secret Management |
 | **1Password Connect** | `2.4.1` <!-- renovate: datasource=helm depName=connect registryUrl=https://1password.github.io/connect-helm-charts --> | Secret Synchronization |
 | **Gateway API CRDs** | `v1.6.0` | Gateway API CRDs (experimental channel, vendored manifest) |
 | **Prometheus Operator CRDs** | `v0.93.0` <!-- renovate: datasource=github-releases depName=prometheus-operator/prometheus-operator --> | CRDs installed ahead of kube-prometheus-stack |

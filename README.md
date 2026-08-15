@@ -30,7 +30,7 @@ per-stack breakdown.
 | **External Secrets** | `2.8.0` <!-- renovate: datasource=helm depName=external-secrets registryUrl=https://charts.external-secrets.io --> | Kubernetes Secret Management |
 | **1Password Connect** | `2.4.1` <!-- renovate: datasource=helm depName=connect registryUrl=https://1password.github.io/connect-helm-charts --> | Secret Synchronization |
 | **Gateway API CRDs** | `v1.6.0` | Gateway API CRDs (experimental channel, vendored manifest) |
-| **Prometheus Operator CRDs** | `v0.93.0` <!-- renovate: datasource=github-releases depName=prometheus-operator/prometheus-operator --> | CRDs installed ahead of kube-prometheus-stack |
+| **Prometheus Operator CRDs** | `v0.93.1` <!-- renovate: datasource=github-releases depName=prometheus-operator/prometheus-operator --> | CRDs installed ahead of kube-prometheus-stack |
 | **CoreDNS patch** | - | Corefile customizations (ts.net rewrite for OIDC) |
 
 ### Infrastructure (01-infrastructure)
@@ -46,8 +46,8 @@ per-stack breakdown.
 ### Applications (02-applications)
 | Application | Version | Purpose |
 |-------------|---------|---------|
-| **kube-prometheus-stack** | `88.1.5` <!-- renovate: datasource=helm depName=kube-prometheus-stack registryUrl=https://prometheus-community.github.io/helm-charts --> | Prometheus, Alertmanager, Grafana (Zitadel OIDC SSO) |
-| **Loki** | `7.2.0` <!-- renovate: datasource=helm depName=loki registryUrl=https://grafana.github.io/helm-charts --> | Log storage (queried from Grafana) |
+| **kube-prometheus-stack** | `88.3.0` <!-- renovate: datasource=helm depName=kube-prometheus-stack registryUrl=https://prometheus-community.github.io/helm-charts --> | Prometheus, Alertmanager, Grafana (Zitadel OIDC SSO) |
+| **Loki** | `7.3.0` <!-- renovate: datasource=helm depName=loki registryUrl=https://grafana.github.io/helm-charts --> | Log storage (queried from Grafana) |
 | **Grafana Alloy** | `1.11.1` <!-- renovate: datasource=helm depName=alloy registryUrl=https://grafana.github.io/helm-charts --> | Node agent shipping logs → Loki, node metrics → Prometheus |
 | **InfluxDB2** | `2.1.2` <!-- renovate: datasource=helm depName=influxdb2 registryUrl=https://helm.influxdata.com --> | Time-series store for energy metrics |
 | **signal-cli-rest-api** | `0.100` <!-- renovate: datasource=docker depName=bbernhard/signal-cli-rest-api --> (image) | Signal Messenger delivery for critical Alertmanager alerts |

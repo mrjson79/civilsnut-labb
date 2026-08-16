@@ -52,7 +52,7 @@ Core platform components that everything else depends on.
 | **External Secrets** | 2.9.0 <!-- renovate: datasource=helm depName=external-secrets registryUrl=https://charts.external-secrets.io --> | Kubernetes secret management |
 | **1Password Connect** | 2.4.1 <!-- renovate: datasource=helm depName=connect registryUrl=https://1password.github.io/connect-helm-charts --> | Secret synchronization from 1Password |
 | **Gateway API CRDs** | v1.6.0 | Gateway API custom resource definitions (experimental channel, vendored manifest) |
-| **Prometheus Operator CRDs** | v0.93.0 <!-- renovate: datasource=github-releases depName=prometheus-operator/prometheus-operator --> | Prometheus Operator custom resource definitions |
+| **Prometheus Operator CRDs** | v0.93.1 <!-- renovate: datasource=github-releases depName=prometheus-operator/prometheus-operator --> | Prometheus Operator custom resource definitions |
 | **CoreDNS** | — | Corefile customizations (ts.net rewrite for OIDC) |
 
 ### 01-infrastructure
@@ -86,8 +86,8 @@ The **monitoring** stack bundles several Helm releases in the `monitoring` names
 
 | Chart | Version | Role |
 |-------|---------|------|
-| **kube-prometheus-stack** | 88.1.5 <!-- renovate: datasource=helm depName=kube-prometheus-stack registryUrl=https://prometheus-community.github.io/helm-charts --> | Prometheus, Alertmanager, Grafana, kube-state-metrics, prometheus-operator |
-| **Loki** | 7.2.0 <!-- renovate: datasource=helm depName=loki registryUrl=https://grafana.github.io/helm-charts --> | Log storage |
+| **kube-prometheus-stack** | 88.3.0 <!-- renovate: datasource=helm depName=kube-prometheus-stack registryUrl=https://prometheus-community.github.io/helm-charts --> | Prometheus, Alertmanager, Grafana, kube-state-metrics, prometheus-operator |
+| **Loki** | 7.3.0 <!-- renovate: datasource=helm depName=loki registryUrl=https://grafana.github.io/helm-charts --> | Log storage |
 | **Grafana Alloy** | 1.11.1 <!-- renovate: datasource=helm depName=alloy registryUrl=https://grafana.github.io/helm-charts --> | Node agent shipping logs → Loki and node metrics → Prometheus |
 | **InfluxDB2** | 2.1.2 <!-- renovate: datasource=helm depName=influxdb2 registryUrl=https://helm.influxdata.com --> | Time-series store for energy metrics |
 

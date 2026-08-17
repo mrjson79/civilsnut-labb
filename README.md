@@ -36,7 +36,7 @@ per-stack breakdown.
 ### Infrastructure (01-infrastructure)
 | Application | Version | Purpose |
 |-------------|---------|---------|
-| **Rook-Ceph** | `v1.20.3` <!-- renovate: datasource=helm depName=rook-ceph registryUrl=https://charts.rook.io/release --> (Ceph `v20.2.2`) | Distributed block storage + RGW object store |
+| **Rook-Ceph** | `v1.20.4` <!-- renovate: datasource=helm depName=rook-ceph registryUrl=https://charts.rook.io/release --> (Ceph `v20.2.2`) | Distributed block storage + RGW object store |
 | **Shared Gateway** | - | Cilium Gateway API gateway |
 | **CloudNativePG** | `0.29.0` <!-- renovate: datasource=helm depName=cloudnative-pg registryUrl=https://cloudnative-pg.github.io/charts --> | Postgres operator (zitadel-pg: 2 instances, WAL archiving + nightly backups to RGW) |
 | **Zitadel** | `10.0.4` <!-- renovate: datasource=helm depName=zitadel registryUrl=https://charts.zitadel.com --> | Self-hosted OIDC Identity Provider (idp.civilsnut.se) |

@@ -60,7 +60,7 @@ Infrastructure services that build on the foundation.
 
 | Component | Version | Purpose |
 |-----------|---------|---------|
-| **Rook-Ceph** | v1.20.3 <!-- renovate: datasource=helm depName=rook-ceph registryUrl=https://charts.rook.io/release --> | Distributed block storage (operator + cluster) |
+| **Rook-Ceph** | v1.20.4 <!-- renovate: datasource=helm depName=rook-ceph registryUrl=https://charts.rook.io/release --> | Distributed block storage (operator + cluster) |
 | **Shared Gateway** | — | Cilium Gateway API gateway |
 | **CloudNativePG** | 0.29.0 <!-- renovate: datasource=helm depName=cloudnative-pg registryUrl=https://cloudnative-pg.github.io/charts --> | Postgres operator (zitadel-pg) |
 | **Zitadel** | 10.0.4 <!-- renovate: datasource=helm depName=zitadel registryUrl=https://charts.zitadel.com --> | Self-hosted OIDC identity provider (idp.civilsnut.se) |

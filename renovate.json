@@ -107,7 +107,8 @@
         "kristofferR/FellowAiden-HomeAssistant",
         "immich",
         "ghcr.io/damongolding/immich-kiosk",
-        "ghcr.io/immich-app/immich-server"
+        "ghcr.io/immich-app/immich-server",
+        "NemesisRE/kiosk-mode"
       ],
       "labels": [
         "home-automation"
@@ -255,6 +256,18 @@
       ],
       "depNameTemplate": "ghcr.io/immich-app/immich-server",
       "datasourceTemplate": "docker"
+    },
+    {
+      "description": "kiosk-mode frontend module is pinned in the home-assistant StatefulSet init container",
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/fluxcd/.+\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "VERSION=(?<currentValue>v[\\d.]+)\\n\\s+apk add --no-cache wget ca-certificates"
+      ],
+      "depNameTemplate": "NemesisRE/kiosk-mode",
+      "datasourceTemplate": "github-releases"
     }
   ],
   "hostRules": [

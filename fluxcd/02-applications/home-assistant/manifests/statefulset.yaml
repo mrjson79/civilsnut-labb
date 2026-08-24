@@ -67,6 +67,32 @@ spec:
           securityContext:
             runAsUser: 0
             runAsGroup: 0
+        # kiosk-mode: a frontend JS module (not a custom component) that hides
+        # the sidebar/header for chosen users. Dropped into /config/www so it is
+        # served at /local/ and loaded via frontend.extra_module_url - that
+        # avoids registering a Lovelace resource, which would live in .storage
+        # and therefore outside git. maykar/kiosk-mode is archived; NemesisRE's
+        # fork is the maintained one.
+        - name: install-kiosk-mode
+          image: alpine:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -eu
+              VERSION=v14.1.0
+              apk add --no-cache wget ca-certificates
+              mkdir -p /config/www
+              wget -qO /config/www/kiosk-mode.js.tmp \
+                "https://github.com/NemesisRE/kiosk-mode/releases/download/${VERSION}/kiosk-mode.js"
+              mv /config/www/kiosk-mode.js.tmp /config/www/kiosk-mode.js
+              chown -R 0:0 /config/www
+          volumeMounts:
+            - name: config
+              mountPath: /config
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
       containers:
         - name: home-assistant
           image: ghcr.io/home-assistant/home-assistant:2026.2.3

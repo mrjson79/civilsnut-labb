@@ -8,6 +8,14 @@ metadata:
 data:
   power.yaml: |
     title: Power
+    # Same kiosk treatment as the Family dashboard - paddan can reach Power
+    # from the tablet without the chrome coming back.
+    kiosk_mode:
+      user_settings:
+        - users:
+            - paddan
+          hide_header: true
+          hide_sidebar: true
     views:
       - title: Overview
         path: overview
@@ -242,6 +250,19 @@ data:
                 name: Freezer Current
   family.yaml: |
     title: Family
+    # Wall tablet: no sidebar, no header for the "paddan" account only. Scoped
+    # by user rather than non_admin_settings because Sara is also a non-admin
+    # and should keep normal navigation.
+    #
+    # Only applies to Lovelace dashboards - the built-in Energy panel has no
+    # dashboard config for kiosk-mode to read, so the sidebar reappears there.
+    # Harmless once paddan's sidebar is trimmed to Family/Energy/Power.
+    kiosk_mode:
+      user_settings:
+        - users:
+            - paddan
+          hide_header: true
+          hide_sidebar: true
     views:
       # panel, not sections: a sections view centres its columns inside a max
       # width, which shrinks the photo on a wide screen. panel stretches its

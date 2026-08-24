@@ -31,6 +31,15 @@ data:
       server_host: 0.0.0.0
       server_port: 8123
 
+    # kiosk-mode, placed in /config/www by the install-kiosk-mode init
+    # container. Loading it as a frontend module rather than a Lovelace
+    # resource keeps the wiring in git - resources are stored in .storage.
+    # Loading it is global; it only does anything for users named in a
+    # dashboard's kiosk_mode block (see dashboards/family.yaml).
+    frontend:
+      extra_module_url:
+        - /local/kiosk-mode.js
+
     # Recorder Configuration
     recorder:
       purge_keep_days: 30

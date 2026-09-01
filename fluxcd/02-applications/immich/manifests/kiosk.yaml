@@ -69,9 +69,15 @@ spec:
               value: "true"
             - name: KIOSK_DATE_FORMAT
               value: "YYYY-MM-DD"
-            # Leaving KIOSK_ALBUMS unset shows the whole library. Set it to a
-            # comma-separated list of Immich album IDs to pin the frame to a
-            # shared family album once one exists.
+            # Unset, kiosk draws random assets from the key owner's OWN library
+            # - and frame@civilsnut.se owns nothing, so the frame errored with
+            # "no assets found for random". "all" is a kiosk keyword: every
+            # album the account can access, owned AND shared. That makes
+            # sharing an album to the Frame user the way photos get on the
+            # wall. (Other keywords: owned, shared, favorites - or explicit
+            # comma-separated album IDs.)
+            - name: KIOSK_ALBUMS
+              value: "all"
           envFrom:
             - secretRef:
                 name: immich-kiosk

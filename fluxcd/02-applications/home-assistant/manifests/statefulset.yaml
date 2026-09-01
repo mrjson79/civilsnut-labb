@@ -42,24 +42,24 @@ spec:
           securityContext:
             runAsUser: 0
             runAsGroup: 0
-        # Fellow Aiden coffee brewer integration. Pinned (unlike HACS above) so
-        # Renovate opens a PR per release; re-extracted on every start so the
-        # PVC copy can never drift from what is in git.
-        - name: install-fellow
+        # SolisCloud inverter integration (hultenvp/solis-sensor). Pinned
+        # (unlike HACS above) so Renovate opens a PR per release; re-extracted
+        # on every start so the PVC copy can never drift from what is in git.
+        - name: install-solis
           image: alpine:latest
           command:
             - /bin/sh
             - -c
             - |
               set -eu
-              VERSION=v1.3.3
+              VERSION=v4.0.1
               apk add --no-cache wget tar ca-certificates
-              rm -rf /tmp/fellow && mkdir -p /tmp/fellow
-              wget -qO- "https://github.com/kristofferR/FellowAiden-HomeAssistant/archive/refs/tags/${VERSION}.tar.gz" \
-                | tar -xz -C /tmp/fellow --strip-components=1
-              rm -rf /config/custom_components/fellow
+              rm -rf /tmp/solis && mkdir -p /tmp/solis
+              wget -qO- "https://github.com/hultenvp/solis-sensor/archive/refs/tags/${VERSION}.tar.gz" \
+                | tar -xz -C /tmp/solis --strip-components=1
+              rm -rf /config/custom_components/solis
               mkdir -p /config/custom_components
-              mv /tmp/fellow/custom_components/fellow /config/custom_components/fellow
+              mv /tmp/solis/custom_components/solis /config/custom_components/solis
               chown -R 0:0 /config/custom_components
           volumeMounts:
             - name: config

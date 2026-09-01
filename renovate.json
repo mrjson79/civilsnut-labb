@@ -104,7 +104,7 @@
         "ghcr.io/home-assistant/home-assistant",
         "zigbee2mqtt",
         "eclipse-mosquitto",
-        "kristofferR/FellowAiden-HomeAssistant",
+        "hultenvp/solis-sensor",
         "immich",
         "ghcr.io/damongolding/immich-kiosk",
         "ghcr.io/immich-app/immich-server",
@@ -222,7 +222,7 @@
       ]
     },
     {
-      "description": "Fellow Aiden HA custom component is pinned in the home-assistant StatefulSet init container",
+      "description": "SolisCloud HA custom component is pinned in the home-assistant StatefulSet init container",
       "customType": "regex",
       "managerFilePatterns": [
         "/fluxcd/.+\\.ya?ml$/"
@@ -230,7 +230,7 @@
       "matchStrings": [
         "VERSION=(?<currentValue>v[\\d.]+)\\n\\s+apk add --no-cache wget tar ca-certificates"
       ],
-      "depNameTemplate": "kristofferR/FellowAiden-HomeAssistant",
+      "depNameTemplate": "hultenvp/solis-sensor",
       "datasourceTemplate": "github-releases"
     },
     {

@@ -54,7 +54,7 @@ per-stack breakdown.
 | **alertmanager-webhook-signal** | `1.1.1` <!-- renovate: datasource=docker depName=docker.io/schlauerlauer/alertmanager-webhook-signal --> (image) | Alertmanager → signal-cli-rest-api webhook translator |
 | **Flux Web** | - | Flux Operator web UI (fluxcd.civilsnut.se); image managed by flux-operator |
 | **Home Assistant** | `2026.2.3` <!-- renovate: datasource=docker depName=ghcr.io/home-assistant/home-assistant --> (image) | Home Automation Platform |
-| **Fellow Aiden** | `v1.3.3` <!-- renovate: datasource=github-releases depName=kristofferR/FellowAiden-HomeAssistant --> (HA custom component) | Fellow Aiden coffee brewer integration |
+| **SolisCloud** | `v4.0.1` <!-- renovate: datasource=github-releases depName=hultenvp/solis-sensor --> (HA custom component) | Solis inverter cloud integration |
 | **kiosk-mode** | `v14.1.0` <!-- renovate: datasource=github-releases depName=NemesisRE/kiosk-mode --> | Hides sidebar/header for the wall-tablet user (frontend module, init container) |
 | **Immich** | `0.12.0` <!-- renovate: datasource=helm depName=immich registryUrl=https://immich-app.github.io/immich-charts --> / `v3.0.3` <!-- renovate: datasource=docker depName=ghcr.io/immich-app/immich-server --> (image) | Self-hosted photo library (photos.civilsnut.se), CNPG + VectorChord backend |
 | **Immich Kiosk** | `0.42.0` <!-- renovate: datasource=docker depName=ghcr.io/damongolding/immich-kiosk --> (image) | Fullscreen Immich slideshow (frame.civilsnut.se), embedded in the HA Family dashboard |

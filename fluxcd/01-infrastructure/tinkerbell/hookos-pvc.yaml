@@ -13,6 +13,9 @@ spec:
   storageClassName: ceph-block
   resources:
     requests:
-      # 4Gi: holds the stock Flatcar image plus the flatcarctl-baked
-      # flatcar-andero-k8s image (~813M zst each) alongside HookOS.
-      storage: 4Gi
+      # 10Gi: HookOS, the flatcarctl-baked install images (~813M-1.2G zst
+      # each), AND the component sysexts this volume now mirrors for day-2
+      # upgrades — nodeagent.service fetches <name>-<version>-<arch>.raw from
+      # http://192.168.1.141:7173 (FLATCARCTL_SYSEXT_BASE_URL in both
+      # Tinkerbell templates). 4Gi hit 86% during the v1.37.0 upgrade.
+      storage: 10Gi

@@ -5,11 +5,19 @@
 # k8sServiceHost, and starts the kube-vip VIP. acceptPolicy=subnet auto-admits
 # joining nodes from the lab LAN — no manual token handling.
 #
-# ⚠️ Before committing, replace in the config.yaml data URL below:
-#   REPLACE_VIP — unused IP on 192.168.1.0/24 OUTSIDE the UniFi DHCP pool
-#                 (also used in template-flatcar-join.yaml)
-# The seed node (flatcar-ctrl-1) needs a fixed DHCP reservation in UniFi; its
-# IP is the REPLACE_SEED_IP of the join template.
+# ⚠️ STALE IMAGE — do not re-provision from this template as-is.
+# IMG_URL below is the 2026-07-04 bake: kubernetes v1.36.2, cilium v1.19.5,
+# kube-vip v1.2.1, nodeagent 2026-07-03. The live cluster has since rolled to
+# kubernetes v1.37.0, cilium v1.20.1, nodeagent 2026-08-30, with kube-vip
+# retired and Cilium itself hosting the VIP (see flatcar-cluster-upgrade.md).
+# A node installed from this image today rejoins with a kube-vip static pod
+# fighting Cilium for 192.168.1.150, and an agent too old to refresh its API
+# credential (24h token, no refresh before flatcarctl d32acfe). Re-bake with
+# `flatcarctl bake` and update IMG_URL first.
+#
+# The VIP (192.168.1.150) and seed IP (192.168.1.219) are already filled in
+# below. The seed node (flatcar-ctrl-1) needs a fixed DHCP reservation in
+# UniFi; its IP is the seedEndpoint of the join template.
 #
 # Re-provisioning the seed after the cluster exists generates a new CA — treat
 # a seed re-install as a cluster rebuild.
@@ -76,7 +84,7 @@ spec:
                   "systemd": {
                     "units": [
                       {"name": "nodeagent.service", "enabled": true,
-                       "contents": "[Unit]\nDescription=Flatcar node bootstrap agent (DCUI for Kubernetes)\nAfter=network-online.target flatcarctl-import-images.service\nWants=network-online.target flatcarctl-import-images.service\nStartLimitIntervalSec=300\nStartLimitBurst=5\n\n[Service]\nType=simple\nRestart=on-failure\nRestartSec=10\nEnvironment=FEATURE_KUBEADM_BOOTSTRAP=on\nExecStart=/opt/bin/nodeagent --config /etc/nodeagent/config.yaml\n\n[Install]\nWantedBy=multi-user.target\n"}
+                       "contents": "[Unit]\nDescription=Flatcar node bootstrap agent (DCUI for Kubernetes)\nAfter=network-online.target flatcarctl-import-images.service\nWants=network-online.target flatcarctl-import-images.service\nStartLimitIntervalSec=300\nStartLimitBurst=5\n\n[Service]\nType=simple\nRestart=on-failure\nRestartSec=10\nEnvironment=FEATURE_KUBEADM_BOOTSTRAP=on\nEnvironment=FLATCARCTL_SYSEXT_BASE_URL=http://192.168.1.141:7173\nExecStart=/opt/bin/nodeagent --config /etc/nodeagent/config.yaml\n\n[Install]\nWantedBy=multi-user.target\n"}
                     ]
                   }
                 }

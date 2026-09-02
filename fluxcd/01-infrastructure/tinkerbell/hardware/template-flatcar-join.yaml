@@ -4,9 +4,15 @@
 # ("control-plane" | "worker"). The seed's subnet accept-policy admits the node
 # automatically. Boot joiners only after the seed's control plane is up.
 #
-# ⚠️ Before committing, replace in the config.yaml data URL below:
-#   REPLACE_SEED_IP — flatcar-ctrl-1's IP (fixed DHCP reservation in UniFi)
-#   REPLACE_VIP     — same VIP as in template-flatcar-seed.yaml
+# ⚠️ STALE IMAGE — do not re-provision from this template as-is. IMG_URL is
+# the 2026-07-04 bake (kubernetes v1.36.2, cilium v1.19.5, kube-vip v1.2.1,
+# nodeagent 2026-07-03) while the live cluster runs kubernetes v1.37.0,
+# cilium v1.20.1, nodeagent 2026-08-30 with kube-vip retired. See the warning
+# in template-flatcar-seed.yaml and flatcar-cluster-upgrade.md; re-bake and
+# update IMG_URL before using this template.
+#
+# The seed IP (192.168.1.219) and VIP (192.168.1.150) are already filled in
+# below, and must match template-flatcar-seed.yaml.
 apiVersion: tinkerbell.org/v1alpha1
 kind: Template
 metadata:
@@ -63,7 +69,7 @@ spec:
                   "systemd": {
                     "units": [
                       {"name": "nodeagent.service", "enabled": true,
-                       "contents": "[Unit]\nDescription=Flatcar node bootstrap agent (DCUI for Kubernetes)\nAfter=network-online.target flatcarctl-import-images.service\nWants=network-online.target flatcarctl-import-images.service\nStartLimitIntervalSec=300\nStartLimitBurst=5\n\n[Service]\nType=simple\nRestart=on-failure\nRestartSec=10\nEnvironment=FEATURE_KUBEADM_BOOTSTRAP=on\nExecStart=/opt/bin/nodeagent --config /etc/nodeagent/config.yaml\n\n[Install]\nWantedBy=multi-user.target\n"}
+                       "contents": "[Unit]\nDescription=Flatcar node bootstrap agent (DCUI for Kubernetes)\nAfter=network-online.target flatcarctl-import-images.service\nWants=network-online.target flatcarctl-import-images.service\nStartLimitIntervalSec=300\nStartLimitBurst=5\n\n[Service]\nType=simple\nRestart=on-failure\nRestartSec=10\nEnvironment=FEATURE_KUBEADM_BOOTSTRAP=on\nEnvironment=FLATCARCTL_SYSEXT_BASE_URL=http://192.168.1.141:7173\nExecStart=/opt/bin/nodeagent --config /etc/nodeagent/config.yaml\n\n[Install]\nWantedBy=multi-user.target\n"}
                     ]
                   }
                 }

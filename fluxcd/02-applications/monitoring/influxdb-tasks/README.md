@@ -30,7 +30,7 @@ kubectl -n monitoring exec influxdb-influxdb2-0 -- influx apply -o home -t "$TOK
 
 Applied 2026-08-03: bucket + both tasks active. Verified measurements arriving
 from HA: `W`, `V`, `A`, `°C`, `Wh` (Shelly Gen2 energy is Wh, not kWh - the
-energy task filter covers both; Growatt kWh entities also match).
+energy task filter covers both; the Solis kWh entities also match).
 
 Find the stack ID again later with:
 `kubectl -n monitoring exec influxdb-influxdb2-0 -- influx stacks -o home -t "$TOKEN"`

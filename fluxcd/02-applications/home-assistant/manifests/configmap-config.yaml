@@ -85,8 +85,7 @@ data:
           # the suffix globs below do not catch them)
           - sensor.electricity_meter_*
           - sensor.shelly*
-          - sensor.growatt*
-          - sensor.solis* # planned inverter
+          - sensor.solis*
           - sensor.*_power
           - sensor.*_energy
           - sensor.*_voltage
@@ -116,15 +115,10 @@ data:
     scene: !include scenes.yaml
 
   automations.yaml: |
-    - alias: "Growatt poll every 15 minutes"
-      id: growatt_poll_5min
-      trigger:
-        - platform: time_pattern
-          minutes: "/15"
-      action:
-        - service: homeassistant.update_entity
-          target:
-            entity_id: "{{ integration_entities('growatt_server') }}"
+    # Automations will be created via the UI. The Growatt poll automation was
+    # removed with the inverter - SolisCloud is cloud-polled by the integration
+    # itself on its own refresh interval, so it needs no nudging.
+    []
 
   scripts.yaml: |
     # Scripts will be created via the UI

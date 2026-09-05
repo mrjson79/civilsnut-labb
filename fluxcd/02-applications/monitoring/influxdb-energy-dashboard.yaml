@@ -7,6 +7,10 @@
 # kW, so the panel units are 'watt' and the kW->W *1000 is gone.
 # Battery power is a signed series: >=0 charging, <0 discharging, with the
 # diverging midpoint pinned to zero via thresholds.
+# The battery stat panels look back 24h, not 30m like the plug stats: HA's
+# influxdb integration only writes on state CHANGE, and these are slow
+# integer counters (daily kWh, SoC %) that can sit unchanged for hours.
+# A 30m window makes them read "No Data".
 # Series colors are fixed per device (never palette-cycled); the 6- and
 # 3-slot sets are CVD-validated for the dark theme. Plug temperature uses
 # the reserved status colors (thresholds), not series colors.
@@ -1169,7 +1173,7 @@ data:
           "targets": [
             {
               "refId": "A",
-              "query": "from(bucket: \"home_assistant\")\n  |> range(start: -30m)\n  |> filter(fn: (r) => r._field == \"value\" and r.entity_id =~ /^solis_.*_inverter_remaining_battery_capacity$/)\n  |> last()"
+              "query": "from(bucket: \"home_assistant\")\n  |> range(start: -24h)\n  |> filter(fn: (r) => r._field == \"value\" and r.entity_id =~ /^solis_.*_inverter_remaining_battery_capacity$/)\n  |> last()"
             }
           ]
         },
@@ -1217,7 +1221,7 @@ data:
           "targets": [
             {
               "refId": "A",
-              "query": "from(bucket: \"home_assistant\")\n  |> range(start: -30m)\n  |> filter(fn: (r) => r._field == \"value\" and r.entity_id =~ /^solis_.*_inverter_daily_energy_charged$/)\n  |> last()"
+              "query": "from(bucket: \"home_assistant\")\n  |> range(start: -24h)\n  |> filter(fn: (r) => r._field == \"value\" and r.entity_id =~ /^solis_.*_inverter_daily_energy_charged$/)\n  |> last()"
             }
           ]
         },
@@ -1265,7 +1269,7 @@ data:
           "targets": [
             {
               "refId": "A",
-              "query": "from(bucket: \"home_assistant\")\n  |> range(start: -30m)\n  |> filter(fn: (r) => r._field == \"value\" and r.entity_id =~ /^solis_.*_inverter_daily_energy_discharged$/)\n  |> last()"
+              "query": "from(bucket: \"home_assistant\")\n  |> range(start: -24h)\n  |> filter(fn: (r) => r._field == \"value\" and r.entity_id =~ /^solis_.*_inverter_daily_energy_discharged$/)\n  |> last()"
             }
           ]
         },

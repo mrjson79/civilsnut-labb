@@ -40,6 +40,16 @@ data:
       extra_module_url:
         - /local/kiosk-mode.js
 
+    # TEMPORARY - diagnosing the SolisCloud config-flow failure. login() only
+    # ever reports the generic "Cannot login" error; the useful detail (raw API
+    # payloads from _get_inverter_details / _get_station_details) is logged at
+    # debug. Remove once Solis is configured - it is noisy and the payloads
+    # contain the plant id.
+    logger:
+      default: info
+      logs:
+        custom_components.solis: debug
+
     # Recorder Configuration
     recorder:
       purge_keep_days: 30

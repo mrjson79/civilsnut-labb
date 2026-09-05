@@ -5,6 +5,11 @@ state: nodeagent `2026-08-30`, Cilium `v1.20.1` hosting the control-plane VIP
 (kube-vip retired), Kubernetes `v1.37.0`, and the flatcarctl portal + IAM
 stack (Dex + OpenFGA) live at `https://192.168.1.160/`.
 
+> **This is a completed one-time migration record.** For routine upgrades from
+> here on, use [`flatcar-upgrade-runbook.md`](./flatcar-upgrade-runbook.md).
+> Most steps below were artifacts of jumping a 58-day-old pre-spec-008 cluster
+> forward and do not recur.
+
 Everything is driven from the flatcarctl `ClusterVersion` CRD except two
 deliberate manual steps: the one-time drop-in that points the old agents at
 the sysext mirror (Phase 3), and kube-vip retirement (Phase 5 — the automated
@@ -391,9 +396,13 @@ Grant roles via the console (home → Users & roles) or `PortalRoleBinding`
 
 Known gotchas, inherited from the spec-009 deployment:
 
-- A later portal/iam version bump rolls the sysext but does **not** re-apply
-  the bundle. Fix: on the seed
-  `sudo rm /var/lib/nodeagent/portal-applied /var/lib/nodeagent/iam-applied && sudo systemctl restart nodeagent`.
+- ~~A later portal/iam version bump rolls the sysext but does not re-apply the
+  bundle.~~ **Corrected 2026-09-02: fixed upstream in flatcarctl `608c82e`
+  (2026-08-28).** The applied-markers are version-keyed — verified on the seed,
+  `portal-applied` holds `2026-08-30` and `iam-applied` holds
+  `dex-v2.45.1+openfga-v1.19.0` — so a version bump does re-apply. The fix is
+  agent-side, so it requires `running-nodeagent >= 2026-08-28` on **every**
+  node; an older agent reproduces the original defect on that node alone.
 - Every portal pod restart signs everyone out (per-process cookie key).
 - TokenReview runs with an empty audience: any valid SA token in the cluster
   authenticates (authorization still gates every route).

@@ -6,9 +6,9 @@ state: nodeagent `2026-08-30`, Cilium `v1.20.1` hosting the control-plane VIP
 stack (Dex + OpenFGA) live at `https://192.168.1.160/`.
 
 > **This is a completed one-time migration record.** For routine upgrades from
-> here on, use [`flatcar-upgrade-runbook.md`](./flatcar-upgrade-runbook.md).
-> Most steps below were artifacts of jumping a 58-day-old pre-spec-008 cluster
-> forward and do not recur.
+> here on, use the day-2 runbook in the flatcarctl repo
+> (`docs/upgrade-runbook.md`). Most steps below were artifacts of jumping a
+> 58-day-old pre-spec-008 cluster forward and do not recur.
 
 Everything is driven from the flatcarctl `ClusterVersion` CRD except two
 deliberate manual steps: the one-time drop-in that points the old agents at

@@ -51,7 +51,7 @@ Core platform components that everything else depends on.
 | **cert-manager** | v1.21.1 <!-- renovate: datasource=helm depName=cert-manager registryUrl=https://charts.jetstack.io --> | TLS certificates via Let's Encrypt (Cloudflare DNS-01) |
 | **External Secrets** | 2.10.0 <!-- renovate: datasource=helm depName=external-secrets registryUrl=https://charts.external-secrets.io --> | Kubernetes secret management |
 | **1Password Connect** | 2.4.1 <!-- renovate: datasource=helm depName=connect registryUrl=https://1password.github.io/connect-helm-charts --> | Secret synchronization from 1Password |
-| **Gateway API CRDs** | v1.6.0 | Gateway API custom resource definitions (experimental channel, vendored manifest) |
+| **Gateway API CRDs** | v1.6.2 <!-- renovate: datasource=github-releases depName=kubernetes-sigs/gateway-api --> | Gateway API custom resource definitions (experimental channel, pinned release bundle) |
 | **Prometheus Operator CRDs** | v0.93.1 <!-- renovate: datasource=github-releases depName=prometheus-operator/prometheus-operator --> | Prometheus Operator custom resource definitions |
 | **CoreDNS** | — | Corefile customizations (ts.net rewrite for OIDC) |
 

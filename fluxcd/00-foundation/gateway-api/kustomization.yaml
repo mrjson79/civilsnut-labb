@@ -2,13 +2,22 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  # Install Gateway API CRDs before any Gateway resources are created
-  # This ensures Gateway, HTTPRoute, etc. CRDs are available for dry-run validation
-  #
-  # v1.6.0 EXPERIMENTAL channel, vendored from
-  # https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.0/experimental-install.yaml
-  # with the two safe-upgrades ValidatingAdmissionPolicy documents removed:
-  # the VAP denies installing experimental CRDs over standard-channel ones,
-  # and Flux would re-apply it faster than it can be deleted in-cluster.
-  # Experimental channel is required for the ExternalAuth HTTPRoute filter (GEP-1494).
-  - experimental-install-v1.6.0.yaml
+  # Keep the experimental channel: ExternalAuth requires it.
+  # Renovate updates this pinned release URL and both README version tables.
+  - https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.2/experimental-install.yaml
+
+# Preserve the existing exclusion: this upstream policy blocks experimental
+# CRDs over standard-channel installations. Do not reintroduce it via Flux.
+patches:
+  - patch: |-
+      $patch: delete
+      apiVersion: admissionregistration.k8s.io/v1
+      kind: ValidatingAdmissionPolicy
+      metadata:
+        name: safe-upgrades.gateway.networking.k8s.io
+  - patch: |-
+      $patch: delete
+      apiVersion: admissionregistration.k8s.io/v1
+      kind: ValidatingAdmissionPolicyBinding
+      metadata:
+        name: safe-upgrades.gateway.networking.k8s.io

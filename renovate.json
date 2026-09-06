@@ -196,6 +196,20 @@
         "docker.io/schlauerlauer/alertmanager-webhook-signal"
       ],
       "allowedVersions": "<20"
+    },
+    {
+      "description": "Gateway API CRDs require review against Cilium and ExternalAuth support; exclude monthly and prerelease bundles",
+      "matchPackageNames": [
+        "kubernetes-sigs/gateway-api"
+      ],
+      "allowedVersions": "/^v?\\d+\\.\\d+\\.\\d+$/",
+      "ignoreUnstable": true,
+      "automerge": false,
+      "groupName": "Gateway API",
+      "groupSlug": "gateway-api",
+      "addLabels": [
+        "networking"
+      ]
     }
   ],
   "customManagers": [
@@ -268,6 +282,19 @@
       ],
       "depNameTemplate": "NemesisRE/kiosk-mode",
       "datasourceTemplate": "github-releases"
+    },
+    {
+      "description": "Gateway API experimental CRD bundle pinned to a stable GitHub release; Kustomize patches preserve local exclusions",
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^fluxcd/00-foundation/gateway-api/kustomization\\.yaml$/"
+      ],
+      "matchStrings": [
+        "https://github\\.com/kubernetes-sigs/gateway-api/releases/download/(?<currentValue>v[\\d.]+)/experimental-install\\.yaml"
+      ],
+      "depNameTemplate": "kubernetes-sigs/gateway-api",
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
     }
   ],
   "hostRules": [

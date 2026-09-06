@@ -15,7 +15,7 @@ spec:
       # any new chart release - and since cephImage.tag is a chart default that
       # would silently start a rolling Ceph upgrade, and can silently re-enable
       # alerts that prometheusRuleOverrides disables by exact name.
-      version: "v1.20.6"
+      version: "v1.20.7"
       sourceRef:
         kind: HelmRepository
         name: rook-release

@@ -80,14 +80,14 @@ User-facing applications.
 | **Immich** | 0.12.0 <!-- renovate: datasource=helm depName=immich registryUrl=https://immich-app.github.io/immich-charts --> / v3.0.3 <!-- renovate: datasource=docker depName=ghcr.io/immich-app/immich-server --> (image) | Self-hosted photo library (photos.civilsnut.se); CNPG cluster `immich-pg` on a VectorChord image |
 | **Immich Kiosk** | 0.42.0 <!-- renovate: datasource=docker depName=ghcr.io/damongolding/immich-kiosk --> | Fullscreen slideshow over the Immich API (frame.civilsnut.se), iframed by the HA Family dashboard |
 | **Mosquitto MQTT** | 2.0.22 <!-- renovate: datasource=docker depName=eclipse-mosquitto --> | MQTT broker |
-| **Zigbee2MQTT** | 2.14.0 <!-- renovate: datasource=helm depName=zigbee2mqtt registryUrl=https://charts.zigbee2mqtt.io --> | Zigbee to MQTT bridge |
+| **Zigbee2MQTT** | 2.14.1 <!-- renovate: datasource=helm depName=zigbee2mqtt registryUrl=https://charts.zigbee2mqtt.io --> | Zigbee to MQTT bridge |
 | **httpbin** | — | Test / debug endpoint (httpbin.civilsnut.se) |
 
 The **monitoring** stack bundles several Helm releases in the `monitoring` namespace:
 
 | Chart | Version | Role |
 |-------|---------|------|
-| **kube-prometheus-stack** | 88.6.3 <!-- renovate: datasource=helm depName=kube-prometheus-stack registryUrl=https://prometheus-community.github.io/helm-charts --> | Prometheus, Alertmanager, Grafana, kube-state-metrics, prometheus-operator |
+| **kube-prometheus-stack** | 88.6.5 <!-- renovate: datasource=helm depName=kube-prometheus-stack registryUrl=https://prometheus-community.github.io/helm-charts --> | Prometheus, Alertmanager, Grafana, kube-state-metrics, prometheus-operator |
 | **Loki** | 7.3.0 <!-- renovate: datasource=helm depName=loki registryUrl=https://grafana.github.io/helm-charts --> | Log storage |
 | **Grafana Alloy** | 1.12.1 <!-- renovate: datasource=helm depName=alloy registryUrl=https://grafana.github.io/helm-charts --> | Node agent shipping logs → Loki and node metrics → Prometheus |
 | **InfluxDB2** | 2.1.2 <!-- renovate: datasource=helm depName=influxdb2 registryUrl=https://helm.influxdata.com --> | Time-series store for energy metrics |

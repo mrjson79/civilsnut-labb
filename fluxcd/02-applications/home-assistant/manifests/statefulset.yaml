@@ -80,7 +80,7 @@ spec:
             - -c
             - |
               set -eu
-              VERSION=v14.1.0
+              VERSION=v14.2.0
               apk add --no-cache wget ca-certificates
               mkdir -p /config/www
               wget -qO /config/www/kiosk-mode.js.tmp \

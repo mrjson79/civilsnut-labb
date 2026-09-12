@@ -39,14 +39,14 @@ per-stack breakdown.
 | **Rook-Ceph** | `v1.20.7` <!-- renovate: datasource=helm depName=rook-ceph registryUrl=https://charts.rook.io/release --> (Ceph `v20.2.2`) | Distributed block storage + RGW object store |
 | **Shared Gateway** | - | Cilium Gateway API gateway |
 | **CloudNativePG** | `0.29.0` <!-- renovate: datasource=helm depName=cloudnative-pg registryUrl=https://cloudnative-pg.github.io/charts --> | Postgres operator (zitadel-pg: 2 instances, WAL archiving + nightly backups to RGW) |
-| **Zitadel** | `10.0.4` <!-- renovate: datasource=helm depName=zitadel registryUrl=https://charts.zitadel.com --> | Self-hosted OIDC Identity Provider (idp.civilsnut.se) |
+| **Zitadel** | `10.0.6` <!-- renovate: datasource=helm depName=zitadel registryUrl=https://charts.zitadel.com --> | Self-hosted OIDC Identity Provider (idp.civilsnut.se) |
 | **oauth2-proxy** | `10.7.0` <!-- renovate: datasource=helm depName=oauth2-proxy registryUrl=https://oauth2-proxy.github.io/manifests --> | ext_authz bridge for Gateway API ExternalAuth (GEP-1494) |
 | **Tinkerbell** | `v0.23.0` <!-- renovate: datasource=docker depName=ghcr.io/tinkerbell/charts/tinkerbell --> | Bare-metal PXE provisioning of Flatcar nodes |
 
 ### Applications (02-applications)
 | Application | Version | Purpose |
 |-------------|---------|---------|
-| **kube-prometheus-stack** | `89.2.0` <!-- renovate: datasource=helm depName=kube-prometheus-stack registryUrl=https://prometheus-community.github.io/helm-charts --> | Prometheus, Alertmanager, Grafana (Zitadel OIDC SSO) |
+| **kube-prometheus-stack** | `89.2.4` <!-- renovate: datasource=helm depName=kube-prometheus-stack registryUrl=https://prometheus-community.github.io/helm-charts --> | Prometheus, Alertmanager, Grafana (Zitadel OIDC SSO) |
 | **Loki** | `7.3.0` <!-- renovate: datasource=helm depName=loki registryUrl=https://grafana.github.io/helm-charts --> | Log storage (queried from Grafana) |
 | **Grafana Alloy** | `1.12.1` <!-- renovate: datasource=helm depName=alloy registryUrl=https://grafana.github.io/helm-charts --> | Node agent shipping logs → Loki, node metrics → Prometheus |
 | **InfluxDB2** | `2.1.2` <!-- renovate: datasource=helm depName=influxdb2 registryUrl=https://helm.influxdata.com --> | Time-series store for energy metrics |
@@ -55,10 +55,10 @@ per-stack breakdown.
 | **Flux Web** | - | Flux Operator web UI (fluxcd.civilsnut.se); image managed by flux-operator |
 | **Home Assistant** | `2026.2.3` <!-- renovate: datasource=docker depName=ghcr.io/home-assistant/home-assistant --> (image) | Home Automation Platform |
 | **SolisCloud** | `v4.0.1` <!-- renovate: datasource=github-releases depName=hultenvp/solis-sensor --> (HA custom component) | Solis inverter cloud integration |
-| **kiosk-mode** | `v14.1.0` <!-- renovate: datasource=github-releases depName=NemesisRE/kiosk-mode --> | Hides sidebar/header for the wall-tablet user (frontend module, init container) |
+| **kiosk-mode** | `v14.2.0` <!-- renovate: datasource=github-releases depName=NemesisRE/kiosk-mode --> | Hides sidebar/header for the wall-tablet user (frontend module, init container) |
 | **Immich** | `0.12.0` <!-- renovate: datasource=helm depName=immich registryUrl=https://immich-app.github.io/immich-charts --> / `v3.0.3` <!-- renovate: datasource=docker depName=ghcr.io/immich-app/immich-server --> (image) | Self-hosted photo library (photos.civilsnut.se), CNPG + VectorChord backend |
 | **Immich Kiosk** | `0.42.0` <!-- renovate: datasource=docker depName=ghcr.io/damongolding/immich-kiosk --> (image) | Fullscreen Immich slideshow (frame.civilsnut.se), embedded in the HA Family dashboard |
-| **Zigbee2MQTT** | `2.14.0` <!-- renovate: datasource=helm depName=zigbee2mqtt registryUrl=https://charts.zigbee2mqtt.io --> | Zigbee to MQTT Bridge |
+| **Zigbee2MQTT** | `2.14.1` <!-- renovate: datasource=helm depName=zigbee2mqtt registryUrl=https://charts.zigbee2mqtt.io --> | Zigbee to MQTT Bridge |
 | **Mosquitto MQTT** | `2.0.22` <!-- renovate: datasource=docker depName=eclipse-mosquitto --> (image) | MQTT Broker |
 | **httpbin** | - | Test / debug endpoint |
 

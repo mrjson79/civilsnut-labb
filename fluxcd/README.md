@@ -63,7 +63,7 @@ Infrastructure services that build on the foundation.
 | **Rook-Ceph** | v1.20.7 <!-- renovate: datasource=helm depName=rook-ceph registryUrl=https://charts.rook.io/release --> | Distributed block storage (operator + cluster) |
 | **Shared Gateway** | — | Cilium Gateway API gateway |
 | **CloudNativePG** | 0.29.0 <!-- renovate: datasource=helm depName=cloudnative-pg registryUrl=https://cloudnative-pg.github.io/charts --> | Postgres operator (zitadel-pg) |
-| **Zitadel** | 10.0.4 <!-- renovate: datasource=helm depName=zitadel registryUrl=https://charts.zitadel.com --> | Self-hosted OIDC identity provider (idp.civilsnut.se) |
+| **Zitadel** | 10.0.6 <!-- renovate: datasource=helm depName=zitadel registryUrl=https://charts.zitadel.com --> | Self-hosted OIDC identity provider (idp.civilsnut.se) |
 | **oauth2-proxy** | 10.7.0 <!-- renovate: datasource=helm depName=oauth2-proxy registryUrl=https://oauth2-proxy.github.io/manifests --> | ext_authz bridge: Gateway API ExternalAuth filter → Zitadel |
 | **Tinkerbell** | v0.23.0 <!-- renovate: datasource=docker depName=ghcr.io/tinkerbell/charts/tinkerbell --> | Bare-metal PXE provisioning of Flatcar nodes |
 
@@ -76,18 +76,18 @@ User-facing applications.
 | **Flux Web** | — | Flux Operator web UI (fluxcd.civilsnut.se); image managed by flux-operator |
 | **Home Assistant** | 2026.2.3 <!-- renovate: datasource=docker depName=ghcr.io/home-assistant/home-assistant --> | Home automation platform |
 | **SolisCloud** | v4.0.1 <!-- renovate: datasource=github-releases depName=hultenvp/solis-sensor --> | HA custom component for the Solis inverter (init container) |
-| **kiosk-mode** | v14.1.0 <!-- renovate: datasource=github-releases depName=NemesisRE/kiosk-mode --> | Hides sidebar/header for the wall-tablet user (frontend module, init container) |
+| **kiosk-mode** | v14.2.0 <!-- renovate: datasource=github-releases depName=NemesisRE/kiosk-mode --> | Hides sidebar/header for the wall-tablet user (frontend module, init container) |
 | **Immich** | 0.12.0 <!-- renovate: datasource=helm depName=immich registryUrl=https://immich-app.github.io/immich-charts --> / v3.0.3 <!-- renovate: datasource=docker depName=ghcr.io/immich-app/immich-server --> (image) | Self-hosted photo library (photos.civilsnut.se); CNPG cluster `immich-pg` on a VectorChord image |
 | **Immich Kiosk** | 0.42.0 <!-- renovate: datasource=docker depName=ghcr.io/damongolding/immich-kiosk --> | Fullscreen slideshow over the Immich API (frame.civilsnut.se), iframed by the HA Family dashboard |
 | **Mosquitto MQTT** | 2.0.22 <!-- renovate: datasource=docker depName=eclipse-mosquitto --> | MQTT broker |
-| **Zigbee2MQTT** | 2.14.0 <!-- renovate: datasource=helm depName=zigbee2mqtt registryUrl=https://charts.zigbee2mqtt.io --> | Zigbee to MQTT bridge |
+| **Zigbee2MQTT** | 2.14.1 <!-- renovate: datasource=helm depName=zigbee2mqtt registryUrl=https://charts.zigbee2mqtt.io --> | Zigbee to MQTT bridge |
 | **httpbin** | — | Test / debug endpoint (httpbin.civilsnut.se) |
 
 The **monitoring** stack bundles several Helm releases in the `monitoring` namespace:
 
 | Chart | Version | Role |
 |-------|---------|------|
-| **kube-prometheus-stack** | 89.2.0 <!-- renovate: datasource=helm depName=kube-prometheus-stack registryUrl=https://prometheus-community.github.io/helm-charts --> | Prometheus, Alertmanager, Grafana, kube-state-metrics, prometheus-operator |
+| **kube-prometheus-stack** | 89.2.4 <!-- renovate: datasource=helm depName=kube-prometheus-stack registryUrl=https://prometheus-community.github.io/helm-charts --> | Prometheus, Alertmanager, Grafana, kube-state-metrics, prometheus-operator |
 | **Loki** | 7.3.0 <!-- renovate: datasource=helm depName=loki registryUrl=https://grafana.github.io/helm-charts --> | Log storage |
 | **Grafana Alloy** | 1.12.1 <!-- renovate: datasource=helm depName=alloy registryUrl=https://grafana.github.io/helm-charts --> | Node agent shipping logs → Loki and node metrics → Prometheus |
 | **InfluxDB2** | 2.1.2 <!-- renovate: datasource=helm depName=influxdb2 registryUrl=https://helm.influxdata.com --> | Time-series store for energy metrics |

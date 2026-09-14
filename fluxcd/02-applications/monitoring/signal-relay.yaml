@@ -19,6 +19,10 @@ spec:
       labels:
         app: signal-relay
     spec:
+      # The upstream 1.1.1 app binary fails with exec format error on arm64.
+      # Keep the relay on the amd64 workers; it does not mount a Ceph PVC.
+      nodeSelector:
+        kubernetes.io/arch: amd64
       containers:
         - name: signal-relay
           image: docker.io/schlauerlauer/alertmanager-webhook-signal:1.1.1

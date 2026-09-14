@@ -161,6 +161,11 @@ spec:
         # claim lookup that returns null (role falls back to Viewer).
         GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "'GrafanaAdmin'"
       grafana.ini:
+        plugins:
+          # Bundled datasource plugins live on the read-only distroless image.
+          # Startup auto-updates unregister them, then fail to replace them.
+          # Keep the image-provided versions; update them with the Grafana image.
+          preinstall_auto_update: false
         server:
           # Served at the domain root behind the shared gateway - root_url must
           # match the public URL or Grafana fails to load its application files.

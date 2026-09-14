@@ -7,6 +7,7 @@ A later slice must translate group/resource references and enforce revocation.
 import argparse
 import ipaddress
 import json
+import os
 import re
 import subprocess
 import sys
@@ -163,6 +164,10 @@ def docker_tool(tool, args, *, capture=False):
         "docker",
         "run",
         "--rm",
+        "--user",
+        f"{os.getuid()}:{os.getgid()}",
+        "--env",
+        "HOME=/tmp",
         "--cap-drop=ALL",
         "--security-opt=no-new-privileges",
         "-v",

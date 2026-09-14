@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "feature": "netbird-home-assistant-access",
+  "enabled": false,
+  "destination": null,
+  "sourceGroups": [],
+  "images": []
+}

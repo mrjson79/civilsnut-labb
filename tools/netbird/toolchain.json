@@ -1,0 +1,5 @@
+{
+  "kubeconform": "ghcr.io/yannh/kubeconform@sha256:85dbef6b4b312b99133decc9c6fc9495e9fc5f92293d4ff3b7e1b30f5611823c",
+  "trivy": "ghcr.io/aquasecurity/trivy@sha256:7cced7cae583819fc7806d4cbc0dbbc7cad18b99f7d3e235192e6da8c091045c",
+  "kubernetesVersion": "1.36.0"
+}

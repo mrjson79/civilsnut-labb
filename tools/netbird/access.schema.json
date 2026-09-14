@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "feature", "enabled", "destination", "sourceGroups", "images"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "feature": {"const": "netbird-home-assistant-access"},
+    "enabled": {"type": "boolean"},
+    "destination": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["cidr", "hostname", "ports"],
+          "properties": {
+            "cidr": {"type": "string"},
+            "hostname": {"const": "ha-vpn.civilsnut.se"},
+            "ports": {"const": [443]}
+          }
+        }
+      ]
+    },
+    "sourceGroups": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "images": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["image", "platforms"],
+        "properties": {
+          "image": {"type": "string", "pattern": "^[a-z0-9][a-zA-Z0-9./:_-]+@sha256:[a-f0-9]{64}$"},
+          "platforms": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"enum": ["amd64", "arm64"]}
+          }
+        }
+      }
+    }
+  }
+}

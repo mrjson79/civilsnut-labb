@@ -110,6 +110,8 @@ Estimates cover implementation, tests, documentation and integration for one eng
 
 ### Slice 2: Reach and recover a private NetBird administration service
 
+- **Implementation status (2026-09-14):** Prerequisite assessment started; public control/login DNS is NXDOMAIN and stable candidate images fail the HIGH-severity gate. No deployment or recovery acceptance claimed. See [assessment](../../netbird/slice-2-prerequisites.md).
+
 - **Value:** The operator can bootstrap and restore a working VPN control plane without granting HA access.
 - **Acceptance:**
   - [ ] A freshly started client from outside the LAN reaches the required control protocols and STUN; TLS and dashboard routes work.

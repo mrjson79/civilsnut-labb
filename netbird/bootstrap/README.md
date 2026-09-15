@@ -2,7 +2,7 @@
 
 Status (2026-09-15): prepared and rendered, not deployed. NetBird Cloud is the
 working hosting choice after the request to continue without inbound home-router
-ports; no tenant has been created or enrolled. Home Assistant access stays off.
+ports. The user supplied the Cloud credential and the empty tenant is now bootstrapped; no peers are enrolled. Home Assistant access stays off.
 The self-hosted server/dashboard and public lab DNS prerequisites no longer apply
 to this proposed Cloud path. Cloud login must work independently of private Zitadel.
 
@@ -11,8 +11,10 @@ to this proposed Cloud path. Cloud login must work independently of private Zita
 `operator-values.yaml` pins operator v0.8.0 and peer 0.78.1 by immutable digest.
 `externalsecret.yaml` references the existing `onepassword-connect` store and
 item `netbird-civilsnut-labbet`, field `api-token`, in the civilsnut.se vault.
-A title-only lookup found no existing NetBird item. No credential was read or
-created. This environment has no available browser session for Cloud sign-in.
+The user created this item and its token was verified against api.netbird.io.
+It belongs to an unblocked owner account (not a service user). The token was
+read only into memory and never printed or saved in repository files. Use a
+dedicated service identity before leaving a persistent operator deployment.
 
 ```sh
 make render-netbird-bootstrap
@@ -68,3 +70,28 @@ recovery, external connectivity or access denial based on rendering alone.
 Sources: [Kubernetes operator](https://docs.netbird.io/use-cases/kubernetes),
 [routing peers](https://docs.netbird.io/use-cases/kubernetes/routing-peer),
 [outbound connectivity](https://docs.netbird.io/manage/networks/sizing-routing-peers).
+
+
+## Verified Cloud bootstrap — 2026-09-15
+
+- Token authenticated successfully; current role owner, not blocked.
+- Initial tenant had zero peers/networks and only the enabled Default All-to-All policy.
+- Disabled both the Default policy and its rule, then verified the returned state.
+- Created empty groups `civilsnut-ha-pilot` and `civilsnut-ha-routing-peers`.
+- Exported a temporary empty group, deleted/recreated it, checked its name and
+  empty memberships, and removed it again (1.7 seconds). This tests only an empty
+  group, not policy/DNS/reference recovery or peer state.
+- Verified final state: zero peers, zero networks, no enabled policies. No HA
+  endpoint, client, public DNS, home-router rule or cluster resource changed.
+- The original policy/group snapshot is stored locally with mode 0600 at
+  `tools/netbird/.build/cloud-bootstrap-before.json`; it contains no API token.
+
+The credential prerequisite is resolved. Image remediation remains: newest peer
+0.78.2 (index sha256:0d6653f21f0417b6014e4c621c75e898e06698e1cce973398d1c3c45a30f6bd6)
+was scanned on both architectures and still has 5 HIGH findings each: two OpenSSL
+package findings plus three gRPC advisories. Scanner-reported fixes are OpenSSL
+3.5.8-r0 and gRPC 1.83.2. Operator 0.8.0 is still latest; its recorded fixes are a
+Go toolchain at least 1.26.6 and golang.org/x/text 0.39.0. These are remediation
+candidates, not proof a patched build is compatible or clean. A rebuild needs
+pinned sources/toolchains, dependency tests, both-architecture scans, registry
+provenance, and the scoped-RBAC runtime test before deployment. No bypass added.

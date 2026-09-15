@@ -16,7 +16,9 @@ and recoverable pilot configuration. Managed-server restore is replaced by
 pilot configuration recovery; private Zitadel is not a bootstrap dependency.
 See [bootstrap candidate](../../netbird/bootstrap/README.md) for exact status.
 No tenant/enrollment or recovery test is complete. Operator/peer candidate image
-scans fail the existing gate; no Cloud credential is available yet.
+scans fail the existing gate. The Cloud credential is now verified; the empty
+tenant default policy is disabled and pilot groups exist. No peers are enrolled.
+An isolated empty-group recreation passed; full recovery remains unverified.
 
 ## Foundations assessment
 

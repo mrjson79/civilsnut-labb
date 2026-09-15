@@ -26,7 +26,7 @@ per-stack breakdown.
 | Application | Version | Purpose |
 |-------------|---------|---------|
 | **Cilium** | `1.20.1` <!-- renovate: datasource=helm depName=cilium registryUrl=https://helm.cilium.io --> | CNI, Load Balancing, Gateway API, BGP |
-| **cert-manager** | `v1.21.1` <!-- renovate: datasource=helm depName=cert-manager registryUrl=https://charts.jetstack.io --> | TLS Certificate Management |
+| **cert-manager** | `v1.21.2` <!-- renovate: datasource=helm depName=cert-manager registryUrl=https://charts.jetstack.io --> | TLS Certificate Management |
 | **External Secrets** | `2.10.0` <!-- renovate: datasource=helm depName=external-secrets registryUrl=https://charts.external-secrets.io --> | Kubernetes Secret Management |
 | **1Password Connect** | `2.4.1` <!-- renovate: datasource=helm depName=connect registryUrl=https://1password.github.io/connect-helm-charts --> | Secret Synchronization |
 | **Gateway API CRDs** | `v1.6.2` <!-- renovate: datasource=github-releases depName=kubernetes-sigs/gateway-api --> | Gateway API CRDs (experimental channel, pinned release bundle) |

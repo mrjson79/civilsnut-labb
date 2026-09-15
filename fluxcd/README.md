@@ -48,7 +48,7 @@ Core platform components that everything else depends on.
 | Component | Version | Purpose |
 |-----------|---------|---------|
 | **Cilium** | 1.20.1 <!-- renovate: datasource=helm depName=cilium registryUrl=https://helm.cilium.io --> | CNI, Load Balancing, Gateway API, BGP |
-| **cert-manager** | v1.21.1 <!-- renovate: datasource=helm depName=cert-manager registryUrl=https://charts.jetstack.io --> | TLS certificates via Let's Encrypt (Cloudflare DNS-01) |
+| **cert-manager** | v1.21.2 <!-- renovate: datasource=helm depName=cert-manager registryUrl=https://charts.jetstack.io --> | TLS certificates via Let's Encrypt (Cloudflare DNS-01) |
 | **External Secrets** | 2.10.0 <!-- renovate: datasource=helm depName=external-secrets registryUrl=https://charts.external-secrets.io --> | Kubernetes secret management |
 | **1Password Connect** | 2.4.1 <!-- renovate: datasource=helm depName=connect registryUrl=https://1password.github.io/connect-helm-charts --> | Secret synchronization from 1Password |
 | **Gateway API CRDs** | v1.6.2 <!-- renovate: datasource=github-releases depName=kubernetes-sigs/gateway-api --> | Gateway API custom resource definitions (experimental channel, pinned release bundle) |

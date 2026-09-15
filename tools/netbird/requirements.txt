@@ -6,7 +6,7 @@ packaging==26.3
 pathspec==1.1.1
 pluggy==1.6.0
 Pygments==2.21.0
-pytest==8.4.2
+pytest==9.1.1
 PyYAML==6.0.2
 referencing==0.37.0
 rpds-py==2026.6.3

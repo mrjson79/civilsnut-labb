@@ -27,6 +27,6 @@ availability and transitive package versions can change. Retain successful scan
 reports and image digests; do not claim bit-for-bit reproducibility from these
 Dockerfiles alone. Any future patch release must pass the same tests and scans.
 
-Local ARM64 checks: both images had zero HIGH/CRITICAL findings. Operator tests
-passed. Peer management/signal tests passed after enabling CGO for their test
-server. AMD64 validation and registry publication are still in progress.
+Local amd64 and arm64 checks: all four images had zero HIGH/CRITICAL findings.
+Operator tests passed. Peer management/signal tests passed after enabling CGO
+for their test server. Registry publication and runtime validation remain.

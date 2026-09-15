@@ -78,3 +78,5 @@ stable server/operator/peer version set must be added and validated in the
 slice that introduces those resources.
 
 Full plan: [specification](../docs/specs/001-netbird-home-assistant-access.md).
+
+Outbound-only continuation: [bootstrap candidate and current blockers](bootstrap/README.md).

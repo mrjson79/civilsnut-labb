@@ -5,6 +5,19 @@
 **Owner:** Anders Johansson — civilsnut home lab
 **Feature flag:** `netbird-home-assistant-access` (default: off)
 
+## Hosting revision — 2026-09-15
+
+User requested continuation after clarifying that inbound home-router ports are
+not required. Working choice: NetBird Cloud, with outbound-only lab routing peers.
+The original self-hosted Slice 2 below is retained as an alternative, not the
+active deployment plan. Cloud Slice 2 covers tenant identity/policy bootstrap,
+1Password-backed API credentials, scoped operator setup, outbound connectivity
+and recoverable pilot configuration. Managed-server restore is replaced by
+pilot configuration recovery; private Zitadel is not a bootstrap dependency.
+See [bootstrap candidate](../../netbird/bootstrap/README.md) for exact status.
+No tenant/enrollment or recovery test is complete. Operator/peer candidate image
+scans fail the existing gate; no Cloud credential is available yet.
+
 ## Foundations assessment
 
 **Project context:** Brownfield

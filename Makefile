@@ -18,3 +18,7 @@ test-netbird: tools/netbird/.venv/.requirements
 
 format-netbird: tools/netbird/.venv/.requirements
 	$(NETBIRD_PYTHON) -m ruff format tools/netbird tests/netbird
+
+.PHONY: render-netbird-bootstrap
+render-netbird-bootstrap: tools/netbird/.venv/.requirements
+	$(NETBIRD_PYTHON) tools/netbird/bootstrap.py

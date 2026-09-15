@@ -1,0 +1,35 @@
+# Candidate configuration only; not referenced by Flux or approved for deployment.
+clusterSecretsPermissions:
+  # Chart 0.8.0 still grants cluster Secret access; use the bootstrap renderer.
+  allowAllSecrets: false
+cluster:
+  name: civilsnut-labbet
+  dns: svc.cluster.local
+operator:
+  image:
+    registry: ghcr.io
+    repository: netbirdio/netbird-operator
+    tag: v0.8.0@sha256:ae2c26cfc54762723c50cb7df1178452807fa265c1acddec1debf83503fabe59
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      memory: 512Mi
+webhook:
+  enableCertManager: true
+  namespaceSelectors:
+    - key: kubernetes.io/metadata.name
+      operator: In
+      values:
+        - netbird
+netbirdAPI:
+  keyFromSecret:
+    name: netbird-mgmt-api-key
+    key: NB_API_KEY
+routingClientImage: netbirdio/netbird:0.78.1@sha256:c0b492f320e1251ac0655e785fa288e935a0b7b16365d14fdcbc8bf75dc5b0a0
+ingress:
+  enabled: false
+  allowAutomaticPolicyCreation: false
+gatewayAPI:
+  enabled: false

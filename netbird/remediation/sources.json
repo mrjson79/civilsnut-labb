@@ -1,0 +1,14 @@
+{
+  "operator": {
+    "repository": "netbirdio/kubernetes-operator",
+    "revision": "41d995671f55d790a4f4e1c37da8c9e41a36abee",
+    "archiveSha256": "1042dc9ca5695e5ccf0f23068e2552cb225198be7dae72b36965e996597dffa9",
+    "version": "0.8.0-civilsnut.1"
+  },
+  "peer": {
+    "repository": "netbirdio/netbird",
+    "revision": "300b6695012158bdede367738a0389a25d83cf04",
+    "archiveSha256": "e54b73c09653a533b719ec7e275d9af05f0ffaae548d697570bf6b5d71b13fc8",
+    "version": "0.78.2-civilsnut.1"
+  }
+}

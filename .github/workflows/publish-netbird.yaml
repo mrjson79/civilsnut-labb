@@ -1,0 +1,46 @@
+name: Publish patched NetBird
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        component: [operator, peer]
+        architecture: [amd64, arm64]
+        include:
+          - architecture: amd64
+            runner: ubuntu-24.04
+          - architecture: arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1  # v6
+        with:
+          python-version: '3.13'
+      - name: Prepare tools and verify contracts
+        run: make test-netbird
+      - name: Authenticate to the repository container registry
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+      - name: Build, test, scan and publish
+        run: >-
+          tools/netbird/.venv/bin/python tools/netbird/build_patched_images.py
+          ${{ matrix.component }} ${{ matrix.architecture }} --push
+      - name: Remove registry login
+        if: always()
+        run: docker logout ghcr.io
